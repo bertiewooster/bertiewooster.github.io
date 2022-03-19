@@ -1,4 +1,3 @@
 # About
 
-This is where you put the contents of your *About* page. Like all your pages, it's in [Markdown](https://guides.github.com/features/mastering-markdown/) format.
-
+[Jeremy Monat](https://www.linkedin.com/in/jemonat/) is a PhD physical chemist who now develops software. He’d like to combine those parts of his background to build tools for scientists to make better materials, chemicals, or biotechnology. He used computational chemistry and laser spectroscopy in his chemistry research. Now he codes in Python, SQL, HTML, CSS, and JavaScript for machine learning and materials informatics.
