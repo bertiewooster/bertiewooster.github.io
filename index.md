@@ -15,7 +15,7 @@ Optionally, identify the components (dimensions) in your input (constraints) fil
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
 ## [Price Per Unit Calculator](http://www.whitegloveapps.com/priceper/priceper.html)
-### Uses JavaScript
+*Uses JavaScript*
 A utility for shopping: calculate the unit price by weight, count, area, etc.
 
 # My open-source contributions
