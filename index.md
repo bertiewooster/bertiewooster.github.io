@@ -2,6 +2,8 @@ Scientific software developer in Washington, D.C. area.
 
 # Portfolio of my projects
 
+<img style="float: right;width:200px;" src="images/sampler-constraints.png">
+
 ## [Materials- and cheminformatics sampler](https://sampler-flask.herokuapp.com/)
 *Uses NumPy, SymPy, ChemPy, Flask, and Bootstrap*
 
@@ -9,13 +11,18 @@ Find a given number of points which satisfy constraints given in an input_file f
 
 Optionally, identify the components (dimensions) in your input (constraints) file using chemical formulas, and sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
 
+<img style="float: right;width:100px;" src="images/ptable-terms-highlighted.png">
+
 ## [Periodic Table Navigator](https://ptablenav.herokuapp.com/)
 *Uses Ruby, Sinatra, PostgreSQL, and JavaScript*
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
+<img style="float: right;width:150px;" src="images/price-per-unit.png">
+
 ## [Price Per Unit Calculator](http://www.whitegloveapps.com/priceper/priceper.html)
 *Uses JavaScript*
+
 A utility for shopping: calculate the unit price by weight, count, area, etc.
 
 # My open-source contributions
