@@ -5,7 +5,7 @@ Scientific software developer in Washington, D.C. area.
 ## [Materials- and cheminformatics sampler](https://sampler-flask.herokuapp.com/)
 *Uses NumPy, SymPy, ChemPy, Flask, and Bootstrap*
 
-<img style="width:400px;" src="images/sampler-constraints.png">
+[<img style="width:400px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
 
 Find a given number of points which satisfy constraints given in an input_file for an n-dimensional space defined on the unit hypercube, then write them to an output file.
 
@@ -18,7 +18,7 @@ Optionally, identify the components (dimensions) in your input (constraints) fil
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
-<img style="float: right;width:230px;" src="images/price-per-unit.png">
+[<img style="float: right;width:230px;" src="images/price-per-unit.png">](http://www.whitegloveapps.com/priceper/priceper.html)
 
 ## [Price Per Unit Calculator](http://www.whitegloveapps.com/priceper/priceper.html)
 *Uses JavaScript*
