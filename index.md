@@ -11,7 +11,7 @@ Find a given number of points which satisfy constraints given in an input_file f
 
 Optionally, identify the components (dimensions) in your input (constraints) file using chemical formulas, and sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
 
-<img style="float: right;width:100px;" src="images/ptable-terms-highlighted.png">
+[<img style="float: right;width:100px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
 
 ## [Periodic Table Navigator](https://ptablenav.herokuapp.com/)
 *Uses Ruby, Sinatra, PostgreSQL, and JavaScript*
