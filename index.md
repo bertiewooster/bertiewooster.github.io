@@ -18,7 +18,7 @@ Optionally, identify the components (dimensions) in your input (constraints) fil
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
-<img style="float: right;width:150px;" src="images/price-per-unit.png">
+<img style="float: right;width:230px;" src="images/price-per-unit.png">
 
 ## [Price Per Unit Calculator](http://www.whitegloveapps.com/priceper/priceper.html)
 *Uses JavaScript*
