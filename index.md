@@ -2,7 +2,7 @@ Scientific software developer in Washington, D.C. area.
 
 # Portfolio of my projects
 
-## [Materials- and cheminformatics sampler](https://sampler-flask.herokuapp.com/)
+## [Materials and cheminformatics sampler](https://sampler-flask.herokuapp.com/)
 *Uses NumPy, SymPy, ChemPy, Flask, and Bootstrap*
 
 [<img style="width:400px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
