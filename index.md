@@ -1,4 +1,4 @@
-Scientific software developer in Washington, D.C. area.
+Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
