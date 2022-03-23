@@ -2,14 +2,14 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
-## [Materials and cheminformatics sampler](https://sampler-flask.herokuapp.com/)
+## [Materials and cheminformatics Sampler](https://sampler-flask.herokuapp.com/)
 *Uses NumPy, SymPy, ChemPy, Flask, and Bootstrap*
 
 [<img style="width:400px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
 
 Find a given number of points which satisfy constraints given in an input_file for an n-dimensional space defined on the unit hypercube, then write them to an output file.
 
-Optionally, identify the components (dimensions) in your input (constraints) file using chemical formulas, and sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
+Optionally, identify the components (dimensions) in the constraints file using chemical formulas, and Sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
 
 [<img style="float: right;width:100px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
 
