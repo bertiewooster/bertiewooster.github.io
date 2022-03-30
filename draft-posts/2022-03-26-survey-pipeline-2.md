@@ -1,4 +1,4 @@
-# Rating Survey Beginning to End, Part 3: Publish the results online
+# Rating Survey Beginning to End, Part 2: Import and analyze data in Jupyter Notebook
 
 [Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file](/2022/03/20/survey-pipeline-1.html)
 

@@ -1,4 +1,4 @@
-# Rating Survey Beginning to End, Part 2: Import and analyze data
+# Rating Survey Beginning to End, Part 3: Publish the results on GitHub Pages
 
 # Free tools for survey creation, analysis, and publishing results
 
