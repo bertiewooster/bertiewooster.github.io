@@ -1,7 +1,6 @@
-# Rating Survey Beginning to End Method
-## Part 1: Creating the survey, collecting and exporting data
+# Rating Survey Beginning to End, Part 1: Create a survey, collect and export data
 
-# Free tools for survey creation, analysis, and publishing results
+## Free tools for survey creation, analysis, and publishing of results
 
 This tutorial is at the intermediate level: each step that's specific to this workflow is explained, and steps that are commonly used elsewhere will have instructions linked to on other sites.
 
