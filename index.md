@@ -11,14 +11,14 @@ Find a given number of points which satisfy constraints given in a constraints f
 
 Optionally, identify the components (dimensions) in the constraints file using chemical formulas, and Sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
 
-[<img style="float: right;width:130px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
+[<img style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
 
 ## [Periodic Table Navigator](https://ptablenav.herokuapp.com/)
 *Uses Ruby, Sinatra, PostgreSQL, and JavaScript*
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
-[<img style="float: right;width:230px;" src="images/price-per-unit.png">](http://www.whitegloveapps.com/priceper/priceper.html)
+[<img style="float: right; width:230px; height:123px;" src="images/price-per-unit.png">](http://www.whitegloveapps.com/priceper/priceper.html)
 
 ## [Price Per Unit Calculator](http://www.whitegloveapps.com/priceper/priceper.html)
 *Uses JavaScript*
