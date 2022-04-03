@@ -6,6 +6,8 @@ This tutorial is at the intermediate level: each step that's specific to this wo
 
 Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file
 
+<!-- {% post_url %} syntax from
+https://www.digitalocean.com/community/tutorials/how-to-control-urls-and-links-in-jekyll -->
 [Part 2: Import the survey response data into a GitHub repository, then analyze the data]({% post_url 2022-03-26-survey-pipeline-2 %})
 
 [Part 3: Publish the results online using GitHub Pages]({% post_url 2022-03-27-survey-pipeline-3 %})
