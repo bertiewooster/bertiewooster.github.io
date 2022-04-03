@@ -1,10 +1,10 @@
 # Rating Survey Beginning to End, Part 2: Import and analyze data in Jupyter Notebook
 
-[Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file](/2022/03/20/survey-pipeline-1.html)
+[Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file]({% post_url 2022-03-20-survey-pipeline-1 %})
 
 Part 2: Import the survey response data into a GitHub repository, then analyze the data
 
-[Part 3: Publish the results online using GitHub Pages](/2022/03/26/survey-pipeline-3.html)
+[Part 3: Publish the results online using GitHub Pages]({% post_url 2022-03-27-survey-pipeline-3 %})
 
 ## Part 2: Analyzing data
 

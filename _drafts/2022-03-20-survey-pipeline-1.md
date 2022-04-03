@@ -6,9 +6,9 @@ This tutorial is at the intermediate level: each step that's specific to this wo
 
 Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file
 
-[Part 2: Import the survey response data into a GitHub repository, then analyze the data](/2022/03/26/survey-pipeline-2.html).
+[Part 2: Import the survey response data into a GitHub repository, then analyze the data]({% post_url 2022-03-26-survey-pipeline-2 %})
 
-[Part 3: Publish the results online using GitHub Pages](/2022/03/26/survey-pipeline-3.html)
+[Part 3: Publish the results online using GitHub Pages]({% post_url 2022-03-27-survey-pipeline-3 %})
 
 ## Part 1: Creating the survey, collecting and exporting data
 

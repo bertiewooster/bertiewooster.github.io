@@ -2,9 +2,9 @@
 
 # Free tools for survey creation, analysis, and publishing results
 
-[Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file](/2022/03/20/survey-pipeline-1.html)
+[Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file]({% post_url 2022-03-20-survey-pipeline-1 %})
 
-[Part 2: Import the survey response data into a GitHub repository, then analyze the data](/2022/03/26/survey-pipeline-2.html)
+[Part 2: Import the survey response data into a GitHub repository, then analyze the data]({% post_url 2022-03-26-survey-pipeline-2 %})
 
 Part 3: Publish the results online using GitHub Pages
 
