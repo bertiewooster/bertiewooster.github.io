@@ -1,5 +1,7 @@
 # Rating Survey Beginning to End, Part 2: Import and analyze data in Jupyter Notebook
 
+This tutorial is at the intermediate level: each step that's specific to this workflow is explained, and steps that are commonly used elsewhere will have instructions linked to on other sites.
+
 [Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file]({% post_url 2022-03-20-survey-pipeline-1 %})
 
 Part 2: Import the survey response data into a GitHub repository, then analyze the data

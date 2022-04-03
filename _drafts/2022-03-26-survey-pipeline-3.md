@@ -1,6 +1,6 @@
 # Rating Survey Beginning to End, Part 3: Publish the results on GitHub Pages
 
-# Free tools for survey creation, analysis, and publishing results
+This tutorial is at the intermediate level: each step that's specific to this workflow is explained, and steps that are commonly used elsewhere will have instructions linked to on other sites.
 
 [Part 1: Create a survey in Google Forms, collect responses, then export the responses to a .csv file]({% post_url 2022-03-20-survey-pipeline-1 %})
 
