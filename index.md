@@ -29,7 +29,7 @@ A utility for shopping: calculate the unit price by weight, count, area, etc.
 
 ## SymPy computer algebra system in pure Python
 - [Contributed code for documentation](https://github.com/sympy/sympy/pulls?q=is:pr+author:bertiewooster+is:merged) to explain usage of a core class for users and developers, and improve accessibility
-- [Led selection of new Sphinx theme for SymPy documentation](https://github.com/sympy/sympy/issues/22716)
+- [Led selection of new Sphinx theme for SymPy documentation](https://github.com/sympy/sympy/issues/22716); the [new theme was implemented](https://docs.sympy.org/dev/)
 - Lead developer wrote “You've been doing great work with the Sphinx theme and other documentation work”
 
 ## ChemPy package for chemistry in Python
