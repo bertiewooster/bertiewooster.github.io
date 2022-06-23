@@ -5,7 +5,7 @@ Scientific software developer in the Washington, D.C. area.
 ## [Materials and cheminformatics Sampler](https://sampler-flask.herokuapp.com/)
 *Uses Python, NumPy, SymPy, ChemPy, Flask, JavaScript, and Bootstrap*
 
-[<img style="width:400px; height:229px; margin-left: 20%;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
+[<img style="width:400px; height:229px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
 
 Find a given number of points which satisfy constraints given in a constraints file for an n-dimensional space defined on the unit hypercube, then write them to an output file.
 
