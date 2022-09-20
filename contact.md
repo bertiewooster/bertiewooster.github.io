@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Contact
-permalink: /contact/
+permalink: /contact.html
 ---
 
 <form accept-charset="UTF-8" action="https://api.slapform.com/Rql5pOL6s" method="POST" enctype="multipart/form-data" target="_blank">
