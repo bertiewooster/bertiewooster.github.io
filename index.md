@@ -28,13 +28,14 @@ A utility for shopping: calculate the unit price by weight, count, area, etc.
 # My open-source contributions
 
 ## SymPy computer algebra system in pure Python
-- [Contributed code for documentation](https://github.com/sympy/sympy/pulls?q=is:pr+author:bertiewooster+is:merged) to explain usage of a core class for users and developers, and improve accessibility
+- Technical writer for funded 2022 Season of Docs project: Creating documentation for how to [solve equations](https://docs.sympy.org/dev/guides/solving/index.html)
 - [Led selection of new Sphinx theme for SymPy documentation](https://github.com/sympy/sympy/issues/22716); the [new theme was implemented](https://docs.sympy.org/dev/)
+- [Contributed code for documentation](https://github.com/sympy/sympy/pulls?q=is:pr+author:bertiewooster+is:merged) to explain usage of a core class for users and developers, and improve accessibility
 - Lead developer wrote “You've been doing great work with the Sphinx theme and other documentation work”
 
 ## ChemPy package for chemistry in Python
 - Initiated and provided scientific and coding direction to issue to [improve interpretation of chemical formulas](https://github.com/bjodah/chempy/issues/202)
-- Spurred a developer to code improvement
+- Spurred a developer to improve code
 - Package author wrote “Great work guys!”
 
 ## Sphinx documentation generator
