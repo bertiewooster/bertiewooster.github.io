@@ -79,9 +79,17 @@ SmilesMCStoGridImage(["NC1OC1", "C1OC1[N+](=O)[O-]"])
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_6_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_6_0.png)
     
+![png](6_0.png)
 
+![png](../6_0.png)
+
+![png](../../6_0.png)
+
+![png](../../../6_0.png)
+
+![png](../../../../6_0.png)
 
 
 If there is no common substructure, the first cell in the grid will be empty (because there is no SMARTS match), and the molecules will be displayed without any highlighting:
@@ -95,7 +103,7 @@ SmilesMCStoGridImage(["O", "c1ccccc1"])
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_8_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_8_0.png)
     
 
 
@@ -113,7 +121,7 @@ SmilesMCStoGridImage({"NC1OC1": "amine", "C1OC1[N+](=O)[O-]": "nitro"})
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_10_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_10_0.png)
     
 
 
@@ -136,7 +144,7 @@ drawing
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_14_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_14_0.png)
     
 
 
@@ -166,7 +174,7 @@ mcs_mol
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_18_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_18_0.png)
     
 
 
@@ -197,7 +205,7 @@ mols[0]
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_22_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_22_0.png)
     
 
 
@@ -211,7 +219,7 @@ mols[1]
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_23_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_23_0.png)
     
 
 
@@ -228,7 +236,7 @@ SmilesMCStoGridImage({"c1ccccc1": "benzene", "C1CCCC=C1": "cyclohexene"})
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_25_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_25_0.png)
     
 
 
@@ -244,7 +252,7 @@ SmilesMCStoGridImage({"c1ccccc1": "benzene", "C1CCCC=C1": "cyclohexene"}, align_
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_27_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_27_0.png)
     
 
 
@@ -261,7 +269,7 @@ SmilesMCStoGridImage({"C1CCCCCC1CCC": "complete ring", "C1CCC1CCC": "incomplete 
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_29_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_29_0.png)
     
 
 
@@ -277,7 +285,7 @@ SmilesMCStoGridImage({"C1CCCCCC1": "complete ring", "C1CCC1CCC": "incomplete rin
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_31_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_31_0.png)
     
 
 
@@ -295,7 +303,7 @@ SmilesMCStoGridImage({"O=C(NCc1cc(OC)c(O)cc1)CCCC/C=C/C(C)C": "unsaturated", "CC
 
 
     
-![png](2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_34_0.png)
+![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_34_0.png)
     
 
 
