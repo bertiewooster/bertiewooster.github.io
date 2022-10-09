@@ -29,6 +29,7 @@ A utility for shopping: calculate the unit price by weight, count, area, etc.
 
 ## SymPy computer algebra system in pure Python
 - Technical writer for funded 2022 Season of Docs project: Creating documentation for how to [solve equations](https://docs.sympy.org/dev/guides/solving/index.html)
+- Core developer wrote "I think you are doing excellent work on the SymPy documentation. Thank you!"
 - [Led selection of new Sphinx theme for SymPy documentation](https://github.com/sympy/sympy/issues/22716); the [new theme was implemented](https://docs.sympy.org/dev/)
 - [Contributed code for documentation](https://github.com/sympy/sympy/pulls?q=is:pr+author:bertiewooster+is:merged) to explain usage of a core class for users and developers, and improve accessibility
 - Lead developer wrote “You've been doing great work with the Sphinx theme and other documentation work”
