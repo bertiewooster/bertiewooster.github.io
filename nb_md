@@ -1,3 +1,5 @@
 #!/bin/bash
 
-jupyter nbconvert notebooks/2022-03-18-test-notebook.ipynb --to markdown --output ../_posts/2022-03-18-test-notebook.md
+jupyter nbconvert _notebooks/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules.ipynb --to markdown --output ../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules.md
+
+# jupyter nbconvert notebooks/2022-03-18-test-notebook.ipynb --to markdown --output ../_posts/2022-03-18-test-notebook.md
