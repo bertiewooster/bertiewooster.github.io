@@ -18,10 +18,9 @@ Optionally, identify the components (dimensions) in the constraints file using c
 
 Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification) string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
 
+[<img style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
 ## [Periodic Table Navigator](https://ptablenav.herokuapp.com/)
 *Uses Ruby, Sinatra, PostgreSQL, and JavaScript*
-
-[<img style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
