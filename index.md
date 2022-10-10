@@ -16,7 +16,7 @@ Optionally, identify the components (dimensions) in the constraints file using c
 ## [RDKit Utility to Find and Highlights Maximum Common Substructure Amongst Molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 *Uses Python and RDKit*
 
-[<img style="width:400px; height:229px;" src="/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_10_0.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+[<img style="" src="/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_10_0.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 
 Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification) string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
 
