@@ -253,7 +253,7 @@ SmilesMCStoGridImage({"CCc1ccccc1": "benzene", "C1CCCC=C1CC": "cyclohexene"}, al
 
 
 
-## Pass Arguments to `FindMCS`
+## Pass Arguments to FindMCS
 `SmilesMCStoGridImage` will pass any keyword arguments of [`rdFMCS.FindMCS`](https://www.rdkit.org/docs/source/rdkit.Chem.rdFMCS.html) to that function. For example, by default, `rdFMCS.FindMCS` will match a pattern of atoms even if they are in a complete ring in one molecule, and not in another:
 
 
