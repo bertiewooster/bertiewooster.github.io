@@ -38,7 +38,7 @@ def SmilesMCStoGridImage(molecules, align_substructure=True, verbose=False, **kw
      smart_mol = Chem.MolFromSmarts(smarts)
      smarts_and_mols = [smart_mol] + mols
 
-     smarts_legend = "Max substructure match"
+     smarts_legend = "Max. substructure match"
 
      # If user supplies a dictionary, use the values as legend entries for molecules
      if isinstance(molecules, dict):
@@ -79,7 +79,9 @@ SmilesMCStoGridImage(["NC1OC1", "C1OC1[N+](=O)[O-]"])
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_6_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_6_0.png)
+    
+
 
 
 If there is no common substructure, the first cell in the grid will be empty (because there is no SMARTS match), and the molecules will be displayed without any highlighting:
@@ -93,7 +95,7 @@ SmilesMCStoGridImage(["O", "c1ccccc1"])
 
 
     
-![png](/images//2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_8_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_8_0.png)
     
 
 
@@ -111,7 +113,7 @@ SmilesMCStoGridImage({"NC1OC1": "amine", "C1OC1[N+](=O)[O-]": "nitro"})
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_10_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_10_0.png)
     
 
 
@@ -134,7 +136,7 @@ drawing
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_14_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_14_0.png)
     
 
 
@@ -164,7 +166,7 @@ mcs_mol
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_18_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_18_0.png)
     
 
 
@@ -195,7 +197,7 @@ mols[0]
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_22_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_22_0.png)
     
 
 
@@ -209,7 +211,7 @@ mols[1]
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_23_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_23_0.png)
     
 
 
@@ -226,12 +228,12 @@ SmilesMCStoGridImage({"c1ccccc1": "benzene", "C1CCCC=C1": "cyclohexene"})
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_25_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_25_0.png)
     
 
 
 
-To address this case, you can set `align_substructure=False` (its default value is `True`):
+To address this case, in `SmilesMCStoGridImage` you can set `align_substructure=False` (its default value is `True`):
 
 
 ```python
@@ -242,7 +244,7 @@ SmilesMCStoGridImage({"c1ccccc1": "benzene", "C1CCCC=C1": "cyclohexene"}, align_
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_27_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_27_0.png)
     
 
 
@@ -259,7 +261,7 @@ SmilesMCStoGridImage({"C1CCCCCC1CCC": "complete ring", "C1CCC1CCC": "incomplete 
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_29_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_29_0.png)
     
 
 
@@ -275,7 +277,7 @@ SmilesMCStoGridImage({"C1CCCCCC1": "complete ring", "C1CCC1CCC": "incomplete rin
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_31_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_31_0.png)
     
 
 
@@ -293,7 +295,7 @@ SmilesMCStoGridImage({"O=C(NCc1cc(OC)c(O)cc1)CCCC/C=C/C(C)C": "unsaturated", "CC
 
 
     
-![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_34_0.png)
+![png](images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_34_0.png)
     
 
 
