@@ -11,7 +11,7 @@ Find a given number of points which satisfy constraints given in a constraints f
 
 Optionally, identify the components (dimensions) in the constraints file using chemical formulas, and Sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
 
-## [RDKit Utility to Find and Highlights Maximum Common Substructure Amongst Molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+## [RDKit Utility to Find and Highlight the Maximum Common Substructure Amongst Molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 *Uses Python and RDKit*
 
 [<img style="width:600px; height:200px" src="/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_10_0.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
