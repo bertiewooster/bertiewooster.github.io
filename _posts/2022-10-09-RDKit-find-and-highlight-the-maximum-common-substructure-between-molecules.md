@@ -79,8 +79,8 @@ SmilesMCStoGridImage(["NC1OC1", "C1OC1[N+](=O)[O-]"])
 
 
     
-![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_6_0.png)
-    
+![png](/images/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_6_0.png)
+
 ![png](6_0.png)
 
 ![png](../6_0.png)
@@ -103,7 +103,7 @@ SmilesMCStoGridImage(["O", "c1ccccc1"])
 
 
     
-![png](../_posts/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_8_0.png)
+![png](/images//2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_8_0.png)
     
 
 
