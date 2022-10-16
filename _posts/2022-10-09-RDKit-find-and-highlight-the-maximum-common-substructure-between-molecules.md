@@ -70,7 +70,7 @@ def SmilesMCStoGridImage(molecules, align_substructure=True, verbose=False, **kw
 
 ## Minimal Example
 
-All you have to provide to `SmilesMCStoGridImage` is a lis of SMILES strings, and it will return a grid image:
+All you have to provide to `SmilesMCStoGridImage` is a list of SMILES strings, and it will return a grid image:
 
 
 ```python
