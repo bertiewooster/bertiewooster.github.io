@@ -223,7 +223,7 @@ mols[1]
 
 
 ## Caveat About Aligning Maximum Common Substructure
-The SMARTS substructure match may not match the form of the molecule. For example, if you input two six-membered carbon rings, the SMARTS substructure match is a linear chain of six carbons. So if you align the molecules to that substructure, you will get some odd-looking "rings":
+The SMARTS substructure match may not match the form of the molecule. For example, if you input two structures containing six-membered carbon rings, the SMARTS substructure match includes a linear chain of six carbons. So if you align the molecules to that substructure, you will get some odd-looking "rings":
 
 
 ```python
