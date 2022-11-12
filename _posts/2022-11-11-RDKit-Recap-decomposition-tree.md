@@ -296,9 +296,10 @@ for smiles1, smiles2, smiles3 in fragment_grid:
     print (f"{smiles1:^20}{smiles2:^20}{smiles3:^20}")
 ```
 
-  OCOc1cccc(OCO)n1                                          
-        *CO            *c1cccc(OCO)n1                       
-                            *CO             *c1cccc(*)n1    
+      OCOc1cccc(OCO)n1                                          
+            *CO            *c1cccc(OCO)n1                       
+                                *CO             *c1cccc(*)n1    
+
 
 ## Pass Arguments to MolsToGridImage
 
