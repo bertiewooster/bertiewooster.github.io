@@ -197,7 +197,7 @@ molecule_recap_tree("n1c(OCO)cccc1-OCO", "Parent molecule")
 
 
     
-![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
     
 
 
@@ -227,7 +227,7 @@ drawing
 
 
     
-![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
     
 
 
@@ -243,7 +243,7 @@ molecule
 
 
     
-![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
     
 
 
@@ -318,7 +318,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
     
 
 
@@ -336,7 +336,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![svg](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
+![svg](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
     
 
 
