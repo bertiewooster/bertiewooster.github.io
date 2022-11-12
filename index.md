@@ -2,6 +2,15 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [RDKit Utility to Visualize Retrosynthetic Analysis Hierarchically]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %})
+*Uses Python and RDKit*
+
+[<img style="width:733px; height:597px" src="/images/tree_marked_up.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+
+Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee) to decompose it into a set of fragments that could be combined to make the parent molecule using common reactions. Display the fragmentation hierarchically.
+
+ [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system) strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification) string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
+
 ## [Materials and Cheminformatics Sampler](https://sampler-flask.herokuapp.com/)
 *Uses Python, NumPy, SymPy, ChemPy, Flask, JavaScript, and Bootstrap*
 
