@@ -1,8 +1,8 @@
 # Find and Highlight the Maximum Common Substructure Between a Set of Molecules Using RDKit
 
-*[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules.ipynb)*
-
 When analyzing a set of molecules, you might want to find the maximum common substructure (MCS) match between them. This utility function `SmilesMCStoGridImage` does that for a set of molecules specified by [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system), displays the [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification) substructure as a molecule, and displays all the molecules in a grid with that substructure highlighted and aligned.
+
+*[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules.ipynb)*
 
 The key RDKit commands it uses are:
 - [`FindMCS`](https://www.rdkit.org/docs/source/rdkit.Chem.rdFMCS.html) to find the maximum common substructure (SMARTS string)
