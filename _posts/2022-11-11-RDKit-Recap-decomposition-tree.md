@@ -10,7 +10,7 @@ RDKit helpfully provides a RecapRecapRecapHierarchyyyical structure of nodes, wh
 
 This utility function `molecule_recap_tree` allows you to visualize both the fragments and their hierarchy. Here is an example, of 6-(Hydroxymethoxy)pyridin-2-yl]oxymethanol:
 
-![annotated_hierarchy_tree](../images/tree_marked_up.png)
+![annotated_hierarchy_tree](/images/tree_marked_up.png)
 
 As compared to the same molecule using the `RecapDecompose` function directly:
 
@@ -197,7 +197,7 @@ molecule_recap_tree("n1c(OCO)cccc1-OCO", "Parent molecule")
 
 
     
-![png](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
+![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
     
 
 
@@ -227,7 +227,7 @@ drawing
 
 
     
-![png](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
+![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
     
 
 
@@ -243,7 +243,7 @@ molecule
 
 
     
-![png](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
+![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
     
 
 
@@ -318,7 +318,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![png](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
+![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
     
 
 
@@ -336,7 +336,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![svg](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
+![svg](images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
     
 
 

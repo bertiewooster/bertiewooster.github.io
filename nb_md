@@ -7,3 +7,15 @@
 jupyter nbconvert _notebooks/2022-11-11-RDKit-Recap-decomposition-tree.ipynb --to markdown --output 2022-11-11-RDKit-Recap-decomposition-treenb_md.md
 
 # jupyter nbconvert notebooks/2022-03-18-test-notebook.ipynb --to markdown --output ../_posts/2022-03-18-test-notebook.md
+
+# Note: After running this script, to post a blog post:
+#  1) Move the markdown file into the _posts folder
+#  2) Move the _files folder (containing the images) into the images folder
+#  3) Fix the image links in the markdown file by converting e.g.
+#          ![png](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
+#      to
+#         ![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_24_0.png)
+#      by replacing
+#         ![png](
+#      with
+#         ![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/
