@@ -4,14 +4,13 @@
 
 [Retrosynthetic analysis](https://en.wikipedia.org/wiki/Retrosynthetic_analysis) involves decomposing a target molecule into a set of fragments that could be combined to make the parent molecule using common reactions. The [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee) by X. Lewell, D. Judd, S. Watson, and M. Hann accomplishes that. [Recap is implemented in the RDKit](https://www.rdkit.org/docs/GettingStartedInPython.html#recap-implementation) cheminformatics Python package.
 
-RDKit helpfully provides a RecapHierarchyNode structure of nodes, where the keys are SMILES strings corresponding to the fragment, and the values are nodes containing child fragments. However, it is not easy to visualize the results, because the results are SMILES strings and the hierarchy is not shown visually.
+RDKit helpfully provides a `RecapHierarchyNode` structure of nodes, where the keys are SMILES strings corresponding to the fragment, and the values are nodes containing child fragments. However, it is not easy to visualize the results, because the results are SMILES strings and the hierarchy is not shown visually.
 
 This utility function `molecule_recap_tree` allows you to visualize both the fragments and their hierarchy. Here is an example, of 6-(Hydroxymethoxy)pyridin-2-yl]oxymethanol, annotated to explain the hierarchy:
 
 ![annotated_hierarchy_tree](/images/tree_marked_up.png)
 
-As compared to the same molecule using the `RecapDecompose` function directly:
-
+As compared to the same molecule using the `RecapDecompose` function directly, showing only the immediate children:
 
 ```python
 from rdkit import Chem
@@ -202,13 +201,12 @@ molecule_recap_tree("n1c(OCO)cccc1-OCO", "Parent molecule")
 
 Stars ("dummy atoms") show points where the molecule was fragmented.
 
-The key RDKit commands it uses are:
+The key RDKit commands that `molecule_recap_tree` uses are:
 - [`RecapDecompose`](https://www.rdkit.org/docs/GettingStartedInPython.html#recap-implementation) to decompose the parent molecule into successive fragments
-- [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html) to draw the fragment hierarchy in a grid, and label the fragments with their SMILES strings
+- [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage) to draw the fragment hierarchy in a grid, and label the fragments with their SMILES strings
 
 ## Get Additional Data
-If you want `molecule_recap_tree` to return not just the grid image, but also the molecule, the RDKit Recap hiearchy node, the non-binary tree hierarchy, and grid of fragment hierarchy, set `verbose=True`:
-
+If you want `molecule_recap_tree` to return not just the grid image, but also the parent molecule, the RDKit Recap hiearchy node, the non-binary tree hierarchy, and grid of fragment hierarchy, set `verbose=True`:
 
 ```python
 drawing, molecule, RecapHierarchy, molecule_nonbinary_tree, fragment_grid = molecule_recap_tree("n1c(OCO)cccc1-OCO", "Parent molecule", verbose=True)
@@ -260,7 +258,7 @@ RecapHierarchy
 
 
 
-`molecule_nonbinary_tree` is the NonBinTree hierarchy object, which contains the same hierarchy as the `RecapHierarchy`, and gives all the nodes directly:
+`molecule_nonbinary_tree` is the NonBinTree hierarchy, which contains the same hierarchy as the `RecapHierarchy`, and gives all the nodes directly:
 
 
 ```python
@@ -323,7 +321,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 If you zoom into a fragment, you will notice that it is fuzzy due to the low resolution.
 
-To address this case, you can use `molecule_recap_tree`'s ability to pass any keyword arguments of [`Draw.MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html?highlight=molstogridimage#rdkit.Chem.Draw.MolsToGridImage) to that function. Specifically, you can pass the `useSVG=True` flag so that the molecular images do not lose resolution when you zoom into them. (`useSVG=True` is not the default in `molecule_recap_tree` because bonds are not nicely joined as they are in the non-SVG presentation.)
+To address this case, you can use `molecule_recap_tree`'s ability to pass any keyword arguments of [`Draw.MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html?highlight=molstogridimage#rdkit.Chem.Draw.MolsToGridImage) to that function. Specifically, you can pass the `useSVG=True` flag so that the molecular images do not lose resolution when you zoom into them. If you zoom into this image, you will notice that the fragments are easy to read because [Scalable Vector Graphics](https://en.wikipedia.org/wiki/Scalable_Vector_Graphics) is, as the name states, a vector format. (`useSVG=True` is not the default in `molecule_recap_tree` because bonds are not nicely joined as they are in the default PNG format.)
 
 
 ```python
