@@ -6,9 +6,9 @@
 
 Decomposing a molecule into a set of fragments that could be combined to make the parent molecule using common reactions is useful for [retrosynthetic analysis](https://en.wikipedia.org/wiki/Retrosynthetic_analysis). The [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee) by X. Lewell, D. Judd, S. Watson, and M. Hann accomplishes that. [Recap is implemented in the RDKit](https://www.rdkit.org/docs/GettingStartedInPython.html#recap-implementation) cheminformatics Python package.
 
-RDKit helpfully provides a RecapRecapRecapHierarchyyyical structure of nodes, where the keys are SMILES strings corresponding to the fragment, and the values are nodes containing child fragments. However, it is not easy to visualize the results, because the results are SMILES strings and the hierarchy is not shown visually.
+RDKit helpfully provides a RecapHierarchyNode structure of nodes, where the keys are SMILES strings corresponding to the fragment, and the values are nodes containing child fragments. However, it is not easy to visualize the results, because the results are SMILES strings and the hierarchy is not shown visually.
 
-This utility function `molecule_recap_tree` allows you to visualize both the fragments and their hierarchy. Here is an example, of 6-(Hydroxymethoxy)pyridin-2-yl]oxymethanol:
+This utility function `molecule_recap_tree` allows you to visualize both the fragments and their hierarchy. Here is an example, of 6-(Hydroxymethoxy)pyridin-2-yl]oxymethanol, annotated to explain the hierarchy:
 
 ![annotated_hierarchy_tree](/images/tree_marked_up.png)
 
@@ -197,7 +197,7 @@ molecule_recap_tree("n1c(OCO)cccc1-OCO", "Parent molecule")
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
     
 
 
@@ -227,7 +227,7 @@ drawing
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
     
 
 
@@ -243,7 +243,7 @@ molecule
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
     
 
 
@@ -318,7 +318,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
+![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
     
 
 
@@ -336,7 +336,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![svg](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
+![svg](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
     
 
 
