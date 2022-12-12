@@ -4,7 +4,9 @@
 
 # jupyter nbconvert _notebooks/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules.ipynb --to markdown --output 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules.md
 
-jupyter nbconvert _notebooks/2022-11-11-RDKit-Recap-decomposition-tree.ipynb --to markdown --output 2022-11-11-RDKit-Recap-decomposition-treenb_md.md
+# jupyter nbconvert _notebooks/2022-11-11-RDKit-Recap-decomposition-tree.ipynb --to markdown --output 2022-11-11-RDKit-Recap-decomposition-treenb_md.md
+
+jupyter nbconvert _notebooks/2022-12-12-DeepChem_lipophilicty_machine_learning.ipynb --to markdown --output 2022-12-12-DeepChem_lipophilicty_machine_learning.md
 
 # jupyter nbconvert notebooks/2022-03-18-test-notebook.ipynb --to markdown --output ../_posts/2022-03-18-test-notebook.md
 
