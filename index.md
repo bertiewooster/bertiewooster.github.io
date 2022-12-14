@@ -16,6 +16,13 @@ Use the DeepChem deep learning package to predict compounds' lipophilicity--how 
 
 Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee){:target='_blank'} to decompose it into a set of fragments that could be combined to make the parent molecule using common reactions. Display the fragmentation hierarchically.
 
+## [RDKit Utility to Find and Highlight the Maximum Common Substructure Amongst Molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+*Uses Python and RDKit*
+
+[<img style="width:600px; height:200px" src="/images/RDKit-MCS-example.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+
+Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system){:target='_blank'} strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification){:target='_blank'} string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
+
 ## [Materials and Cheminformatics Sampler](https://sampler-flask.herokuapp.com/)
 *Uses Python, NumPy, SymPy, ChemPy, Flask, JavaScript, and Bootstrap*
 
@@ -24,13 +31,6 @@ Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.o
 Find a given number of points which satisfy constraints given in a constraints file for an n-dimensional space defined on the unit hypercube, then write them to an output file.
 
 Optionally, identify the components (dimensions) in the constraints file using chemical formulas, and Sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
-
-## [RDKit Utility to Find and Highlight the Maximum Common Substructure Amongst Molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
-*Uses Python and RDKit*
-
-[<img style="width:600px; height:200px" src="/images/RDKit-MCS-example.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
-
-Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system){:target='_blank'} strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification){:target='_blank'} string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
 
 [<img style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
 ## [Periodic Table Navigator](https://ptablenav.herokuapp.com/)
