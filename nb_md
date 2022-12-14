@@ -18,4 +18,4 @@ jupyter nbconvert _notebooks/2022-12-13-Chemistry-machine-learning-for-drug-disc
 #      by replacing
 #         ![png](
 #      with
-#         ![png](images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/
+#         ![png](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/

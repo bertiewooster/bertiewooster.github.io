@@ -361,7 +361,7 @@ plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
 
 
     
-![png](images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_22_0.png)
+![png](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_22_0.png)
     
 
 
@@ -382,7 +382,7 @@ plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
 
 
     
-![png](images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_24_0.png)
+![png](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_24_0.png)
     
 
 
@@ -591,7 +591,7 @@ plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
 
 
     
-![png](images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_29_0.png)
+![png](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_29_0.png)
     
 
 
