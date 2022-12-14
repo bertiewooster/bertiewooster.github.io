@@ -2,6 +2,13 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [Chemistry machine learning for drug discovery with DeepChem]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
+*Uses Python, DeepChem, seaborn, Matplotlib, and pandas*
+
+[<img style="width:384px; height:262px" src="/images/lipophilicity-machine-learning-graph.png">]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
+
+Use the DeepChem deep learning package to predict compounds' lipophilicity--how well they are absorbed into the lipids of biological membranes, which is important for oral delivery of drugs.
+
 ## [RDKit Utility to Visualize Retrosynthetic Analysis Hierarchically]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %})
 *Uses Python and RDKit*
 
