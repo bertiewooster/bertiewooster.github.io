@@ -6,9 +6,7 @@
 
 # jupyter nbconvert _notebooks/2022-11-11-RDKit-Recap-decomposition-tree.ipynb --to markdown --output 2022-11-11-RDKit-Recap-decomposition-treenb_md.md
 
-jupyter nbconvert _notebooks/2022-12-12-DeepChem_lipophilicty_machine_learning.ipynb --to markdown --output 2022-12-12-DeepChem_lipophilicty_machine_learning.md
-
-# jupyter nbconvert notebooks/2022-03-18-test-notebook.ipynb --to markdown --output ../_posts/2022-03-18-test-notebook.md
+jupyter nbconvert _notebooks/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem.ipynb --to markdown --output 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
@@ -20,4 +18,4 @@ jupyter nbconvert _notebooks/2022-12-12-DeepChem_lipophilicty_machine_learning.i
 #      by replacing
 #         ![png](
 #      with
-#         ![png](images/2022-11-11-RDKit-Recap-decomposition-tree_files/
+#         ![png](images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/
