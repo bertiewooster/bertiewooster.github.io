@@ -4,6 +4,7 @@ This example uses machine learning to predict the lipophilicty of compounds.
 
 [Lipophilicty](https://en.wikipedia.org/wiki/Lipophilicity) measures how well a compound dissolves in non-polar media such as fats and lipids. So it's important for drugs that are delivered orally (for example, via a pill) because the active ingredient [needs to be absorbed into the lipids](https://emerypharma.com/blog/drug-lipophilicity-and-absorption-a-continuous-challenge-toward-the-goal-of-drug-discovery/) of biological membranes.
 
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1pWK3h6en6rwnGHIDgbz6M5Yo1eDxy9Rr?usp=sharing)*
 
 ```python
 %%capture
