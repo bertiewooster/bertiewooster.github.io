@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 558 883" height="558" width="883" version="1.1">
+ <defs>
+  <style type="text/css">text {font-size:20px; font-family:Arial, Sans-serif; word-spacing:0;letter-spacing:0;line-height:125%;} rect {stroke-linejoin:round;stroke-linecap:round;}</style>
+  <filter id="d" color-interpolation-filters="sRGB">
+   <feGaussianBlur stdDeviation="0.16839844"/>
+  </filter>
+  <filter id="c" y="-.1012" width="1.044" x="-.02189" height="1.202">
+   <feGaussianBlur stdDeviation="2.3059224"/>
+  </filter>
+ </defs>
+ <g transform="translate(-64.65, -468.5)">
+  <rect style="filter:url(#c);stroke:#000;stroke-width:4.694;stroke-opacity:.8;fill:none" transform="matrix(0.98, 0, 0, 0.98, 10.67, 10.24)" height="54.66" width="252.8" y="484.5" x="357.1"/>
+  <rect style="stroke:#000;stroke-width:1.5;fill:#ffca91" height="54.66" width="252.8" y="482.3" x="354.9"/>
+  <path style="stroke:#000;stroke-width:2;fill:none" d="m354.3 58.41-37.14 0.1659 0.1659 91.49" transform="translate(0, 452.4)"/>
+  <rect style="stroke:#000;stroke-width:1.734;fill:#91daff" height="64.66" width="223.3" y="603.1" x="203.5"/>
+  <switch style="font-size:38px"><text y="522.0321" x="412.06104" style="font-size:38px" id="trsvg42-bs" systemLanguage="bs"><tspan y="522.0321" x="412.06104" id="trsvg1-bs">Izomeri</tspan>
+   <tspan y="522.0421" x="412.05104" style="filter:url(#d)" id="trsvg2-bs">Izomeri</tspan>
+  </text><text y="522.0321" x="412.06104" style="font-size:38px" id="trsvg42"><tspan y="522.0321" x="412.06104" id="trsvg1">Isomers</tspan>
+   <tspan y="522.0421" x="412.05104" style="filter:url(#d)" id="trsvg2">Isomers</tspan>
+  </text></switch>
+  <switch><text y="629.35095" x="315.79971" id="trsvg43-bs" systemLanguage="bs"><tspan y="629.35095" x="315.79971" style="text-anchor:middle;text-align:center" id="trsvg3-bs">Konstitucijski</tspan>
+   <tspan y="656.85095" x="315.79971" style="text-anchor:middle;text-align:center" id="trsvg4-bs">(strukturni) izomeri</tspan>
+  </text><text y="629.35095" x="315.79971" id="trsvg43"><tspan y="629.35095" x="315.79971" style="text-anchor:middle;text-align:center" id="trsvg3">Constitutional</tspan>
+   <tspan y="656.85095" x="315.79971" style="text-anchor:middle;text-align:center" id="trsvg4">(structural) isomers</tspan>
+  </text></switch>
+  <path style="stroke:#000;stroke-width:2;fill:none" d="m607.7 508.5 37.14 0.1659-0.1659 91.49"/>
+  <rect style="stroke:#000;stroke-width:1.664;fill:#ff9191" height="64.66" width="205.7" y="600.8" x="540.9"/>
+  <switch><text y="625.11609" x="644.38348" id="trsvg44-bs" systemLanguage="bs"><tspan y="625.11609" x="644.38348" style="text-anchor:middle;text-align:center" id="trsvg5-bs">Stereoizomeri</tspan>
+   <tspan y="652.61609" x="644.38348" style="text-anchor:middle;text-align:center" id="trsvg6-bs">(prostorni izomeri)</tspan>
+  </text><text y="625.11609" x="644.38348" id="trsvg44"><tspan y="625.11609" x="644.38348" style="text-anchor:middle;text-align:center" id="trsvg5">Stereoisomers</tspan>
+   <tspan y="652.61609" x="644.38348" style="text-anchor:middle;text-align:center" id="trsvg6">(spatial isomers)</tspan>
+  </text></switch>
+  <g transform="translate(32.6, 2.857)">
+	 <path style="stroke:#000;stroke-width:1px;fill:none" d="m91.79 610.4v8.571"/>
+   <path style="stroke:#000;stroke-width:1px;fill:none" d="m111.8 610.4v8.571"/>
+   <path style="stroke:#000;stroke-width:1px;fill:none" d="m131.8 610.4v8.571"/>
+   <path style="stroke:#000;stroke-width:1px;fill:none" d="m91.79 578.4v8.571"/>
+   <path style="stroke:#000;stroke-width:1px;fill:none" d="m111.8 578.4v8.571"/>
+   <path style="stroke:#000;stroke-width:1px;fill:none" d="m131.8 578.4v8.571"/>
+   <switch style="font-size:18px"><text y="606.22363" x="63.199005" style="font-size:18px" id="trsvg45-bs" systemLanguage="bs">
+    <tspan y="606.22363" x="63.199005" id="trsvg7-bs">H-C-C-C-H</tspan>
+   </text><text y="606.22363" x="63.199005" style="font-size:18px" id="trsvg45">
+    <tspan y="606.22363" x="63.199005" id="trsvg7">H-C-C-C-H</tspan>
+   </text></switch>
+   <switch style="font-size:18px;word-spacing:1pt"><text y="575.63666" x="87.316917" style="font-size:18px;word-spacing:1pt" id="trsvg46-bs" systemLanguage="bs"><tspan y="575.63666" x="87.316917" id="trsvg8-bs">H</tspan><tspan style="fill:#ff0000" id="trsvg9-bs">F</tspan><tspan id="trsvg10-bs">H</tspan>
+   </text><text y="575.63666" x="87.316917" style="font-size:18px;word-spacing:1pt" id="trsvg46"><tspan y="575.63666" x="87.316917" id="trsvg8">H </tspan><tspan style="fill:#ff0000" id="trsvg9">F </tspan><tspan id="trsvg10"> H</tspan>
+   </text></switch>
+   <switch><text y="635.27985" x="85.342743" id="trsvg47-bs" systemLanguage="bs">
+    <tspan y="635.27985" x="85.342743" style="font-size:18px;word-spacing:1pt" id="trsvg11-bs">H H H</tspan>
+   </text><text y="635.27985" x="85.342743" id="trsvg47">
+    <tspan y="635.27985" x="85.342743" style="font-size:18px;word-spacing:1pt" id="trsvg11">H H H</tspan>
+   </text></switch>
+  </g>
+  <g transform="translate(34.03, 91.71)">
+    <switch style="font-size:18px"><text y="606.22363" x="63.199005" style="font-size:18px" id="trsvg48-bs" systemLanguage="bs"><tspan y="606.22363" x="63.199005" id="trsvg12-bs">H-C-C-C-</tspan><tspan style="fill:#ff0000" id="trsvg13-bs">F</tspan>
+    </text><text y="606.22363" x="63.199005" style="font-size:18px" id="trsvg48"><tspan y="606.22363" x="63.199005" id="trsvg12">H-C-C-C-</tspan><tspan style="fill:#ff0000" id="trsvg13">F</tspan>
+    </text></switch>
+    <switch><text y="575.63666" x="87.316917" id="trsvg49-bs" systemLanguage="bs">
+     <tspan y="575.63666" x="87.316917" style="font-size:18px;" id="trsvg14-bs">H H H</tspan>
+    </text><text y="575.63666" x="87.316917" id="trsvg49">
+     <tspan y="575.63666" x="87.316917" style="font-size:18px;" id="trsvg14">H H H</tspan>
+    </text></switch>
+    <switch><text y="635.27985" x="85.342743" id="trsvg50-bs" systemLanguage="bs">
+     <tspan y="635.27985" x="85.342743" style="font-size:18px;word-spacing:1pt" id="trsvg15-bs">H H H</tspan>
+    </text><text y="635.27985" x="85.342743" id="trsvg50">
+     <tspan y="635.27985" x="85.342743" style="font-size:18px;word-spacing:1pt" id="trsvg15">H H H</tspan>
+    </text></switch>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m91.79 610.4v8.571"/>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m111.8 610.4v8.571"/>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m131.8 610.4v8.571"/>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m91.79 578.4v8.571"/>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m111.8 578.4v8.571"/>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m131.8 578.4v8.571"/>
+  </g>
+  <path style="stroke:#000;stroke-width:2;fill:none" d="m644.5 665v51.43"/>
+  <rect style="stroke:#000;stroke-width:1.664;fill:#ff9191" height="30.37" width="158.6" y="705.4" x="563.6"/>
+  <switch><text y="728.2887" x="642.75922" id="trsvg51-bs" systemLanguage="bs">
+   <tspan y="728.2887" x="642.75922" style="text-anchor:middle;text-align:center" id="trsvg16-bs">Enantiomer</tspan>
+  </text><text y="728.2887" x="642.75922" id="trsvg51">
+   <tspan y="728.2887" x="642.75922" style="text-anchor:middle;text-align:center" id="trsvg16">Enantiomers</tspan>
+  </text></switch>
+  <path style="stroke:#000;stroke-width:2;fill:none" d="m540.3 632.8-57.86 0.1659 0.1659 72.21"/>
+  <rect style="stroke:#000;stroke-width:1.664;fill:#ffb1b1" height="30.37" width="158.6" y="705.4" x="383.6"/>
+  <switch><text y="728.2887" x="462.75922" id="trsvg52-bs" systemLanguage="bs">
+   <tspan y="728.2887" x="462.75922" style="text-anchor:middle;text-align:center" id="trsvg17-bs">Dijastereomeri</tspan>
+  </text><text y="728.2887" x="462.75922" id="trsvg52">
+   <tspan y="728.2887" x="462.75922" style="text-anchor:middle;text-align:center" id="trsvg17">Diastereomers</tspan>
+  </text></switch>
+  <path style="stroke:#000;stroke-width:2;fill:none" d="m482.5 735v130"/>
+  <path style="stroke:#000;stroke-width:2;fill:none" d="m422.5 735v51.43"/>
+  <rect style="stroke:#000;stroke-width:1.664;fill:#ffb1b1" height="30.37" width="158.6" y="865.4" x="463.6"/>
+  <switch><text y="888.2887" x="542.75922" id="trsvg53-bs" systemLanguage="bs">
+   <tspan y="888.2887" x="542.75922" style="text-anchor:middle;text-align:center" id="trsvg18-bs">Konformeri</tspan>
+  </text><text y="888.2887" x="542.75922" id="trsvg53">
+   <tspan y="888.2887" x="542.75922" style="text-anchor:middle;text-align:center" id="trsvg18">Conformers</tspan>
+  </text></switch>
+  <rect style="stroke:#000;stroke-width:1.724;fill:#ffb1b1" height="30.37" width="195.2" y="785.4" x="253.6"/>
+  <switch style="text-anchor:middle;text-align:center"><text y="808.2887" x="350.75922" style="text-anchor:middle;text-align:center" id="trsvg54-bs" systemLanguage="bs"><tspan style="font-style:italic;" id="trsvg19-bs">Geometrijski </tspan><tspan style="font-style:normal" id="trsvg20-bs">izomeri</tspan>
+    
+  </text><text y="808.2887" x="350.75922" style="text-anchor:middle;text-align:center" id="trsvg54"><tspan style="font-style:italic;" id="trsvg19">cis/trans </tspan><tspan style="font-style:normal" id="trsvg20"> isomers</tspan>
+    
+  </text></switch>
+  <path style="stroke:#000;stroke-width:2;fill:none" d="m542.5 897v51.43"/>
+  <rect style="stroke:#000;stroke-width:1.664;fill:#ffb1b1" height="30.37" width="158.6" y="945.4" x="463.6"/>
+  <switch><text y="968.2887" x="542.75922" id="trsvg55-bs" systemLanguage="bs">
+   <tspan y="968.2887" x="542.75922" style="text-anchor:middle;text-align:center" id="trsvg21-bs">Rotameri</tspan>
+  </text><text y="968.2887" x="542.75922" id="trsvg55">
+   <tspan y="968.2887" x="542.75922" style="text-anchor:middle;text-align:center" id="trsvg21">Rotamers</tspan>
+  </text></switch>
+  <g transform="translate(-48.57, 12.86)">
+   <g transform="matrix(0.8031, 0, 0, 0.8031, 131.9, 144.6)">
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m798 738.2 26.26-17.17"/>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m830.9 253 0.5051-28.03" transform="translate(0, 452.4)"/>
+    <switch><text y="721.53723" x="824.28448" id="trsvg56-bs" systemLanguage="bs">
+     <tspan y="721.53723" x="824.28448" style="font-size:18px" id="trsvg22-bs">C</tspan>
+    </text><text y="721.53723" x="824.28448" id="trsvg56">
+     <tspan y="721.53723" x="824.28448" style="font-size:18px" id="trsvg22">C</tspan>
+    </text></switch>
+    <switch style="font-size:16px"><text y="751.8418" x="780.8479" style="font-size:16px" id="trsvg57-bs" systemLanguage="bs">
+     <tspan y="751.8418" x="780.8479" id="trsvg23-bs">Br</tspan>
+    </text><text y="751.8418" x="780.8479" style="font-size:16px" id="trsvg57">
+     <tspan y="751.8418" x="780.8479" id="trsvg23">Br</tspan>
+    </text></switch>
+    <path d="m836.5 723.3 19.99 25.59 5.384-5.511z"/>
+    <switch style="font-size:16px"><text y="759.93781" x="858.66754" style="font-size:16px" id="trsvg58-bs" systemLanguage="bs">
+     <tspan y="759.93781" x="858.66754" id="trsvg24-bs">Cl</tspan>
+    </text><text y="759.93781" x="858.66754" style="font-size:16px" id="trsvg58">
+     <tspan y="759.93781" x="858.66754" id="trsvg24">Cl</tspan>
+    </text></switch>
+    <path d="m838.3 716.7 25.32 11.57 1.453-6.128z"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="445.9" x="1012"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="445.3" x="1014"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="444.7" x="1016"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="444.2" x="1018"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="445.4" x="1020"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="444.8" x="1022"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="7.535" width=".9217" y="444.2" x="1024"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="8.351" width=".8359" y="443.6" x="1026"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="9.137" width=".8208" y="443.1" x="1028"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="9.82" width=".8208" y="442.5" x="1029"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="11.86" width=".8208" y="441.9" x="1031"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="12.17" width=".8208" y="441.4" x="1033"/>
+    <switch><text y="732.8877" x="866.21753" id="trsvg59-bs" systemLanguage="bs">
+     <tspan y="732.8877" x="866.21753" style="font-size:18px" id="trsvg25-bs">F</tspan>
+    </text><text y="732.8877" x="866.21753" id="trsvg59">
+     <tspan y="732.8877" x="866.21753" style="font-size:18px" id="trsvg25">F</tspan>
+    </text></switch>
+    <switch><text y="675.82288" x="824.32355" id="trsvg60-bs" systemLanguage="bs">
+     <tspan y="675.82288" x="824.32355" style="font-size:18px" id="trsvg26-bs">H</tspan>
+    </text><text y="675.82288" x="824.32355" id="trsvg60">
+     <tspan y="675.82288" x="824.32355" style="font-size:18px" id="trsvg26">H</tspan>
+    </text></switch>
+   </g>
+   <g transform="matrix(-0.8031, 0, 0, 0.8031, 1563, 144.6)">
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m798 738.2 26.26-17.17"/>
+    <path style="stroke:#000;stroke-width:1px;fill:none" d="m830.9 253 0.5051-28.03" transform="translate(0, 452.4)"/>
+    <path d="m838.3 716.7 25.32 11.57 1.453-6.128z"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="445.9" x="1012"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="445.3" x="1014"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="444.7" x="1016"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="444.2" x="1018"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="445.4" x="1020"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="6.313" width=".8207" y="444.8" x="1022"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="7.535" width=".9217" y="444.2" x="1024"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="8.351" width=".8359" y="443.6" x="1026"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="9.137" width=".8208" y="443.1" x="1028"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="9.82" width=".8208" y="442.5" x="1029"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="11.86" width=".8208" y="441.9" x="1031"/>
+    <rect style="fill:#fff" transform="rotate(16.61)" height="12.17" width=".8208" y="441.4" x="1033"/>
+    <switch><text y="721.53723" x="-836.888" transform="scale(-1, 1)" id="trsvg61-bs" systemLanguage="bs">
+     <tspan y="721.53723" x="-836.888" style="font-size:18px" id="trsvg27-bs">C</tspan>
+    </text><text y="721.53723" x="-836.888" transform="scale(-1, 1)" id="trsvg61">
+     <tspan y="721.53723" x="-836.888" style="font-size:18px" id="trsvg27">C</tspan>
+    </text></switch>
+    <switch style="font-size:16px"><text y="751.8418" x="-799.96509" style="font-size:16px" transform="scale(-1, 1)" id="trsvg62-bs" systemLanguage="bs">
+     <tspan y="751.8418" x="-799.96509" id="trsvg28-bs">Br</tspan>
+    </text><text y="751.8418" x="-799.96509" style="font-size:16px" transform="scale(-1, 1)" id="trsvg62">
+     <tspan y="751.8418" x="-799.96509" id="trsvg28">Br</tspan>
+    </text></switch>
+    <path d="m836.5 723.3 19.99 25.59 5.384-5.511z"/>
+    <switch style="font-size:16px"><text y="759.93781" x="-873.69879" style="font-size:16px" transform="scale(-1, 1)" id="trsvg63-bs" systemLanguage="bs">
+     <tspan y="759.93781" x="-873.69879" id="trsvg29-bs">Cl</tspan>
+    </text><text y="759.93781" x="-873.69879" style="font-size:16px" transform="scale(-1, 1)" id="trsvg63">
+     <tspan y="759.93781" x="-873.69879" id="trsvg29">Cl</tspan>
+    </text></switch>
+    <switch><text y="732.8877" x="-877.29175" transform="scale(-1, 1)" id="trsvg64-bs" systemLanguage="bs">
+     <tspan y="732.8877" x="-877.29175" style="font-size:18px" id="trsvg30-bs">F</tspan>
+    </text><text y="732.8877" x="-877.29175" transform="scale(-1, 1)" id="trsvg64">
+     <tspan y="732.8877" x="-877.29175" style="font-size:18px" id="trsvg30">F</tspan>
+    </text></switch>
+    <switch><text y="675.82288" x="824.32355" id="trsvg65-bs" systemLanguage="bs">
+     <tspan y="675.82288" x="824.32355" style="font-size:18px" id="trsvg31-bs">K</tspan>
+    </text><text y="675.82288" x="824.32355" id="trsvg65">
+     <tspan y="675.82288" x="824.32355" style="font-size:18px" id="trsvg31">H</tspan>
+    </text></switch>
+   </g>
+   <path style="stroke:#808080;stroke-width:1.3;stroke-dasharray:15.59999943, 15.59999943;fill:#808080" d="m846.5 665v107.9"/>
+  </g>
+  <g transform="translate(-12.86, -7.143)">
+   <g transform="matrix(1.25, 0, 0, 1.25, 33.62, 1315)">
+    <g transform="matrix(0.1884, 0, 0, 0.1884, 504.7, -355.8)">
+     <path d="m203 23c5-12 24-15 33-4 1 2 2 4 4 7-3 0-5 1-7 1-1-3-3-7-6-8-6-2-13-1-17 4-4 4-4 10-4 16 1 4 2 9 5 12 5 4 14 5 19-1 2-2 3-5 4-7 2 0 4 1 6 1-1 6-5 12-11 14s-12 2-17 0-9-7-11-12c-2-8-2-16 2-23z"/>
+     <path d="m247 13h7c0 6-1 13 0 19h23v-19h6v46c-2 0-4 0-6-1v-21h-23c0 7-1 15 0 22h-7v-46z"/>
+     <path d="m296 40c5-2 12 0 14 5 2 4 0 8-4 10 6 1 8 9 5 14-4 6-12 7-17 2-3-1-4-4-4-7h4c1 3 3 6 6 6 6 1 10-6 7-10-2-3-6-3-9-3 0-1 1-2 1-3 2-1 6-1 7-4 1-4-2-8-6-7-3 0-5 3-5 6-2 0-3-1-5-1 1-3 3-7 6-8z"/>
+     <path d="m638.1 411.6c-0.2 3 0 5.8-0.3 8.9-4.2 0-8.2 1.2-12 3.3-2.1 1.2-4.2 2.8-6.1 4.5-1.6 1.6-3 3.5-4 5.6-1.2 1.5-1.9 3.1-2.3 4.8-1.9 5.6-1.9 11.7-0.3 17.1 0.5 1.5 1.4 2.9 1.9 4.5-2.6 1.4-4.9 2.8-7.5 4.3l0.7 1.4c2.6-1.4 5.1-3.1 7.7-4.5 3.1 4.9 7.8 8.9 13.2 11.1 3.1 1.1 6.4 1.9 9.7 1.6 0.9 0 1.6 0.3 2.6 0 1.4-0.2 3.1-0.2 4.5-0.7 6.6-1.9 12.2-6.1 15.7-12 2.6 1.4 5.2 3.1 8.1 4.5 0.2-0.5 0.4-1 0.6-1.2-2.5-1.7-5.1-3.1-7.7-4.5 0.2-0.7 0.4-1.2 0.7-1.9 1.6-3.3 2.4-7 2.4-10.8 0.2-1.7-0.1-3.1-0.3-4.7-0.5-2.6-1.4-5.2-2.6-7.6-0.2-0.4-0.7-0.7-0.7-1.4 0.3 0.3 0.3 0.5 0.5 0.8 2.6-1.7 5.4-3.1 8.2-5-0.2-0.2-0.4-0.7-0.7-1.2-2.8 1.4-5.4 3.1-8.2 4.5-0.3 0.2-0.3 0-0.5-0.2-2.1-3.3-4.9-6.2-8.2-8.3-4-2.6-8.8-4-13.7-4v-8.9h-1.4zm-1.7 10.5c0.5 0 1.1 0 1.7 0.1v24.7c-6.8 4-13.4 7.8-20.3 11.5-0.4 0.5-0.9 0.7-1.4 1-3.7-7.1-4-15.8-0.5-22.9 3.1-6.3 8.8-11.3 15.6-13.4 1.6-0.5 3.2-0.9 4.9-1zm3.1 0.1c8 0 15.8 4.2 20.3 10.8 2.3 3.5 3.7 7.3 4.2 11.5 0.5 5-0.3 10.4-2.8 14.9-0.3 0-0.5-0.3-0.7-0.3-6.9-4.2-13.9-8.2-21-12.2v-24.7zm-0.7 26.1c7.3 4.3 14.4 8.2 21.7 12.5-3.1 4.9-7.8 8.7-13.2 10.6-1.9 0.7-4 0.9-6.1 1.4h-4.5c-6.8-0.5-13.5-4.3-17.7-9.7-0.7-0.7-1.2-1.6-1.9-2.3 7.3-4.3 14.4-8.2 21.7-12.5z" transform="matrix(4.246, 0, 0, 4.246, -2493, -1676)"/>
+     <path d="m370 114c8-7 21-9 29-2 3 2 4 6 5 9-2 0-4 1-6 1-1-4-4-8-8-9-5 0-10 0-14 3-4 4-4 9-5 14 0 5 1 11 4 15 5 5 14 6 19 1 3-2 4-5 5-8 2 0 4 1 6 1-1 8-7 14-14 15s-14 1-19-4c-4-4-6-9-7-15-1-7 0-15 5-21z"/>
+     <path d="m37 109c2-1 4-1 6 0v18h24v-19h6v46c-2 1-4 0-6 0v-21h-24c0 7 1 14 0 21-2 0-5 1-6-1v-44z"/>
+     <path d="m442 108c2 0 4 1 6 1v45h-6v-21h-23c0 7 0 14-1 21h-6v-45c2-1 4-1 7-1v19h23v-19z"/>
+     <path d="m455 143c1-4 5-9 10-8 5-1 11 3 11 8 0 3-2 6-5 7 7 2 8 12 3 16-6 6-19 3-19-6 1-1 3-1 4-1 1 3 3 6 6 7 5 1 9-5 8-9s-6-5-10-5 1-2 1-3c3 0 6-1 7-4s-1-7-5-7c-3 0-6 3-6 6-2 0-3 0-5-1z"/>
+     <path d="m89 153c1-3 2-4 3-6 9 4 17 10 26 14 1 1 3 2 3 4s-1 3-2 5c-10-6-20-12-30-17z"/>
+     <path d="m37 300c1-2 4-1 6-1 1 6 0 12 0 19h24v-19h6v46h-6v-22h-24v21c-2 1-4 1-6 0v-44z"/>
+     <path d="m367 299h6v19h24v-19h6v46h-6v-22h-24v22c-2 0-4 0-6-1v-45z"/>
+     <path d="m217 338c2 0 4-1 6 1v42h-6v-43z"/>
+     <path d="m202 394h6v19h24v-19h6v46h-6v-22h-24v22h-6v-46z"/>
+    </g>
+    <g transform="matrix(0.1864, 0, 0, 0.1864, 611.8, -442.5)">
+     <path d="m204 488c5-10 21-13 30-6 3 3 4 6 6 10-2 0-4 1-7 1-1-4-3-7-7-8-5-2-11-1-15 3-6 7-6 18-2 26 4 7 14 8 20 3 3-2 4-5 6-8 2 0 4 1 6 2-2 4-4 9-9 11-5 4-13 4-20 2-6-3-10-9-11-16-2-6-1-14 3-20z"/>
+     <path d="m248 479h6v19h23v-19h6c1 15 0 30 1 46h-7v-22h-23v22h-6v-46z"/>
+     <path d="m291 514c0-5 5-10 11-9 6 0 11 6 9 12-1 2-3 3-5 4 6 1 8 8 6 13-3 6-12 8-17 4-3-1-4-4-5-7 2-1 3-1 4-1 1 2 3 6 6 6 5 2 10-4 8-9-1-4-6-4-9-4v-3c3 0 8-2 8-6 0-3-3-5-6-5s-5 3-6 6c-1 0-3-1-4-1z"/>
+     <path d="m771.7 411.6c-0.5 0.2-0.3 0.7-0.3 0.9v7.9c-0.9 0-1.6 0.1-2.6 0.3-7.9 0.9-15.1 5.6-19.3 12.3 0 0.7-0.4 1.2-0.9 1.7-1.9 3.7-3 7.9-3 12.3s1.1 8.9 3.2 12.6c-2.6 1.6-5.1 3-7.7 4.4 0.3 0.5 0.5 0.9 1 1.4 2.5-1.4 4.9-3 7.4-4.4 4.7 7.4 13.1 12.6 21.9 12.8v9.8h1.7v-9.8c1.6-0.2 3.5-0.2 5.1-0.7 7-1.6 13-6.1 16.8-12.1 2.5 1.4 5.1 3 7.7 4.4 0.2-0.5 0.4-0.9 0.6-1.2-2.5-1.6-5.1-3-7.6-4.4 1.6-3.2 2.8-6.5 3-10 0-0.9 0-1.9 0.2-2.8-0.2-0.9 0-1.8-0.2-2.8-0.2-3.2-1.2-6.3-2.6-9.1-0.2-0.2-0.4-0.5-0.4-0.7 2.3-1.4 4.9-2.8 7-4.2-0.3-0.4-0.5-0.9-0.8-1.1-2.1 1.1-4.2 2.3-6.5 3.7-0.2 0-0.4 0.2-0.7 0-4.4-7.5-13-12.4-21.6-12.4-0.3-3 0-5.8 0-8.8h-1.4zm-0.3 10.5v24.4c-4.2 2.6-8.4 4.9-12.6 7.5-3 1.6-5.8 3.2-8.8 4.9-0.9-2.1-1.9-4.4-2.3-6.8-0.7-3-0.7-6-0.3-9.1 1.2-7.4 6.1-14.2 12.6-17.9 3.5-1.9 7.4-3 11.4-3zm1.7 0c6.3 0 12.8 2.8 17.2 7.4 4.4 4.5 7 10.7 7 17 0 4.2-1 8.6-3.1 12.4-6.9-4-14.1-8.2-21.1-12.4 0-8.1-0.3-16.3 0-24.4zm-1 25.8c7.2 4 14.2 8.2 21.5 12.4-4.2 7-11.9 11.6-20.1 11.9-0.7 0.2-1.6 0-2.3 0-7.5-0.3-14.7-4.2-19.1-10.3-0.5-0.5-1-0.9-1.2-1.8 7.2-4 14.2-8.2 21.2-12.2z" transform="matrix(4.292, 0, 0, 4.292, -3094, -1228)"/>
+     <path d="m37 574h6c1 7 0 13 1 19h23v-19c2 0 4 0 6 1v45h-6c-1-7 0-14 0-21h-23c-1 7 0 14-1 21h-6v-46z"/>
+     <path d="m368 574h6c0 6-1 13 0 19 8 1 15 0 23 0v-19h6v46h-6v-21h-23v21h-6c-1-15 0-30 0-46z"/>
+     <path d="m92 613c11 5 20 12 30 17 0 2-2 4-3 6l-30-18c1-2 2-3 3-5z"/>
+     <path d="m37 765h7c-1 6 0 12 0 19h23v-19h6v45c-2 1-4 1-6 1v-22h-23v22h-7v-46z"/>
+     <path d="m368 765h6v19h23v-19c2-1 4 0 6 0v46h-6v-22h-23v21c-2 1-4 1-6 1 0-16-1-31 0-46z"/>
+     <path d="m205 867c5-6 14-9 22-7 6 2 11 7 12 13-1 0-3 1-5 1-2-3-3-6-6-8-7-3-15-1-19 5-2 5-3 11-2 16 0 3 1 7 3 10 5 5 15 6 20 1 2-3 3-5 4-8 2 0 4 1 7 2-2 6-7 12-14 14-7 1-14 1-19-4-5-4-7-10-8-16 0-7 1-14 5-19z"/>
+     <path d="m248 860h6v19h23v-19h6c1 16 1 31 0 46h-6v-21c-7-1-15 0-23-1v22h-6v-46z"/>
+     <path d="m291 896c0-9 11-12 17-7 3 2 4 8 1 11-1 1-3 1-3 2 6 1 8 9 5 14-3 6-12 7-17 2-2-1-3-4-4-7h5c0 3 2 6 5 6 5 2 10-4 8-9-2-4-6-4-9-4v-3c2-1 5-1 7-3 2-4-1-9-5-8-3 0-5 3-6 6h-4z"/>
+    </g>
+   </g>
+  </g>
+  <g transform="translate(81.43, -4.286)">
+   <g transform="matrix(1.504, 0, 0, 1.504, 202.8, 834)">
+    <path style="stroke:#000;stroke-width:.8;stroke-miterlimit:10;fill:none" d="m37 34.4h15.6"/>
+    <path style="stroke:#000;stroke-width:.8;stroke-miterlimit:10;fill:none" d="m37 36.8h15.6"/>
+    <path style="stroke:#000;stroke-width:.8;stroke-miterlimit:10;fill:none" d="m29.1 30-6.9-11.9"/>
+    <path style="fill-rule:evenodd" d="m74.9 13.7 1.1 0.3c-0.2 1-0.7 1.7-1.3 2.2s-1.4 0.8-2.3 0.8c-1 0-1.8-0.2-2.4-0.6s-1-1-1.3-1.7-0.5-1.5-0.5-2.4 0.2-1.7 0.5-2.4c0.4-0.7 0.9-1.2 1.5-1.5 0.7-0.4 1.4-0.6 2.2-0.6 0.9 0 1.6 0.3 2.2 0.7 0.6 0.5 1 1.1 1.3 1.9l-1.2 0.3c-0.2-0.7-0.5-1.1-0.9-1.4s-0.8-0.5-1.4-0.5c-0.7 0-1.3 0.2-1.7 0.5-0.5 0.4-0.8 0.8-1 1.3-0.2 0.6-0.3 1.2-0.3 1.7 0 0.8 0.1 1.4 0.3 2 0.3 0.6 0.6 1 1.1 1.3 0.4 0.2 0.9 0.4 1.5 0.4s1.2-0.2 1.6-0.6c0.5-0.4 0.8-0.9 1-1.7zm2.7 3.1v-8.8h1.2v3.6h4.5v-3.6h1.2v8.8h-1.2v-4.1h-4.5v4.1h-1.2z"/>
+    <path style="fill-rule:evenodd" d="m85.3 19.8 0.7-0.1c0.1 0.4 0.3 0.7 0.5 0.9 0.2 0.1 0.4 0.2 0.7 0.2s0.6-0.1 0.9-0.3c0.2-0.3 0.3-0.6 0.3-0.9s-0.1-0.6-0.3-0.8c-0.2-0.3-0.5-0.4-0.8-0.4-0.2 0-0.3 0.1-0.6 0.1l0.1-0.6h0.1c0.4 0 0.6-0.1 0.9-0.3 0.2-0.1 0.4-0.4 0.4-0.7s-0.1-0.5-0.3-0.7c-0.2-0.1-0.4-0.2-0.7-0.2s-0.5 0.1-0.7 0.2c-0.2 0.2-0.3 0.5-0.4 0.8l-0.7-0.1c0.1-0.5 0.3-0.9 0.6-1.1 0.3-0.3 0.7-0.4 1.2-0.4 0.3 0 0.6 0 0.9 0.2 0.2 0.1 0.4 0.3 0.6 0.5 0.1 0.3 0.2 0.5 0.2 0.8s-0.1 0.5-0.2 0.7-0.3 0.4-0.6 0.5c0.3 0.1 0.6 0.3 0.8 0.5 0.2 0.3 0.3 0.6 0.3 1 0 0.5-0.2 0.9-0.6 1.3-0.3 0.4-0.8 0.5-1.4 0.5-0.5 0-1-0.1-1.3-0.4s-0.5-0.7-0.6-1.2z"/>
+    <path style="fill-rule:evenodd" d="m15.6 16.4v-8.8h1.2v3.6h4.6v-3.6h1.1v8.8h-1.1v-4.1h-4.6v4.1h-1.2z"/>
+    <path style="fill-rule:evenodd" d="m34.3 36.8 1.2 0.3c-0.2 1-0.7 1.7-1.3 2.2-0.7 0.5-1.4 0.8-2.4 0.8-0.9 0-1.7-0.2-2.3-0.6s-1-0.9-1.3-1.7c-0.4-0.7-0.5-1.5-0.5-2.3 0-1 0.2-1.8 0.5-2.5 0.4-0.6 0.9-1.2 1.5-1.5 0.7-0.4 1.4-0.5 2.2-0.5s1.6 0.2 2.2 0.6c0.6 0.5 1 1.1 1.2 1.9l-1.1 0.3c-0.2-0.6-0.5-1.1-0.9-1.4s-0.9-0.4-1.5-0.4-1.2 0.1-1.7 0.4c-0.4 0.4-0.7 0.8-0.9 1.4-0.2 0.5-0.3 1.1-0.3 1.6 0 0.8 0.1 1.5 0.3 2 0.2 0.6 0.6 1 1 1.3 0.5 0.2 1 0.4 1.5 0.4 0.7 0 1.3-0.2 1.7-0.6 0.5-0.4 0.8-0.9 0.9-1.7z"/>
+    <path style="fill-rule:evenodd" d="m60.7 36.8 1.2 0.3c-0.3 1-0.7 1.7-1.3 2.2-0.7 0.5-1.5 0.8-2.4 0.8s-1.7-0.2-2.3-0.6-1-0.9-1.4-1.7c-0.3-0.7-0.4-1.5-0.4-2.3 0-1 0.2-1.8 0.5-2.5 0.4-0.6 0.9-1.2 1.5-1.5 0.7-0.4 1.4-0.5 2.1-0.5 0.9 0 1.7 0.2 2.3 0.6 0.6 0.5 1 1.1 1.2 1.9l-1.1 0.3c-0.2-0.6-0.5-1.1-0.9-1.4s-0.9-0.4-1.5-0.4c-0.7 0-1.2 0.1-1.7 0.4-0.4 0.4-0.8 0.8-0.9 1.4-0.2 0.5-0.3 1.1-0.3 1.6 0 0.8 0.1 1.5 0.3 2 0.2 0.6 0.6 1 1 1.3 0.5 0.2 1 0.4 1.5 0.4 0.7 0 1.2-0.2 1.7-0.6 0.4-0.4 0.8-0.9 0.9-1.7z"/>
+    <path style="stroke:#000;stroke-width:.8;stroke-miterlimit:10;fill:none" d="m21.5 53.2 6.9-11.9"/>
+    <path style="fill-rule:evenodd" d="m67.4 63.8v-8.9h1.1v3.6h4.6v-3.6h1.2v8.9h-1.2v-4.2h-4.6v4.2h-1.1z"/>
+    <path style="stroke:#000;stroke-width:.8;stroke-miterlimit:10;fill:none" d="m68.1 53.2-6.9-11.9"/>
+    <path style="stroke:#000;stroke-width:.8;stroke-miterlimit:10;fill:none" d="m61.1 30 6.9-11.9"/>
+    <switch style="font-size:4.8px;fill:#0000ff"><text y="29.799999" x="30.700001" style="font-size:4.8px;fill:#0000ff" id="trsvg66-bs" systemLanguage="bs">
+     <tspan y="29.799999" x="30.700001" id="trsvg32-bs">2</tspan>
+    </text><text y="29.799999" x="30.700001" style="font-size:4.8px;fill:#0000ff" id="trsvg66">
+     <tspan y="29.799999" x="30.700001" id="trsvg32">2</tspan>
+    </text></switch>
+    <switch style="font-size:4.8px;fill:#0000ff"><text y="29.700001" x="56.700001" style="font-size:4.8px;fill:#0000ff" id="trsvg67-bs" systemLanguage="bs">
+     <tspan y="29.700001" x="56.700001" id="trsvg33-bs">3</tspan>
+    </text><text y="29.700001" x="56.700001" style="font-size:4.8px;fill:#0000ff" id="trsvg67">
+     <tspan y="29.700001" x="56.700001" id="trsvg33">3</tspan>
+    </text></switch>
+    <switch style="font-size:4.8px;fill:#0000ff"><text y="6.5" x="70.900002" style="font-size:4.8px;fill:#0000ff" id="trsvg68-bs" systemLanguage="bs">
+     <tspan y="6.5" x="70.900002" id="trsvg34-bs">4</tspan>
+    </text><text y="6.5" x="70.900002" style="font-size:4.8px;fill:#0000ff" id="trsvg68">
+     <tspan y="6.5" x="70.900002" id="trsvg34">4</tspan>
+    </text></switch>
+    <path style="fill-rule:evenodd" d="m2.8 63.4v-8.9h1.2v3.7h4.6v-3.7h1.1v8.9h-1.1v-4.2h-4.6v4.2h-1.2z"/>
+    <path style="fill-rule:evenodd" d="m10.9 66.3 0.7-0.1c0.1 0.4 0.3 0.7 0.5 0.9s0.4 0.3 0.7 0.3 0.6-0.2 0.9-0.4c0.2-0.2 0.3-0.5 0.3-0.9 0-0.3-0.1-0.6-0.3-0.8s-0.5-0.3-0.8-0.3c-0.2 0-0.4 0-0.6 0.1l0.1-0.7h0.1c0.3 0 0.6-0.1 0.9-0.2 0.2-0.2 0.3-0.4 0.3-0.8 0-0.2 0-0.5-0.2-0.6-0.2-0.2-0.4-0.3-0.7-0.3s-0.5 0.1-0.7 0.3c-0.2 0.1-0.3 0.4-0.4 0.8l-0.7-0.2c0.1-0.4 0.3-0.8 0.6-1.1s0.7-0.4 1.2-0.4c0.3 0 0.6 0.1 0.9 0.2 0.2 0.2 0.4 0.3 0.6 0.6 0.1 0.2 0.2 0.5 0.2 0.7 0 0.3-0.1 0.5-0.2 0.7-0.1 0.3-0.4 0.4-0.6 0.5 0.3 0.1 0.6 0.3 0.8 0.6 0.2 0.2 0.3 0.5 0.3 0.9 0 0.5-0.2 1-0.6 1.3-0.4 0.4-0.8 0.6-1.4 0.6-0.5 0-1-0.2-1.3-0.5-0.4-0.3-0.6-0.7-0.6-1.2z"/>
+    <path style="fill-rule:evenodd" d="m21.1 60.3 1.1 0.3c-0.2 0.9-0.6 1.6-1.3 2.2-0.6 0.5-1.4 0.7-2.3 0.7-1 0-1.7-0.2-2.3-0.6s-1.1-0.9-1.4-1.7c-0.3-0.7-0.5-1.5-0.5-2.3 0-0.9 0.2-1.7 0.6-2.4 0.3-0.7 0.8-1.2 1.5-1.6 0.6-0.3 1.3-0.5 2.1-0.5 0.9 0 1.6 0.2 2.2 0.7 0.6 0.4 1.1 1 1.3 1.8l-1.2 0.3c-0.2-0.6-0.5-1.1-0.8-1.4-0.4-0.3-0.9-0.4-1.5-0.4-0.7 0-1.3 0.1-1.7 0.5-0.5 0.3-0.8 0.7-1 1.3-0.2 0.5-0.3 1.1-0.3 1.7 0 0.7 0.2 1.4 0.4 1.9 0.2 0.6 0.5 1 1 1.3s1 0.4 1.5 0.4c0.6 0 1.2-0.2 1.7-0.6 0.4-0.3 0.7-0.9 0.9-1.6z"/>
+    <switch style="font-size:4.8px;fill:#0000ff"><text y="53" x="17.200001" style="font-size:4.8px;fill:#0000ff" id="trsvg69-bs" systemLanguage="bs">
+     <tspan y="53" x="17.200001" id="trsvg35-bs">1</tspan>
+    </text><text y="53" x="17.200001" style="font-size:4.8px;fill:#0000ff" id="trsvg69">
+     <tspan y="53" x="17.200001" id="trsvg35">1</tspan>
+    </text></switch>
+   </g>
+   <switch><text y="945.42822" x="97.076164" id="trsvg70-bs" systemLanguage="bs">
+    <tspan y="945.42822" x="97.076164" style="font-size:10px" id="trsvg36-bs">cis-2-buten</tspan>
+   </text><text y="945.42822" x="97.076164" id="trsvg70">
+    <tspan y="945.42822" x="97.076164" style="font-size:10px" id="trsvg36">cis-2-butene</tspan>
+   </text></switch>
+   <path style="stroke:#000;stroke-width:1.251;stroke-miterlimit:10;fill:none" d="m114.2 889.3h24.39"/>
+   <path style="stroke:#000;stroke-width:1.251;stroke-miterlimit:10;fill:none" d="m114.2 892.9h24.39"/>
+   <path style="stroke:#000;stroke-width:1.251;stroke-miterlimit:10;fill:none" d="m101.9 882.4-10.8-18.6"/>
+   <path style="fill-rule:evenodd" d="m173.3 856.9 1.876 0.469c-0.3127 1.563-1.094 2.658-2.032 3.439-0.938 0.7817-2.189 1.094-3.596 1.094-1.563 0-2.814-0.3127-3.752-0.7817-0.938-0.6254-1.563-1.563-2.032-2.658-0.469-1.251-0.7817-2.345-0.7817-3.752s0.3127-2.658 0.7817-3.752c0.6254-1.094 1.407-1.876 2.345-2.501 1.094-0.469 2.189-0.7817 3.439-0.7817 1.407 0 2.501 0.3127 3.439 1.094 0.938 0.6254 1.563 1.72 2.032 2.97l-1.876 0.469c-0.3127-1.094-0.7817-1.876-1.407-2.189-0.6254-0.469-1.407-0.7817-2.345-0.7817s-1.876 0.3127-2.658 0.7817c-0.6254 0.469-1.094 1.251-1.407 2.032-0.3127 0.938-0.469 1.72-0.469 2.658 0 1.251 0.1563 2.189 0.469 3.127 0.469 0.7817 0.938 1.407 1.72 1.876 0.6254 0.469 1.407 0.6254 2.345 0.6254s1.876-0.1563 2.501-0.7817c0.7817-0.6254 1.251-1.563 1.407-2.658zm4.377 4.846v-13.76h1.72v5.628h7.192v-5.628h1.876v13.76h-1.876v-6.566h-7.192v6.566h-1.72z"/>
+   <path style="fill-rule:evenodd" d="m189.7 866.3 1.094-0.1563c0.1563 0.6254 0.469 1.094 0.7817 1.407 0.3127 0.3127 0.6254 0.469 1.094 0.469 0.469 0 0.938-0.1563 1.407-0.6254 0.3127-0.3127 0.469-0.7817 0.469-1.251 0-0.6254-0.1563-1.094-0.469-1.407-0.3127-0.3127-0.7817-0.469-1.407-0.469-0.1563 0-0.469 0-0.7817 0.1563l0.1563-1.094 0.1563 0.1563c0.469 0 0.938-0.1563 1.407-0.469 0.3127-0.1563 0.469-0.6254 0.469-1.094 0-0.469 0-0.7817-0.3127-1.094-0.3127-0.3127-0.6254-0.469-1.094-0.469-0.469 0-0.7817 0.1563-1.094 0.469-0.3127 0.3127-0.469 0.6254-0.6254 1.251l-1.094-0.1563c0.1563-0.7817 0.469-1.407 0.938-1.876 0.469-0.3127 1.094-0.6254 1.876-0.6254 0.469 0 0.938 0.1563 1.251 0.3127 0.469 0.3127 0.7817 0.6254 1.094 0.938 0.1563 0.469 0.3127 0.7817 0.3127 1.251 0 0.3127-0.1563 0.7817-0.3127 1.094-0.3127 0.3127-0.6254 0.6254-0.938 0.7817 0.469 0.1563 0.938 0.3127 1.251 0.7817 0.3127 0.3127 0.469 0.938 0.469 1.407 0 0.938-0.3127 1.563-0.938 2.189-0.6254 0.469-1.251 0.7817-2.189 0.7817-0.7817 0-1.563-0.3127-2.032-0.7817-0.6254-0.469-0.938-1.094-0.938-1.876z"/>
+   <path style="fill-rule:evenodd" d="m62.96 860.5v-13.76h1.72v5.628h7.192v-5.628h1.876v13.76h-1.876v-6.41h-7.192v6.41h-1.72z"/>
+   <path style="fill-rule:evenodd" d="m75.62 865.2 1.094-0.1563c0.1563 0.6254 0.3127 1.094 0.6254 1.407 0.3127 0.3127 0.7817 0.3127 1.251 0.3127 0.469 0 0.938-0.1563 1.251-0.469 0.469-0.3127 0.6254-0.7817 0.6254-1.407 0-0.469-0.1563-0.938-0.469-1.251-0.469-0.3127-0.7817-0.469-1.407-0.469h-0.7817l0.1563-0.938h0.1563c0.469 0 0.938-0.1563 1.251-0.3127 0.469-0.3127 0.6254-0.6254 0.6254-1.251 0-0.469-0.1563-0.7817-0.469-1.094-0.1563-0.1563-0.6254-0.3127-1.094-0.3127-0.3127 0-0.7817 0.1563-1.094 0.469-0.3127 0.1563-0.469 0.6254-0.469 1.251l-1.251-0.3127c0.1563-0.7817 0.469-1.251 0.938-1.72 0.6254-0.469 1.251-0.6254 1.876-0.6254 0.469 0 0.938 0.1563 1.407 0.3127 0.469 0.1563 0.7817 0.469 0.938 0.938 0.3127 0.3127 0.469 0.7817 0.469 1.094 0 0.469-0.1563 0.7817-0.3127 1.094-0.3127 0.3127-0.6254 0.6254-1.094 0.7817 0.6254 0.1563 1.094 0.469 1.407 0.7817 0.3127 0.469 0.469 0.938 0.469 1.563 0 0.7817-0.3127 1.563-0.938 2.032-0.6254 0.6254-1.407 0.938-2.189 0.938-0.938 0-1.563-0.3127-2.032-0.7817-0.6254-0.469-0.938-1.094-0.938-1.876z"/>
+   <path style="fill-rule:evenodd" d="m91.41 855.7 1.876 0.469c-0.3127 1.563-1.094 2.658-2.032 3.439-0.938 0.7817-2.189 1.251-3.596 1.251-1.563 0-2.814-0.3127-3.752-0.938-0.938-0.6254-1.563-1.407-2.032-2.658-0.469-1.094-0.7817-2.345-0.7817-3.596 0-1.563 0.3127-2.814 0.7817-3.752 0.6254-1.094 1.407-2.032 2.345-2.501 1.094-0.6254 2.189-0.7817 3.439-0.7817 1.407 0 2.501 0.3127 3.439 0.938 0.938 0.7817 1.563 1.72 2.032 2.97l-1.876 0.469c-0.3127-0.938-0.7817-1.72-1.407-2.189-0.6254-0.469-1.407-0.6254-2.345-0.6254s-1.876 0.1563-2.658 0.6254c-0.6254 0.6254-1.094 1.251-1.407 2.189-0.3127 0.7817-0.469 1.72-0.469 2.658 0 1.094 0.1563 2.189 0.469 2.97 0.469 0.938 0.938 1.563 1.72 2.032 0.6254 0.469 1.407 0.6254 2.345 0.6254s1.876-0.3127 2.501-0.938c0.7817-0.6254 1.251-1.407 1.407-2.658z"/>
+   <path style="fill-rule:evenodd" d="m80.15 935.1v-13.76h1.876v5.628h7.192v-5.628h1.72v13.76h-1.72v-6.41h-7.192v6.41h-1.876z"/>
+   <path style="fill-rule:evenodd" d="m110 893 1.876 0.469c-0.469 1.563-1.094 2.658-2.032 3.439-1.094 0.7817-2.345 1.251-3.752 1.251s-2.658-0.3127-3.596-0.938c-0.938-0.6254-1.563-1.563-2.189-2.658-0.469-1.094-0.6254-2.345-0.6254-3.752s0.3127-2.658 0.7817-3.752c0.6254-1.094 1.407-1.876 2.345-2.345 1.094-0.6254 2.189-0.938 3.283-0.938 1.407 0 2.658 0.469 3.596 1.094 0.938 0.7817 1.563 1.72 1.876 2.97l-1.72 0.469c-0.3127-1.094-0.7817-1.72-1.407-2.189-0.6254-0.469-1.407-0.7817-2.345-0.7817-1.094 0-1.876 0.3127-2.658 0.7817-0.6254 0.469-1.251 1.251-1.407 2.032-0.3127 0.938-0.469 1.72-0.469 2.658 0 1.251 0.1563 2.189 0.469 3.127 0.3127 0.7817 0.938 1.563 1.563 1.876 0.7817 0.469 1.563 0.7817 2.345 0.7817 1.094 0 1.876-0.3127 2.658-0.938 0.6254-0.6254 1.251-1.407 1.407-2.658z"/>
+   <path style="fill-rule:evenodd" d="m151.3 893 1.876 0.469c-0.469 1.563-1.094 2.658-2.189 3.439-0.938 0.7817-2.189 1.251-3.596 1.251s-2.658-0.3127-3.596-0.938c-0.938-0.6254-1.72-1.563-2.189-2.658-0.469-1.094-0.6254-2.345-0.6254-3.752s0.1563-2.658 0.7817-3.752c0.469-1.094 1.251-1.876 2.345-2.345 0.938-0.6254 2.189-0.938 3.283-0.938 1.407 0 2.658 0.469 3.596 1.094 0.938 0.7817 1.563 1.72 1.876 2.97l-1.72 0.469c-0.3127-1.094-0.7817-1.72-1.407-2.189-0.6254-0.469-1.407-0.7817-2.345-0.7817-1.094 0-1.876 0.3127-2.658 0.7817-0.6254 0.469-1.251 1.251-1.563 2.032-0.1563 0.938-0.3127 1.72-0.3127 2.658 0 1.251 0.1563 2.189 0.469 3.127 0.3127 0.7817 0.938 1.563 1.563 1.876 0.7817 0.469 1.563 0.7817 2.345 0.7817 1.094 0 1.876-0.3127 2.658-0.938 0.6254-0.6254 1.094-1.407 1.407-2.658z"/>
+   <path style="stroke:#000;stroke-width:1.251;stroke-miterlimit:10;fill:none" d="m90 918.7 10.8-18.6"/>
+   <path style="fill-rule:evenodd" d="m161.8 935.1v-13.76h1.72v5.628h7.192v-5.628h1.876v13.76h-1.876v-6.41h-7.192v6.41h-1.72z"/>
+   <path style="stroke:#000;stroke-width:1.251;stroke-miterlimit:10;fill:none" d="m162.9 918.7-10.8-18.6"/>
+   <path style="stroke:#000;stroke-width:1.251;stroke-miterlimit:10;fill:none" d="m151.9 882.4 10.79-18.6"/>
+   <switch style="font-size:7.5px;fill:#0000ff"><text y="881.88812" x="104.16909" style="font-size:7.5px;fill:#0000ff" id="trsvg71-bs" systemLanguage="bs">
+    <tspan y="881.94916" x="104.23061" id="trsvg37-bs">2</tspan>
+   </text><text y="881.88812" x="104.16909" style="font-size:7.5px;fill:#0000ff" id="trsvg71">
+    <tspan y="881.94916" x="104.23061" id="trsvg37">2</tspan>
+   </text></switch>
+   <switch style="font-size:7.5px;fill:#0000ff"><text y="881.79285" x="144.87854" style="font-size:7.5px;fill:#0000ff" id="trsvg72-bs" systemLanguage="bs">
+    <tspan y="881.79285" x="144.87854" id="trsvg38-bs">3</tspan>
+   </text><text y="881.79285" x="144.87854" style="font-size:7.5px;fill:#0000ff" id="trsvg72">
+    <tspan y="881.79285" x="144.87854" id="trsvg38">3</tspan>
+   </text></switch>
+   <switch style="font-size:7.5px;fill:#0000ff"><text y="845.5224" x="167.07857" style="font-size:7.5px;fill:#0000ff" id="trsvg73-bs" systemLanguage="bs">
+    <tspan y="845.5224" x="167.07857" id="trsvg39-bs">4</tspan>
+   </text><text y="845.5224" x="167.07857" style="font-size:7.5px;fill:#0000ff" id="trsvg73">
+    <tspan y="845.5224" x="167.07857" id="trsvg39">4</tspan>
+   </text></switch>
+   <switch style="font-size:7.5px;fill:#0000ff"><text y="844.89703" x="85.470032" style="font-size:7.5px;fill:#0000ff" id="trsvg74-bs" systemLanguage="bs">
+    <tspan y="844.89703" x="85.470032" id="trsvg40-bs">1</tspan>
+   </text><text y="844.89703" x="85.470032" style="font-size:7.5px;fill:#0000ff" id="trsvg74">
+    <tspan y="844.89703" x="85.470032" id="trsvg40">1</tspan>
+   </text></switch>
+   <switch><text y="946.3291" x="233.54033" id="trsvg75-bs" systemLanguage="bs">
+    <tspan y="946.3291" x="233.54033" style="font-size:10px" id="trsvg41-bs">trans-2-buten</tspan>
+   </text><text y="946.3291" x="233.54033" id="trsvg75">
+    <tspan y="946.3291" x="233.54033" style="font-size:10px" id="trsvg41">trans-2-butene</tspan>
+   </text></switch>
+  </g>
+ </g>
+</svg>
