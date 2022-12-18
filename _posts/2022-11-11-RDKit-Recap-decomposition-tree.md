@@ -66,7 +66,7 @@ def concat_grids_horizontally(grid1:list[list[str]], grid2:list[list[str]]) -> l
     inputs [['a'],['b'],['c']] and [['d'], ['e'], ['f']] 
     produce [['a', 'd'], ['b', 'e'], ['c', 'f']]
 
-    :returns: The confined grid, a two-deep nested list of strings
+    :returns: The combined grid, a two-deep nested list of strings
     :param grid1: The first grid, a two-deep nested list of strings
     :param grid2: The second grid, a two-deep nested list of strings
     """
