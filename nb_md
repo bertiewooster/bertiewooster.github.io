@@ -2,8 +2,12 @@
 
 # Note: Before running this script,
 #  1) If you downloaded the notebook from Google Colab, replace file name underscores with hyphens
+#  2) Change the name of the notebook (input) and markdown (output) files below
+#  3) Save this script
 
-jupyter nbconvert _notebooks/2022-12-13-Chemistry_machine_learning_for_drug_discovery_with_DeepChem.ipynb --to markdown --output 2022-12-13-Chemistry_machine_learning_for_drug_discovery_with_DeepChem.md
+# Run this script in the terminal using ./nb_md
+
+jupyter nbconvert _notebooks/2022-12-18-Visualizing-Nonbinary-Trees-Classification-of-Chemical-Isomers.ipynb --to markdown --output 2022-12-18-Visualizing-Nonbinary-Trees-Classification-of-Chemical-Isomers.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
