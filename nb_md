@@ -4,7 +4,7 @@
 #  1) If you downloaded the notebook from Google Colab, replace file name underscores with hyphens
 #  2) If you want to embed an image in the notebook,
 #     a) Set up Markdown cell with <img src="" />
-#     b) Convert image to Base64 at https://www.base64-image.de/
+#     b) Convert image to Base64 at https://www.base64-image.de/ (can be JPG, PNG, GIF, WebP, SVG or BMP, up to 1MB)
 #     c) Paste the output (starting with data:image/) into the quotes in the img tag
 #  2) Change the name of the notebook (input) and markdown (output) files below
 #  3) Save this script
