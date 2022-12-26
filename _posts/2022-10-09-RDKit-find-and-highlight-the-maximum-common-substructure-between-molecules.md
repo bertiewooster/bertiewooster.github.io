@@ -19,7 +19,7 @@ from rdkit.Chem import rdFMCS
 
 
 ```python
-def SmilesMCStoGridImage(molecules, align_substructure=True, verbose=False, **kwargs):
+def SmilesMCStoGridImage(smiles: list[str] or dict[str, str], align_substructure: bool = True, verbose: bool = False, **kwargs):
      """
      Convert a list (or dictionary) of SMILES strings to an RDKit grid image of the maximum common substructure (MCS) match between them
 
@@ -32,7 +32,7 @@ def SmilesMCStoGridImage(molecules, align_substructure=True, verbose=False, **kw
      :param verbose: Whether to return verbose output (MCS SMARTS string and molecule, and list of molecules for input SMILES strings); default is False so calling this function will present a grid image automatically
      :type verbose: boolean
      """
-     mols = [Chem.MolFromSmiles(smile) for smile in molecules]
+     mols = [Chem.MolFromSmiles(smile) for smile in smiles]
      res = rdFMCS.FindMCS(mols, **kwargs)
      mcs = res.smartsString
      mcs_mol = Chem.MolFromSmarts(res.smartsString)
@@ -43,8 +43,8 @@ def SmilesMCStoGridImage(molecules, align_substructure=True, verbose=False, **kw
      smarts_legend = "Max. substructure match"
 
      # If user supplies a dictionary, use the values as legend entries for molecules
-     if isinstance(molecules, dict):
-          mol_legends = [molecules[molecule] for molecule in molecules]
+     if isinstance(smiles, dict):
+          mol_legends = [smiles[molecule] for molecule in smiles]
      else:
           mol_legends = ["" for mol in mols]
 
