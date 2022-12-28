@@ -5,7 +5,7 @@ Scientific software developer in the Washington, D.C. area.
 ## [RDKit Utility to Find the Maximum Common Substructure, and Groups Off It, Between a Set of Molecules]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
 *Uses Python and RDKit*
 
-[<img style="width:600px; height:551px" src="/images/RDKit-MCS-example.png">]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
+[<img style="width:600px; height:551px" src="/images/pyridinols-MCS-groups-annotated.png">]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
 
 Given a collection of molecules as SMILES strings, find the maximum common substructure (MCS) match between them, and the groups off that common core for each molecule, displaying the results using a grid.
 

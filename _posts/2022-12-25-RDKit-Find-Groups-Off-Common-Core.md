@@ -4,7 +4,17 @@ In drug discovery, the lead optimization step often involves creating analogues 
 
 In a previous blog post, I [found and highlighted the maximum common substructure (MCS) between a set of molecules]{% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %}) by creating a function `SmilesMCStoGridImage` using RDKit. This post takes it a step further by optionally identifying and showing the groups off the MCS. These might be R groups off a core scaffold.
 
+Here's an example, annotated to explain the grid arrangement:
+
+![Grid of maximum common substructure and core; molecules and groups off maximum common substructure](/images/pyridinols-MCS-groups-annotated.png)
+
 *[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2022-12-25-RDKit-Find-Groups-Off-Common-Core.ipynb)*
+
+To show the groups off of the MCS, the grid of molecular images is two-dimensional:
+- The first row is the MCS (as first SMARTS match, then as a molecule referred to as the core)
+- Each subsequent row represents an input molecule
+    - The first item in the row is the input molecule
+    - Each subsequent item is a group off of the MCS, sorted by the core atom the group is attached to
 
 The key RDKit commands it uses are:
 - [ReplaceCore](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.ReplaceCore) to mask out the MCS in each molecule
@@ -13,16 +23,6 @@ The key RDKit commands it uses are:
 - [`MolFromSmarts`](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolfiles.html) to generate a molecule corresponding to the maximum common substructure
 - [`GenerateDepictionMatching2DStructure`](http://rdkit.org/docs/source/rdkit.Chem.rdDepictor.html) to align the matching substructure
 - [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html) to draw the grid of the MCS, the molecules with that MCS highlighted, and the groups off of the MCS for each molecule
-
-To show the groups off of the MCS, the grid of molecular images is two-dimensional:
-- The first row is the MCS (as first SMARTS match, then as a molecule referred to as the core)
-- Each subsequent row represents an input molecule
-    - The first item in the row is the input molecule
-    - Each subsequent item is a group off of the MCS, sorted by the core atom the group is attached to
-
-Here's an example, annotated to explain the grid arrangement:
-
-![Grid of maximum common substructure and core; molecules and groups off maximum common substructure](../images/pyridinols-MCS-groups-annotated.png)
 
 You can think of the core as the materialized MCS. That is, the MCS is a substructure match (SMARTS), and the core is a structure (SMILES). For example, on the right side of the MCS, off the aromatic ring is a nitrogen atom, N. The analogous part of the core materializes that nitrogen in the simplest possible way, into an amine group, NH<sub>2</sub>.
 
@@ -274,7 +274,7 @@ SmilesMCStoGridImage(ms, groups=True)
 
 
     
-![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_9_0.png)
+![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_12_0.png)
     
 
 
@@ -301,7 +301,7 @@ SmilesMCStoGridImage(ms_more, groups=True, useSVG=True)
 
 
     
-![svg](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_14_0.svg)
+![svg](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_17_0.svg)
     
 
 
@@ -329,7 +329,7 @@ drawing
 
 
     
-![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_20_0.png)
+![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_23_0.png)
     
 
 
@@ -359,7 +359,7 @@ mcs_mol
 
 
     
-![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_24_0.png)
+![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_27_0.png)
     
 
 
@@ -408,7 +408,7 @@ core_mol
 
 
     
-![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_30_0.png)
+![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_33_0.png)
     
 
 
@@ -431,7 +431,7 @@ SmilesMCStoGridImage(["O", "c1ccccc1"], groups=True)
 
 
     
-![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_33_1.png)
+![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_36_1.png)
     
 
 
@@ -459,7 +459,7 @@ drawing_no_mcs
 
 
     
-![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_38_0.png)
+![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_41_0.png)
     
 
 
@@ -487,7 +487,7 @@ mcs_mol_no_mcs
 
 
     
-![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_41_0.png)
+![png](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_44_0.png)
     
 
 
