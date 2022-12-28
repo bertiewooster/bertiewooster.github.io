@@ -39,8 +39,8 @@ Find a given number of points which satisfy constraints given in a constraints f
 
 Optionally, identify the components (dimensions) in the constraints file using chemical formulas, and Sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
 
-<img style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">
-## Periodic Table Navigator
+[<img style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
+## [Periodic Table Navigator](https://ptablenav.herokuapp.com/)
 *Uses Ruby, Sinatra, PostgreSQL, and JavaScript*
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
