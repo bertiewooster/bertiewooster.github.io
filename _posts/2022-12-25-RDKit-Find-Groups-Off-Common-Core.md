@@ -301,7 +301,7 @@ SmilesMCStoGridImage(ms_more, groups=True, useSVG=True)
 
 
     
-![svg](2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_14_0.svg)
+![svg](/images/2022-12-25-RDKit-Find-Groups-Off-Common-Core_files/2022-12-25-RDKit-Find-Groups-Off-Common-Core_14_0.svg)
     
 
 

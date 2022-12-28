@@ -24,3 +24,7 @@ jupyter nbconvert _notebooks/2022-12-25-RDKit-Find-Groups-Off-Common-Core.ipynb 
 #         ![png](
 #      with
 #         ![png](/images/
+#      a) If there are any svg images, do likewise-- replace
+#             ![svg](
+#         with 
+#            ![svg](/images/
