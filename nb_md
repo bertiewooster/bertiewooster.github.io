@@ -6,12 +6,12 @@
 #     a) Set up Markdown cell with <img src="" />
 #     b) Convert image to Base64 at https://www.base64-image.de/ (can be JPG, PNG, GIF, WebP, SVG or BMP, up to 1MB)
 #     c) Paste the output (starting with data:image/) into the quotes in the img tag
-#  2) Change the name of the notebook (input) and markdown (output) files below
+#  2) Change the name of the notebook (input) and markdown (output) files in the non-commented code below
 #  3) Save this script
 
 # Run this script in the terminal using ./nb_md
 
-jupyter nbconvert _notebooks/2022-12-18-Visualizing-Nonbinary-Trees-Classification-of-Chemical-Isomers.ipynb --to markdown --output 2022-12-18-Visualizing-Nonbinary-Trees-Classification-of-Chemical-Isomers.md
+jupyter nbconvert _notebooks/2022-12-25-RDKit-Find-Groups-Off-Common-Core.ipynb --to markdown --output 2022-12-25-RDKit-Find-Groups-Off-Common-Core.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
