@@ -11,7 +11,7 @@
 
 # Run this script in the terminal using ./nb_md
 
-jupyter nbconvert _notebooks/2022-12-25-RDKit-Find-Groups-Off-Common-Core.ipynb --to markdown --output 2022-12-25-RDKit-Find-Groups-Off-Common-Core.md
+jupyter nbconvert _notebooks/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem.ipynb --to markdown --output 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
