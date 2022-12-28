@@ -45,8 +45,6 @@ Optionally, identify the components (dimensions) in the constraints file using c
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
-[<img style="float: right; width:230px; height:123px;" src="images/price-per-unit.png">](http://www.whitegloveapps.com/priceper/priceper.html)
-
 # My open-source contributions
 
 ## SymPy computer algebra system in pure Python

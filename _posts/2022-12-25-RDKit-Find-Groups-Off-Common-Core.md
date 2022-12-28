@@ -1,4 +1,4 @@
-# Find the Maximum Common Substructure, and Groups Off It, Between a Set of Molecules Using RDKit
+# Find the Maximum Common Substructure, and Groups Off It, For a Set of Molecules Using RDKit
 
 In drug discovery, the lead optimization step often involves creating analogues of a hit (a promising compound which produces a desired result in an assay) to optimize selectivity and minimize toxicity. Because it is typically easier to chemically modify the periphery of the molecule (for example the functional groups) than the scaffold, it is helpful to compare the groups off of the common scaffold. This utility function uses RDKit to find the maximum common substructure (MCS) between a set of molecules, then show the groups off of that MCS.
 
