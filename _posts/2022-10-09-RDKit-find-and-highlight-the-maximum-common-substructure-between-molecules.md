@@ -34,7 +34,7 @@ def SmilesMCStoGridImage(smiles: list[str] or dict[str, str], align_substructure
      """
      mols = [Chem.MolFromSmiles(smile) for smile in smiles]
      res = rdFMCS.FindMCS(mols, **kwargs)
-     mcs = res.smartsString
+     mcs_smarts = res.smartsString
      mcs_mol = Chem.MolFromSmarts(res.smartsString)
      smarts = res.smartsString
      smart_mol = Chem.MolFromSmarts(smarts)
@@ -63,7 +63,7 @@ def SmilesMCStoGridImage(smiles: list[str] or dict[str, str], align_substructure
      drawing = Draw.MolsToGridImage(smarts_and_mols, highlightAtomLists=matches, legends=legends)
 
      if verbose:
-          return drawing, mcs, mcs_mol, mols
+          return drawing, mcs_smarts, mcs_mol, mols
      else:
           return drawing
 ```
@@ -128,7 +128,7 @@ If you want `SmilesMCStoGridImage` to return not just the grid image, but also t
 
 
 ```python
-drawing, mcs, mcs_mol, mols = SmilesMCStoGridImage({"NC1OC1": "amine", "C1OC1[N+](=O)[O-]": "nitro"}, verbose=True)
+drawing, mcs_smarts, mcs_mol, mols = SmilesMCStoGridImage({"NC1OC1": "amine", "C1OC1[N+](=O)[O-]": "nitro"}, verbose=True)
 ```
 
 You then must explicitly call the image to draw it:
@@ -147,11 +147,11 @@ drawing
 
 
 
-`mcs` is the SMARTS string for the maximum common substructure (MCS):
+`mcs_smarts` is the SMARTS string for the maximum common substructure (MCS):
 
 
 ```python
-mcs
+mcs_smarts
 ```
 
 

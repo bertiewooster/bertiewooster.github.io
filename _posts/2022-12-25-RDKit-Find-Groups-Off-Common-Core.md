@@ -207,7 +207,6 @@ def SmilesMCStoGridImage(smiles: list[str] or dict[str, str], align_substructure
 
           # Align cores if requested
           if align_substructure:
-               # subms = []
                subms = [core_mcs_and_mols_2D]
                for row_index, row in enumerate(mcs_and_mols_2D[1:]):
                     subms += [row[0]]
