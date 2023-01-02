@@ -17,8 +17,8 @@ To show the groups off of the MCS, the grid of molecular images is two-dimension
     - Each subsequent item is a group off of the MCS, sorted by the core atom the group is attached to
 
 The key RDKit commands it uses are:
-- [ReplaceCore](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.ReplaceCore) to mask out the MCS in each molecule
-- [GetMolFrags](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.GetMolFrags) to get the molecular fragments (groups) off of the MCS
+- [`ReplaceCore`](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.ReplaceCore) to mask out the MCS in each molecule
+- [`GetMolFrags`](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.GetMolFrags) to get the molecular fragments (groups) off of the MCS
 - [`FindMCS`](https://www.rdkit.org/docs/source/rdkit.Chem.rdFMCS.html) to find the maximum common substructure (SMARTS string)
 - [`MolFromSmarts`](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolfiles.html) to generate a molecule corresponding to the maximum common substructure
 - [`GenerateDepictionMatching2DStructure`](http://rdkit.org/docs/source/rdkit.Chem.rdDepictor.html) to align the matching substructure
@@ -527,4 +527,4 @@ mols_2D_no_mcs
 
 For more information about the other parameters in `SmilesMCStoGridImage`, refer to my original blog post [Find and Highlight the Maximum Common Substructure Between a Set of Molecules Using RDKit]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 
-Thanks to [Greg Landrum](https://github.com/greglandrum) for suggesting this scheme to find groups off of a common core, and to [Brian Kelley](https://github.com/bp-kelley) for clarifying the RDKit's atom numbering scheme for [`Chem.ReplaceCore`](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.ReplaceCore)).
+Thanks to [Greg Landrum](https://github.com/greglandrum) for suggesting this scheme to find groups off of a common core, and to [Brian Kelley](https://github.com/bp-kelley) for clarifying the RDKit's atom numbering scheme for [`ReplaceCore`](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.ReplaceCore).
