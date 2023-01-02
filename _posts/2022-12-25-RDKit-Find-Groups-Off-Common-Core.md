@@ -2,7 +2,7 @@
 
 In drug discovery, the lead optimization step often involves creating analogues of a hit (a promising compound which produces a desired result in an assay) to optimize selectivity and minimize toxicity. Because it is typically easier to chemically modify the periphery of the molecule (for example the functional groups) than the scaffold, it is helpful to compare the groups off of the common scaffold. This utility function uses RDKit to find the maximum common substructure (MCS) between a set of molecules, then show the groups off of that MCS.
 
-In a previous blog post, I [found and highlighted the maximum common substructure (MCS) between a set of molecules]{% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %}) by creating a function `SmilesMCStoGridImage` using RDKit. This post takes it a step further by optionally identifying and showing the groups off the MCS. These might be R groups off a core scaffold.
+In a previous blog post, I [found and highlighted the maximum common substructure (MCS) between a set of molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %}) by creating a function `SmilesMCStoGridImage` using RDKit. This post takes it a step further by optionally identifying and showing the groups off the MCS. These might be R groups off a core scaffold.
 
 Here's an example, annotated to explain the grid arrangement:
 
@@ -282,7 +282,7 @@ The core's atoms are numbered, and each groups is labeled with the core atom tha
 
 For example, in the second row, the aldehyde off aromatic carbon molecule's only group off the core is [2*]NC(C)=0. This notation means that the group is attached to atom 2 on the core (the carbon atom at the bottom right of the aromatic ring) at the group's nitrogen atom.
 
-In the third row, alkyl off amine, has two groups off the core. The first, [0*]CCC, is a propyl group attached to core atom 0 (the amine nitrogen off the ring) at a terminal carbon atom. The second group, [2*]C, is a methyl group attached to atom 2 on the core (the carbon atom at the bottom right of the aromatic ring).
+In the third row, alkyl off amine, has two groups off the core. The first, `[0*]CCC`, is a propyl group attached to core atom 0 (the amine nitrogen off the ring) at a terminal carbon atom. The second group, `[2*]C`, is a methyl group attached to atom 2 on the core (the carbon atom at the bottom right of the aromatic ring).
 
 Returning to the lead optimization context, if an assay revealed improved bioactivity of the aldehyde and alkyl compared to the core, we might want to make variations that incorporate the additional groups of each molecule. 
 
@@ -525,6 +525,6 @@ mols_2D_no_mcs
 
 ## Notes
 
-For more information about the other parameters in `SmilesMCStoGridImage`, refer to my original blog post [Find and Highlight the Maximum Common Substructure Between a Set of Molecules Using RDKit]{% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+For more information about the other parameters in `SmilesMCStoGridImage`, refer to my original blog post [Find and Highlight the Maximum Common Substructure Between a Set of Molecules Using RDKit]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 
-Thanks to [Greg Landrum](https://github.com/greglandrum) for suggesting this scheme to find groups off of a common core, and to [Brian Kelley](https://github.com/bp-kelley) for clarifying the RDKit's atom numbering scheme for `Chem.ReplaceCore`.
+Thanks to [Greg Landrum](https://github.com/greglandrum) for suggesting this scheme to find groups off of a common core, and to [Brian Kelley](https://github.com/bp-kelley) for clarifying the RDKit's atom numbering scheme for [`Chem.ReplaceCore`](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html#rdkit.Chem.rdmolops.ReplaceCore)).
