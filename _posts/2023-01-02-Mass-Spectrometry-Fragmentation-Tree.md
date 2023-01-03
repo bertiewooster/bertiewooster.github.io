@@ -2,7 +2,7 @@
 
 This utility plots a mass spectrometry fragmentation tree given the species' SMILES and their hierarchy, that is which species fragments into which other species. Here's an annotated example:
 
-![Annotated mass spectrometry fragmentation tree using the function mass_spec_frag_tree in this blog post](../images/mass_spec_frag_tree_CAIr_annotated.png)
+![Annotated mass spectrometry fragmentation tree using the function mass_spec_frag_tree in this blog post](/images/mass_spec_frag_tree_CAIr_annotated.png)
 
 ## About Mass Spectrometry Fragmentation Trees
 
