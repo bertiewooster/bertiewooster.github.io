@@ -1,6 +1,8 @@
 ## Draw a Mass Spectrometry Fragmentation Tree Using RDKit
 
-This utility plots a mass spectrometry fragmentation tree given the species' SMILES and their hierarchy, that is which species fragments into which other species. Here's an annotated example:
+This utility plots a mass spectrometry fragmentation tree given the species' SMILES and their hierarchy, that is which species fragments into which other species.
+
+Here's an annotated example.
 
 ![Annotated mass spectrometry fragmentation tree using the function mass_spec_frag_tree in this blog post](/images/mass_spec_frag_tree_CAIr_annotated.png)
 
@@ -16,7 +18,7 @@ Mass spectrometric analysis is helpful for understanding biomolecules. For examp
 
 Here, as a simple example of a small molecule with a biochemical role, we focus on a [riboside](https://en.wikipedia.org/wiki/Riboside), which is a [glycoside](https://en.wikipedia.org/wiki/Glycoside) (a molecule connecting a sugar and a functional group) of [ribose](https://en.wikipedia.org/wiki/Ribose) (a simple sugar). [Madrova et al](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0208947#sec019) studied ribosides and provide a nice example of a mass spec fragmentation tree where several of the fragments' chemical structures were determined.
 
-Mass spectrometry can be used iteratively to fragment a parent species, characterize the fragments, and then further fragment selected fragments. Doing two steps is called MS-MS, or mass spectrometry-mass spectrometry. Madrova et al used an ion cyclotron resonance (ICR) mass spectrometer, which allows ions to be trapped so that any number of iterations can be done in a single instrument on a single sample. This is referred to as MS<sup>n</sup>, meaning that n iterations of mass spec, where n can be 2, 3, 4, etc.
+Mass spectrometry can be used iteratively to fragment a parent species, characterize the fragments, and then further fragment selected fragments. Doing two steps is called MS-MS, or mass spectrometry-mass spectrometry. Madrova et al used an ion cyclotron resonance (ICR) mass spectrometer, which allows ions to be trapped so that any number of iterations can be done in a single instrument on a single sample. This is referred to as MS<sup>n</sup>, meaning n iterations of mass spec, where n can be 2, 3, 4, etc.
 
 
 ```python

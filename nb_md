@@ -6,8 +6,8 @@
 #     a) Set up Markdown cell with <img src="" />
 #     b) Convert image to Base64 at https://www.base64-image.de/ (can be JPG, PNG, GIF, WebP, SVG or BMP, up to 1MB)
 #     c) Paste the output (starting with data:image/) into the quotes in the img tag
-#  2) Change the name of the notebook (input) and markdown (output) files in the non-commented code below
-#  3) Save this script
+#  3) Change the name of the notebook (input) and markdown (output) files in the non-commented code below
+#  4) Save this script
 
 # Run this script in the terminal using ./nb_md
 
@@ -28,3 +28,7 @@ jupyter nbconvert _notebooks/2023-01-02-Mass-Spectrometry-Fragmentation-Tree.ipy
 #             ![svg](
 #         with 
 #            ![svg](/images/
+#  4) If you have a link to an image in the top-level /images folder, in the markdown file, replace
+#            ../images
+#         with 
+#            /images

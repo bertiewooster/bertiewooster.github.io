@@ -2,6 +2,13 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [RDKit Utility to Create a Mass Spectrometry Fragmentation Tree]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
+*Uses Python and RDKit*
+
+[<img style="width:1036px; height:786px" src="/images/mass_spec_frag_tree_CAIr_annotated.png">]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
+
+Given a mass spec fragmentation hierarchy, with species as SMILES strings, displaying the fragmentation tree in a grid, labeling each species with its name and mass or mass to charge ratio m/z.
+
 ## [RDKit Utility to Find the Maximum Common Substructure, and Groups Off It, Between a Set of Molecules]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
 *Uses Python and RDKit*
 
