@@ -91,8 +91,10 @@ def longest_in_col(matrix: list[list]) -> list[int]:
     :param matrix: The matrix of items
     :returns: A list where each entry is the length of the longest item in that column.
     """
-    longest = [0] * len(matrix)
-    for col_index in range(len(matrix[0])):
+    ncols = len(matrix[0])
+    longest = [0] * ncols
+    
+    for col_index in range(ncols):
         max = 0
         for row in matrix:
             len_item = len(row[col_index])
