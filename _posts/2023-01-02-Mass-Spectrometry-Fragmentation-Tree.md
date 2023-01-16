@@ -6,13 +6,13 @@ Here's an annotated example.
 
 ![Annotated mass spectrometry fragmentation tree using the function mass_spec_frag_tree in this blog post](/images/mass_spec_frag_tree_CAIr_annotated.png)
 
+*[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2023-01-02-Mass-Spectrometry-Fragmentation-Tree.ipynb)*
+
 ## About Mass Spectrometry Fragmentation Trees
 
 Mass spec determines the mass of an analyte (chemical species of interest) by ionizing (electrically charging) it, then directing the ion's trajectory using magnets. Mass spec actually measures the mass (m) to charge (z) ratio m/z, then the scientist uses other clues to determine the charge to then calculate the mass. Mass spec also often fragments (breaks into smaller pieces) the analyte, so that several species are often generated for even a single analyte.
 
 Visualizing mass spec fragmentation trees is a helpful way to understand which species fragment into which other species. Tools such as the [SIRIUS software framework](https://bio.informatik.uni-jena.de/software/sirius/) have been developed to analyze fragmentation trees.
-
-*[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2023-01-02-Mass-Spectrometry-Fragmentation-Tree.ipynb)*
 
 ## Applying Mass Spec to Biomolecules
 
