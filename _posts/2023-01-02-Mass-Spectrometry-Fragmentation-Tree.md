@@ -16,7 +16,7 @@ Visualizing mass spec fragmentation trees is a helpful way to understand which s
 
 ## Applying Mass Spec to Biomolecules
 
-Mass spectrometric analysis is helpful for understanding biomolecules. For example, proteomics is informatics applied to proteins. In bottom-up proteomics, scientists extract a mixture of proteins from a biological sample, break the proteins into smaller peptides (a process called digestion), analyze the mixture of peptides using mass spectrometry, then piece the peptides together to infer the original proteins.
+Mass spectrometric analysis is helpful for understanding biomolecules. For example, proteomics is informatics applied to proteins. In [bottom-up proteomics](https://en.wikipedia.org/wiki/Bottom-up_proteomics), scientists extract a mixture of proteins from a biological sample, break the proteins into smaller peptides (a process called digestion), analyze the mixture of peptides using mass spectrometry, then piece the peptides together to infer the original proteins.
 
 Here, as a simple example of a small molecule with a biochemical role, we focus on a [riboside](https://en.wikipedia.org/wiki/Riboside), which is a [glycoside](https://en.wikipedia.org/wiki/Glycoside) (a molecule connecting a sugar and a functional group) of [ribose](https://en.wikipedia.org/wiki/Ribose) (a simple sugar). [Madrova et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0208947#sec019) studied ribosides and provide a nice example of a mass spec fragmentation tree where several of the fragments' chemical structures were determined.
 
