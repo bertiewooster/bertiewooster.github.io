@@ -20,6 +20,8 @@ Here, as a simple example of a small molecule with a biochemical role, we focus 
 
 Mass spectrometry can be used iteratively to fragment a parent species, characterize the fragments, and then further fragment selected fragments. Doing two steps is called MS-MS, or mass spectrometry-mass spectrometry. Madrova et al used an ion cyclotron resonance (ICR) mass spectrometer, which allows ions to be trapped so that any number of iterations can be done in a single instrument on a single sample. This is referred to as MS<sup>n</sup>, meaning n iterations of mass spec, where n can be 2, 3, 4, etc.
 
+Two kinds of molecular weight are commonly used: [exact and average molecular weight](https://msfacility.missouri.edu/calculating.html). Average molecular weight reflects the distribution of isotopes of the molecule's atoms, whereas exact molecular weight gives the molecular weight of the most common isotopes of each atom in the molecule. When modeling mass spectra, we use the exact rather than average molecular weight, because mass spectra resolve the different isotopes of each atom, for example carbon-12 and carbon-13.
+
 
 ```python
 from rdkit.Chem import AllChem as Chem
@@ -32,11 +34,7 @@ from rdkit.Chem import rdFMCS
 ```python
 # Utilities
 def flatten_twoD_list(twoD_list: list[list]) -> list:
-    flat_list = []
-    for row in twoD_list:
-        for item in row:
-            flat_list += [item]
-    return flat_list
+    return [item for sublist in twoD_list for item in sublist]
 
 def longest_row(twoD_list: list[list]) -> int:
     return max(len(row) for row in twoD_list)
