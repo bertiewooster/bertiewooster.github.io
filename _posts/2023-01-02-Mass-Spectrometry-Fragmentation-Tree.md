@@ -12,6 +12,8 @@ Mass spec determines the mass of an analyte (chemical species of interest) by io
 
 Visualizing mass spec fragmentation trees is a helpful way to understand which species fragment into which other species. Tools such as the [SIRIUS software framework](https://bio.informatik.uni-jena.de/software/sirius/) have been developed to analyze fragmentation trees.
 
+*[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2023-01-02-Mass-Spectrometry-Fragmentation-Tree.ipynb)*
+
 ## Applying Mass Spec to Biomolecules
 
 Mass spectrometric analysis is helpful for understanding biomolecules. For example, proteomics is informatics applied to proteins. In bottom-up proteomics, scientists extract a mixture of proteins from a biological sample, break the proteins into smaller peptides (a process called digestion), analyze the mixture of peptides using mass spectrometry, then piece the peptides together to infer the original proteins.
