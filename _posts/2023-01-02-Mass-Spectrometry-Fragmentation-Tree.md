@@ -24,6 +24,8 @@ Mass spectrometry can be used iteratively to fragment a parent species, characte
 
 Two kinds of molecular weight are commonly used: [exact and average molecular weight](https://msfacility.missouri.edu/calculating.html). Average molecular weight reflects the distribution of isotopes of the molecule's atoms, whereas exact molecular weight gives the molecular weight of the most common isotopes of each atom in the molecule. When modeling mass spectra, we use the exact rather than average molecular weight, because mass spectra resolve the different isotopes of each atom, for example carbon-12 and carbon-13.
 
+## Code for Generating Mass Spec Fragmentation Tree
+
 
 ```python
 from rdkit.Chem import AllChem as Chem
@@ -231,10 +233,11 @@ def mass_spec_frag_tree(non_bin_tree, ndigits:int or None = 2, addHs:bool=False,
 
 ## Riboside Example
 
-Carboxyaminoimidazole riboside (CAIr) was studied by [Madrova et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0208947#sec019). To put an electrical charge on the neutral CAIr molecule so it could be analyzed with mass spec, they used electrospray ionization. This ionization technique often protonates (adds a proton, that is H<sup>+</sup>, which is a hydrogen atom stripped of its electron) neutral molecules using a [proton source such as acetic acid](https://en.wikipedia.org/wiki/Electrospray_ionization#Ionization_mechanism). The parent ion, denoted as CAIr.H+ below, thus weighs one Dalton (which is the atomic mass of a [proton](https://en.wikipedia.org/wiki/Proton)) more than the neutral species.
+Carboxyaminoimidazole riboside (CAIr) was studied by [Madrova et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0208947#sec019). To put an electrical charge on the neutral CAIr molecule so it could be analyzed with mass spec, they used electrospray ionization. This ionization technique often protonates (adds a proton, that is H<sup>+</sup>, which is a hydrogen atom stripped of its electron) neutral molecules using a [proton source such as acetic acid](https://en.wikipedia.org/wiki/Electrospray_ionization#Ionization_mechanism). The parent ion, denoted as CAIr.H+ below, thus weighs approximately one Dalton (which is the atomic mass of a [proton](https://en.wikipedia.org/wiki/Proton)) more than the neutral species.
 
 Mass spec typically analyzes gas-phase ions in high vacuum, that is, very low pressures. Species that would not be stable in a condensed phase (liquid or solid) can be stable in the gas phase, and they can be analyzed by mass spec. As a result, some of the chemical formulas and SMILES strings may seem unusual. For example, in SMILES, `C` is a (non-aromatic) carbon atom which is assumed to have four bonds, and any bonds not explicitly stated are assumed to be to hydrogen atoms. But to specify that a carbon atom has a single positive charge and one bound hydrogen atom, you need to include the hydrogen atoms explicitly, for example `[CH+]`. Also, to add a proton when its location on the species is not known, I used the [disconnected structure](https://chemicbook.com/2021/02/13/smiles-strings-explained-for-beginners-part-1.html) notation of a dot, `.[H+]`
 
+### Enter Mass Spec Fragmentation Data and Create the Tree
 
 ```python
 # Input SMILES
@@ -278,7 +281,7 @@ In this tree, the top row is the neutral molecule CAIr. Subsequent rows represen
 ## Input Parameters for `mass_spec_frag_tree`
 
 Parameters you can pass to `mass_spec_frag_tree` are:
-- `non_bin_tree` the NonBinTree object for the mass spec hierarchy.
+- `non_bin_tree` (required) the NonBinTree object for the mass spec hierarchy.
 - `ndigits` (integer or `None`) the number of digits beyond the decimal point to use for showing masses or m/z ratios in the drawing legends. Use `None` to round to the nearest integer. Note that `ndigits` only affects the legends displayed in the drawing; when using `verbose=True`, non-rounded outputs will be given regardless of the value of `ndigits`.
 - `addHs` (Boolean, so True or False (default)): Whether to display hydrogen atoms in the drawing. Note that this does not actually add or remove hydrogens; the mass is unaffected, only the *display* of hydrogen atoms is changed.
 - `verbose` (Boolean, so True or False (default)): Whether to return results in addition to the drawing, which you can manipulate in other ways. Details are given next.
@@ -413,7 +416,7 @@ charges_grid
 
 
 
-`mzs_grid` contains the mass to charge for each species. If there is no species in a cell, its entry is zero.
+`mzs_grid` contains the mass to charge for each species. If there is no charged species in a cell, its entry is zero.
 
 
 ```python
