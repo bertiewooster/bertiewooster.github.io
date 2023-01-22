@@ -194,7 +194,7 @@ molecule_recap_tree("n1c(OCO)cccc1-OCO", "Parent molecule")
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
+![Hierarchy tree output from molecule_recap_tree function](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
     
 
 
@@ -223,12 +223,12 @@ drawing
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
+![Hierarchy tree output from molecule_recap_tree function](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_16_0.png)
     
 
 
 
-`molecule` is the RDKit molecule:
+`molecule` is the RDKit parent molecule:
 
 
 ```python
@@ -239,7 +239,7 @@ molecule
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
+![Parent molecule](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_18_0.png)
     
 
 
@@ -314,7 +314,7 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
+![Hierarchy tree output from molecule_recap_tree function for complex parent molecule](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_29_0.png)
     
 
 
@@ -332,10 +332,10 @@ molecule_recap_tree("Clc1cc(c(OC)cc1N)C(=O)NC3CCN(CCCOc2ccc(F)cc2)CC3OC", "paren
 
 
     
-![svg](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
+![Hierarchy tree output from molecule_recap_tree function for complex parent molecule](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_31_0.svg)
     
 
 
 
 ## Note About Hierarchies
-Another approach I could have taken was to extend the class `rdkit.Chem.Recap.RecapHierarchyNode`, rather than use the `NonBinaryTree` class. Using the `NonBinaryTree` class allows for different kinds of hierarchies to be depicted as a grid, as I demonstrate in another post [Visualizing Nonbinary Trees: Classification of Chemical Isomers]({% post_url 2022-12-18-Visualizing-Nonbinary-Trees-Classification-of-Chemical-Isomers %}).
+Another approach I could have taken was to extend the class `rdkit.Chem.Recap.RecapHierarchyNode`, rather than use the `NonBinaryTree` class. Using the `NonBinaryTree` class allows for different kinds of hierarchies to be depicted as a grid, as I demonstrate in other posts [Visualizing Nonbinary Trees: Classification of Chemical Isomers]({% post_url 2022-12-18-Visualizing-Nonbinary-Trees-Classification-of-Chemical-Isomers %}) and [Draw a Mass Spectrometry Fragmentation Tree Using RDKit]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %}).
