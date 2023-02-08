@@ -111,7 +111,7 @@ By the way, the specific request type we use here [`aiohttp` also has a way to l
 ## PubChem API Call Results
 To demystify API calls, it's useful to think of them as corresponding to the information you could get interactively by clicking on links. (In fact, a modern development trend is for a web site to call its API to obtain the data, then format it to present to the user.) The difference between API calls and interactively viewing web pages is that APIs return information in a computer-friendly format, which makes it easier for your code to process the results.
 
-We use two different PubChem APIs. First, we use [PUG (Power User Gateway) REST](https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest) to request the identifier of the molecule. The PUG REST request corresponds to interactively doing a SMILES search, for example https://pubchem.ncbi.nlm.nih.gov/#query=O=C(C)Oc1ccccc1C(=O)O&input_type=smiles where `O=C(C)Oc1ccccc1C(=O)O` is the SMILES string for the molecule of interest, here acetylsalicylic acid (aspirin). We request text format, so PUG REST returns a simple result: the identifier if it exists, or 0 (zero) if not, followed by a linebreak, for example `2244\n` where 2244 is the PubChem identifier for acetylsalicylic acid. Processing this result to obtain the identifier is simple.
+We use two different PubChem APIs. First, we use [PUG (Power User Gateway) REST](https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest) to request the identifier of the molecule. The PUG REST request corresponds to interactively doing a SMILES search, for example [https://pubchem.ncbi.nlm.nih.gov/#query=O=C(C)Oc1ccccc1C(=O)O&input_type=smiles](https://pubchem.ncbi.nlm.nih.gov/#query=O=C(C)Oc1ccccc1C(=O)O&input_type=smiles) where `O=C(C)Oc1ccccc1C(=O)O` is the SMILES string for the molecule of interest, here acetylsalicylic acid (aspirin). We request text format, so PUG REST returns a simple result: the identifier if it exists, or 0 (zero) if not, followed by a linebreak, for example `2244\n` where 2244 is the PubChem identifier for acetylsalicylic acid. Processing this result to obtain the identifier is simple.
 
 Second, we use [PUG View](https://pubchem.ncbi.nlm.nih.gov/docs/pug-view) to request data about commercial availability. The PUG View request corresponds to interactively visiting the molecule's page, for example https://pubchem.ncbi.nlm.nih.gov/compound/2244, for acetylsalicylic acid. The data is more complicated here. It corresponds to the Chemical Vendors section on the web page. We chose to request XML format. Fortunately, we don't need to process all the data in the result, just check whether there is any vendor data.
 
@@ -554,6 +554,7 @@ naphthyl_target = "[O-][N+](=O)C1=CC=C(C2NCCc3ccccc23)C2=C1C=CC=C2"
 pictet_spengler_rxn = '[cH1:1]1:[c:2](-[CH2:7]-[CH2:8]-[NH2:9]):[c:3]:[c:4]:[c:5]:[c:6]:1.[#6:11]-[CH1;R0:10]=[OD1]>>[c:1]12:[c:2](-[CH2:7]-[CH2:8]-[NH1:9]-[C:10]-2(-[#6:11])):[c:3]:[c:4]:[c:5]:[c:6]:1'
 pictet_spengler = [pictet_spengler_rxn, "Pictet-Spengler"]
 
+# Amine oxidation reaction SMARTS from https://efficientbits.blogspot.com/2018/04/rdkit-reaction-smarts.html by John Mayfield
 amine_oxidation_rxn = "[*:1][Nh2:2]>>[*:1][Nh0:2](~[OD1])~[OD1]"
 
 # Reaction format: [target (SMILES), reaction SMARTS, reaction name]
