@@ -8,7 +8,7 @@ RDKit helpfully provides a `RecapHierarchyNode` structure of nodes, where the ke
 
 This utility function `molecule_recap_tree` allows you to visualize both the fragments and their hierarchy. Here is an example, of 6-(Hydroxymethoxy)pyridin-2-yl]oxymethanol, annotated to explain the hierarchy:
 
-![annotated_hierarchy_tree](/images/tree_marked_up.png)
+![Annotated Recap retrosynthetic hierarchy tree](/images/tree_marked_up.png)
 
 As compared to the same molecule using the `RecapDecompose` function directly, showing only the immediate children:
 

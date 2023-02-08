@@ -2,38 +2,45 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [RDKit Utility to Check Whether Starting Materials for Synthesizing Your Target Molecules Are Commercially Available]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
+*Uses Python, RDKit, PubChem's API, asyncio, and Semaphore*
+
+[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:518px; height:393px" src="/images/mass_spec_frag_tree_CAIr_annotated.png">]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
+
+Given target molecules and reactions to synthesize them, determine whether the starting materials are commercially available using PubChem's API, and thus whether the target is accessible.
+
 ## [RDKit Utility to Create a Mass Spectrometry Fragmentation Tree]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
 *Uses Python and RDKit*
 
-[<img style="width:518px; height:393px" src="/images/mass_spec_frag_tree_CAIr_annotated.png">]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
+[<img alt="Annotated mass spectrometry fragmentation tree using the function mass_spec_frag_tree in this blog post" style="width:518px; height:393px" src="/images/mass_spec_frag_tree_CAIr_annotated.png">]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
 
 Given a mass spec fragmentation hierarchy, with species as SMILES strings, display the fragmentation tree in a grid, labeling each species with its name and either mass or mass to charge ratio `m/z`.
 
 ## [RDKit Utility to Find the Maximum Common Substructure, and Groups Off It, Between a Set of Molecules]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
 *Uses Python and RDKit*
 
-[<img style="width:600px; height:551px" src="/images/pyridinols-MCS-groups-annotated.png">]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
+[<img alt="Annotated grid of maximum common substructure and core; molecules and groups off maximum common substructure" style="width:600px; height:551px" src="/images/pyridinols-MCS-groups-annotated.png">]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
 
 Given a collection of molecules as SMILES strings, find the maximum common substructure (MCS) match between them, and the groups off that common core for each molecule, displaying the results using a grid.
 
 ## [Chemistry machine learning for drug discovery with DeepChem]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
 *Uses Python, DeepChem, seaborn, Matplotlib, and pandas*
 
-[<img style="width:384px; height:262px" src="/images/lipophilicity-machine-learning-graph.png">]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
+[<img alt="Predicted against measured lipophilicty for test and train data" style="width:384px; height:262px" src="/images/lipophilicity-machine-learning-graph.png">]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
 
 Use the DeepChem deep learning package to predict compounds' lipophilicity--how well they are absorbed into the lipids of biological membranes, which is important for oral delivery of drugs.
 
 ## [RDKit Utility to Visualize Retrosynthetic Analysis Hierarchically]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %})
 *Uses Python and RDKit*
 
-[<img style="width:513px; height:418px" src="/images/tree_marked_up.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:513px; height:418px" src="/images/tree_marked_up.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 
 Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee){:target='_blank'} to decompose it into a set of fragments that could be combined to make the parent molecule using common reactions. Display the fragmentation hierarchically.
 
 ## [RDKit Utility to Find and Highlight the Maximum Common Substructure Amongst Molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 *Uses Python and RDKit*
 
-[<img style="width:600px; height:200px" src="/images/RDKit-MCS-example.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+[<img alt="Maximum substructure match, and the two molecules which are labeled by their functional groups" style="width:600px; height:200px" src="/images/RDKit-MCS-example.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 
 Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system){:target='_blank'} strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification){:target='_blank'} string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
 
