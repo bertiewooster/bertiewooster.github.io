@@ -95,8 +95,6 @@ It's thus advantageous to write your code asynchronously and use Semaphore. That
 
 <img alt="Four fully concurrent tasks, taking 0.8 seconds total" src="/images/timing_diagram_wide/003_four_fully_concurrent_tasks.jpeg" width="480" height="500">
 
-Four tasks running in two pipes, taking 1.6 seconds total
-
 <img alt="Four tasks running in two pipes, taking 1.6 seconds total" src="/images/timing_diagram_wide/004_four_tasks_in_two_pipes.jpeg" width="771" height="443">
 
 If you let each task run concurrently, the total time will be roughly the time of the longest task, for example 0.8 s.
