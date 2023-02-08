@@ -5,9 +5,9 @@ Scientific software developer in the Washington, D.C. area.
 ## [RDKit Utility to Check Whether Starting Materials for Synthesizing Your Target Molecules Are Commercially Available]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
 *Uses Python, RDKit, PubChem's API, asyncio, and Semaphore*
 
-[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:518px; height:393px" src="/images/mass_spec_frag_tree_CAIr_annotated.png">]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
+[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:518px; height:393px" src="/images/reaction-accessible.png">]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
 
-Given target molecules and reactions to synthesize them, determine whether the starting materials are commercially available using PubChem's API, and thus whether the target is accessible.
+Given target molecules and reactions to synthesize them, determine whether the starting materials are commercially available using PubChem's API, and thus whether the target is synthetically accessible.
 
 ## [RDKit Utility to Create a Mass Spectrometry Fragmentation Tree]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
 *Uses Python and RDKit*
