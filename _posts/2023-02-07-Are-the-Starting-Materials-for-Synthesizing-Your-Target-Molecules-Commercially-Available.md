@@ -95,14 +95,16 @@ It's thus advantageous to write your code asynchronously and use Semaphore. That
 
 <img alt="Four fully concurrent tasks, taking 0.8 seconds total" src="/images/timing_diagram_wide/003_four_fully_concurrent_tasks.jpeg" width="480" height="500">
 
-<img alt="Four tasks running in two pipes, taking 1.6 seconds total" src="/images/timing_diagram_wide/004_four_tasks_in_two_pipes.jpeg" width="771" height="443">
-
 If you let each task run concurrently, the total time will be roughly the time of the longest task, for example 0.8 s.
 
 If you allow some simultaneous tasks, for example two pipes for four tasks (reactants), several things are different:
 - There is no guarantee of the order that the tasks will run in; it depends on the queueing that asyncio chooses. This is fine as long as you wait for all tasks to complete. (In a more sophisticated scheme for longer-running code, you could process and present results to the user as they come in.)
 - Until all tasks are started, a new task enters (starts running in) a pipe when a pipe has completed its previous task.
 - The total time is not deterministic, but should be roughly minimized given the constraint of fewer pipes than tasks.
+
+
+<img alt="Four tasks running in two pipes, taking 1.6 seconds total" src="/images/timing_diagram_wide/004_four_tasks_in_two_pipes.jpeg" width="771" height="443">
+
 
 By the way, the specific request type we use here [`aiohttp` also has a way to limit the number of concurrent connections](https://stackoverflow.com/questions/35196974/aiohttp-set-maximum-number-of-requests-per-second/43857526#43857526). For generality, we use Semaphore instead because it can be applied to any type of task.
 
