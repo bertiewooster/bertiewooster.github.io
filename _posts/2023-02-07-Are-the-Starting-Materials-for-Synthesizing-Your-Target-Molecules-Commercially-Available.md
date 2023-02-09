@@ -98,13 +98,11 @@ It's thus advantageous to write your code asynchronously and use Semaphore. That
 If you let each task run concurrently, the total time will be roughly the time of the longest task, for example 0.8 s.
 
 If you allow some simultaneous tasks, for example two pipes for four tasks (reactants), several things are different:
-- There is no guarantee of the order that the tasks will run in; it depends on the queueing that asyncio chooses. This is fine as long as you wait for all tasks to complete. (In a more sophisticated scheme for longer-running code, you could process and present results to the user as they come in.)
+- There is no guarantee of the order that the tasks will run in; it depends on the queueing that asyncio chooses. This is fine as long as you wait for all tasks to complete. (With a larger set of target molecules where the API calls would take longer in total, you could process and present results to the user as they came in.)
 - Until all tasks are started, a new task enters (starts running in) a pipe when a pipe has completed its previous task.
 - The total time is not deterministic, but should be roughly minimized given the constraint of fewer pipes than tasks.
 
-
 <img alt="Four tasks running in two pipes, taking 1.6 seconds total" src="/images/timing_diagram_wide/004_four_tasks_in_two_pipes.jpeg" width="771" height="443">
-
 
 By the way, the specific request type we use here [`aiohttp` also has a way to limit the number of concurrent connections](https://stackoverflow.com/questions/35196974/aiohttp-set-maximum-number-of-requests-per-second/43857526#43857526). For generality, we use Semaphore instead because it can be applied to any type of task.
 
@@ -538,7 +536,7 @@ async def check_reactions(target_reaction_list: list[list[str, str, str]]):
 
 You specify each reaction as a list of:
 - target molecule: The SMILES string of the molecule you want to synthesize, for example "OCN1C2CC(C=C2)C1CC1NCCc2ccccc12"
-- [reaction SMARTS](https://www.rdkit.org/docs/source/rdkit.Chem.rdChemReactions.html#rdkit.Chem.rdChemReactions.ChemicalReaction): SMARTS strings for the reactant(s) and products in the form for example `reactant1.reactant2>>product`, e.g. "[cH1:1]1:[c:2](-[CH2:7]-[CH2:8]-[NH2:9]):[c:3]:[c:4]:[c:5]:[c:6]:1.[#6:11]-[CH1;R0:10]=[OD1]>>[c:1]12:[c:2](-[CH2:7]-[CH2:8]-[NH1:9]-[C:10]-2(-[#6:11])):[c:3]:[c:4]:[c:5]:[c:6]:1"
+- [reaction SMARTS](https://www.rdkit.org/docs/source/rdkit.Chem.rdChemReactions.html#rdkit.Chem.rdChemReactions.ChemicalReaction): SMARTS strings for the reactant(s) and product(s)
 - name, which is simply for labeling for human readability, for example "Pictet-Spengler"
 
 You then provide a list of one or more reactions, where each reaction is a sublist.
@@ -564,7 +562,45 @@ rxn3 = [naphthyl_target, amine_oxidation_rxn, "Amine oxidation"]
 
 # Create list of reactions
 rxns = [rxn1, rxn2, rxn3]
+```
 
+RDKit models reactions as SMARTS patterns in the form for example `reactant1Pattern.reactant2Pattern>>productPattern`, so molecules that match those patterns can undergo that reaction. For example, here's the Pictet-Spengler forward (synthesis) reaction as a SMARTS pattern, where a ["β-arylethylamine undergoes condensation with an aldehyde or ketone followed by ring closure](https://en.wikipedia.org/wiki/Pictet%E2%80%93Spengler_reaction)."
+
+
+```python
+rxn_fwd = Chem.ReactionFromSmarts(pictet_spengler_rxn)
+rxn_fwd
+```
+
+
+
+
+    
+![Pictet-Spengler forward (synthesis) reaction](/images/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_files/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_37_0.png)
+    
+
+
+
+And here's the Pictet-Spengler reverse reaction that we'll use to find the starting materials for two target molecules:
+
+
+```python
+reverse_reaction(rxn_fwd)
+```
+
+
+
+
+    
+![Pictet-Spengler reverse reaction](/images/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_files/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_39_0.png)
+    
+
+
+
+Now we can check whether the needed starting materials are available for our three target molecules:
+
+
+```python
 # Check list of reactions: Are starting materials commercially available?
 
 # When running in Jupyter, use this next line:
@@ -573,22 +609,21 @@ dwg, reaction_reactants_avail = await check_reactions(rxns)
 #dwg, reaction_reactants_avail = asyncio.run(check_reactions(rxns))
 
 dwg
-
 ```
 
-    0.60s for O=CCNc1ccccc1 PubChem API call(s)
-    0.66s for NCCc1ccccc1 PubChem API call(s)
-    0.54s for Nc1ccc(C2NCCc3ccccc32)c2ccccc12 PubChem API call(s)
+    0.63s for NCCc1ccccc1 PubChem API call(s)
+    0.63s for O=CCNc1ccccc1 PubChem API call(s)
     0.50s for O=CCC1C2C=CC(C2)N1CO PubChem API call(s)
+    0.51s for Nc1ccc(C2NCCc3ccccc32)c2ccccc12 PubChem API call(s)
     -----
-    1.16s total elapsed time for PubChem API calls
+    1.15s total elapsed time for PubChem API calls
 
 
 
 
 
     
-![Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available.](/images/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_files/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_35_1.png)
+![Three reactions, one per row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available.](/images/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_files/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_41_1.png)
     
 
 
@@ -605,9 +640,9 @@ reaction_reactants_avail
 
 
 
-    [[<__main__.Reaction at 0x7fde11679ae0>, False],
-     [<__main__.Reaction at 0x7fde00b21ae0>, True],
-     [<__main__.Reaction at 0x7fde0094f580>, False]]
+    [[<__main__.Reaction at 0x7fde11679ea0>, False],
+     [<__main__.Reaction at 0x7fdde8b3f310>, True],
+     [<__main__.Reaction at 0x7fde1167b0a0>, False]]
 
 
 
@@ -638,18 +673,18 @@ dwg
 
 ```
 
-    0.55s for O=CCC1C2C=CC(C2)N1CO PubChem API call(s)
-    0.67s for c1ccccc1 PubChem API call(s)
-    0.81s for O=C(C)Oc1ccccc1C(=O)O PubChem API call(s)
+    0.50s for O=CCC1C2C=CC(C2)N1CO PubChem API call(s)
+    0.71s for c1ccccc1 PubChem API call(s)
+    0.72s for O=C(C)Oc1ccccc1C(=O)O PubChem API call(s)
     -----
-    1.36s total elapsed time for PubChem API calls
+    1.22s total elapsed time for PubChem API calls
 
 
 
 
 
     
-![Three molecules and whether each is commercially available](/images/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_files/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_40_1.png)
+![Three molecules and whether each is commercially available](/images/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_files/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available_46_1.png)
     
 
 
