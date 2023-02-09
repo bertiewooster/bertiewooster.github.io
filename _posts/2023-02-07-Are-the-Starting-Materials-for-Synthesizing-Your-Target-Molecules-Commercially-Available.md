@@ -704,4 +704,4 @@ Finally, the presence in PubChem of vendors for a chemical may not be definitive
 
 ## Acknowledgements
 
-Thanks to the [Kawalt Lab at Indiana Biosciences Research Institute](https://www.indianabiosciences.org/kalwat-lab) for [suggesting on Mastodon](https://fosstodon.org/@Kalwat_Lab@mas.to/109765367942971549) to use PubChem's APIs to determine the commercial availability of molecules. Thanks to [Kurt Thorn](https://fosstodon.org/@kurtthorn) for [suggesting other APIs](https://fosstodon.org/@kurtthorn/109765076448231287).
+Thanks to the [Kalwat Lab at Indiana Biosciences Research Institute](https://www.indianabiosciences.org/kalwat-lab) for [suggesting on Mastodon](https://fosstodon.org/@Kalwat_Lab@mas.to/109765367942971549) to use PubChem's APIs to determine the commercial availability of molecules. Thanks to [Kurt Thorn](https://fosstodon.org/@kurtthorn) for [suggesting other APIs](https://fosstodon.org/@kurtthorn/109765076448231287).
