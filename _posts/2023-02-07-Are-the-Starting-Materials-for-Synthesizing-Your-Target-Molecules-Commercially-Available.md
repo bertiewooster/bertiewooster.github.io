@@ -6,7 +6,7 @@ Modern pharmaceutical and materials chemistry involves screening many candidate 
 
 Here's an example graphical summary:
 
-![Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available.](/images/reaction-accessible.jpg)
+![Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available.](/images/reaction-accessible.png)
 
 *[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available.ipynb)*
 
@@ -77,9 +77,9 @@ These two calls need to happen sequentially: We first need to get the molecule's
 
 These figures demonstrate how we can save time by running API calls asynchronously: The asynchronous approach might take 0.8 seconds, while the synchronous approach might take 1.2 seconds. (For simplicity, we assume that each API call takes 0.4 s; in reality, the time for each call can vary based on the Internet connection, how busy the server is, etc.)
 
-<img alt="Two tasks running synchronously, taking 1.2 seconds total" src="/images/timing_diagram_wide/002_sync_two_tasks.jpeg" width="495" height="232">
+<img alt="Two tasks running synchronously, taking 1.2 seconds total" src="/images/timing_diagram_wide/002_sync_two_tasks.png" width="495" height="232">
 
-<img alt="Two tasks running asynchronously, taking 0.8 seconds total" src="/images/timing_diagram_wide/001_async_two_tasks.jpeg" width="468" height="309">
+<img alt="Two tasks running asynchronously, taking 0.8 seconds total" src="/images/timing_diagram_wide/001_async_two_tasks.png" width="468" height="309">
 
 Tip on calling asynchronous functions (called coroutines): If you get an error such as `coroutine not subscriptable`, you may have forgotten to `await` the coroutine. Python is thus returning not the result of running the coroutine, but a reference to the coroutine code. This is similar to how if you call a method and forget to put the parentheses after it, for example `MyObject.MyMethod` rather than `MyObject.MyMethod()`, Python returns a reference to the method rather than the result of running the method.
 
@@ -93,7 +93,7 @@ Tip on calling asynchronous functions (called coroutines): If you get an error s
 
 It's thus advantageous to write your code asynchronously and use Semaphore. That way, you can easily adjust the degree of concurrency once your code is working and you need to adjust to limit the number of API calls per second.
 
-<img alt="Four fully concurrent tasks, taking 0.8 seconds total" src="/images/timing_diagram_wide/003_four_fully_concurrent_tasks.jpeg" width="480" height="500">
+<img alt="Four fully concurrent tasks, taking 0.8 seconds total" src="/images/timing_diagram_wide/003_four_fully_concurrent_tasks.png" width="480" height="500">
 
 If you let each task run concurrently, the total time will be roughly the time of the longest task, for example 0.8 s.
 
@@ -102,7 +102,7 @@ If you allow some simultaneous tasks, for example two pipes for four tasks (reac
 - Until all tasks are started, a new task enters (starts running in) a pipe when a pipe has completed its previous task.
 - The total time is not deterministic, but should be roughly minimized given the constraint of fewer pipes than tasks.
 
-<img alt="Four tasks running in two pipes, taking 1.6 seconds total" src="/images/timing_diagram_wide/004_four_tasks_in_two_pipes.jpeg" width="771" height="443">
+<img alt="Four tasks running in two pipes, taking 1.6 seconds total" src="/images/timing_diagram_wide/004_four_tasks_in_two_pipes.png" width="771" height="443">
 
 By the way, the specific request type we use here [`aiohttp` also has a way to limit the number of concurrent connections](https://stackoverflow.com/questions/35196974/aiohttp-set-maximum-number-of-requests-per-second/43857526#43857526). For generality, we use Semaphore instead because it can be applied to any type of task.
 
