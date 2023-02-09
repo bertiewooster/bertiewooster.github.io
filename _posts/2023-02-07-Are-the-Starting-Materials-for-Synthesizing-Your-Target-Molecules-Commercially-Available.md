@@ -6,7 +6,7 @@ Modern pharmaceutical and materials chemistry involves screening many candidate 
 
 Here's an example graphical summary:
 
-![Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available.](/images/reaction-accessible.png)
+![Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available.](/images/reaction-accessible.jpg)
 
 *[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available.ipynb)*
 
