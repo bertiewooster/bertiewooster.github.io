@@ -81,7 +81,7 @@ These figures demonstrate how we can save time by running API calls asynchronous
 
 <img alt="Two tasks running asynchronously, taking 0.8 seconds total" src="/images/timing_diagram_wide/001_async_two_tasks.png" width="468" height="309">
 
-Tip on calling asynchronous functions (called coroutines): If you get an error such as `coroutine not subscriptable`, you may have forgotten to `await` the coroutine. Python is thus returning not the result of running the coroutine, but a reference to the coroutine code. This is similar to how if you call a method and forget to put the parentheses after it, for example `MyObject.MyMethod` rather than `MyObject.MyMethod()`, Python returns a reference to the method rather than the result of running the method.
+Tip on calling asynchronous functions (called coroutines): If you get an error such as `coroutine not subscriptable`, you may have forgotten to `await` the coroutine. Python is thus returning not the result of running the coroutine, but a reference to the coroutine code. This is similar to how if you call a method and forget to put the parentheses after it, for example `my_object.my_method` rather than `my_object.my_method()`, Python returns a reference to the method rather than the result of running the method.
 
 ## Why Not To Make Too Many Concurrent API Calls
 [PubChem asks you to limit API requests to 5 per second](https://pubchem.ncbi.nlm.nih.gov/docs/programmatic-access#section=Request-Volume-Limitations), so we shouldn't make API calls for too many reactants simultaneously. Each reactant needs at least one, and typically two, API calls.
@@ -111,7 +111,7 @@ To demystify API calls, it's useful to think of them as corresponding to the inf
 
 We use two different PubChem APIs. First, we use [PUG (Power User Gateway) REST](https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest) to request the identifier of the molecule. The PUG REST request corresponds to interactively doing a SMILES search, for example [https://pubchem.ncbi.nlm.nih.gov/#query=O=C(C)Oc1ccccc1C(=O)O&input_type=smiles](https://pubchem.ncbi.nlm.nih.gov/#query=O=C(C)Oc1ccccc1C(=O)O&input_type=smiles) where `O=C(C)Oc1ccccc1C(=O)O` is the SMILES string for the molecule of interest, here acetylsalicylic acid (aspirin). We request text format, so PUG REST returns a simple result: the identifier if it exists, or 0 (zero) if not, followed by a linebreak, for example `2244\n` where 2244 is the PubChem identifier for acetylsalicylic acid. Processing this result to obtain the identifier is simple.
 
-Second, we use [PUG View](https://pubchem.ncbi.nlm.nih.gov/docs/pug-view) to request data about commercial availability. The PUG View request corresponds to interactively visiting the molecule's page, for example https://pubchem.ncbi.nlm.nih.gov/compound/2244, for acetylsalicylic acid. The data is more complicated here. It corresponds to the Chemical Vendors section on the web page. We chose to request XML format. Fortunately, we don't need to process all the data in the result, just check whether there is any vendor data.
+Second, we use [PUG View](https://pubchem.ncbi.nlm.nih.gov/docs/pug-view) to request data about commercial availability. The PUG View request corresponds to interactively visiting the molecule's page, for example [https://pubchem.ncbi.nlm.nih.gov/compound/2244](https://pubchem.ncbi.nlm.nih.gov/compound/2244), for acetylsalicylic acid. The data is more complicated here. It corresponds to the Chemical Vendors section on the web page. We chose to request XML format. Fortunately, we don't need to process all the data in the result, just check whether there is any vendor data.
 
 If there is vendor data, the result includes:
 
@@ -628,7 +628,7 @@ dwg
 
 
 
-`check_reactions` returns two results, a drawing and a list of reactions and whether each is accessible, that is, whether all its reactants are commercially available. To view the results graphically, call the drawing. The first column is the target and tells whether it's accessible. Each subsequent column is a reactant and tells whether it's commercially available.
+`check_reactions()` returns two results, a drawing and a list of reactions and whether each is accessible, that is, whether all its reactants are commercially available. To view the results graphically, call the drawing. The first column is the target and tells whether it's accessible. Each subsequent column is a reactant and tells whether it's commercially available.
 
 `reaction_reactants_avail` is a nested list where each sub-list represents the reaction, then whether its target is accessible.
 
@@ -647,7 +647,7 @@ reaction_reactants_avail
 
 
 ## Checking the Commercial Availability of any List of Molecules
-If you don't want to use the reaction functionality, and simply want to check whether a list of molecules is commercially available, you can call `check_avail_smiles_list` directly with a list of SMILES strings.
+If you don't want to use the reaction functionality, and simply want to check whether a list of molecules is commercially available, you can call `check_avail_smiles_list()` directly with a list of SMILES strings.
 
 
 ```python
