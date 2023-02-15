@@ -2,7 +2,7 @@
 
 This utility reports whether the starting materials are commercially available for a set of synthesis targets given reactions. You give it your synthesis targets and the reaction to create each, it determines the starting materials, checks whether they are commercially available, and tells you whether each target is accessible--whether all its starting materials are commercially available.
 
-Modern pharmaceutical and materials chemistry involves screening many candidate compounds. While much can now be done *in silico* (on a computer), promising compounds still need to be synthesized. [Divergent synthesis](https://en.wikipedia.org/wiki/Divergent_synthesis) can create a library of related compounds. One approach is to start with a diversity of commercially-available molecules, run the same reaction on them using the same co-reactant(s), and produce a diversity of target molecules that have a promising scaffold (core structure). A key question is, which starting materials are commercially available?
+Modern pharmaceutical and materials chemistry involves screening many candidate compounds. While much can now be done *in silico* (on a computer), promising compounds still need to be synthesized to check their properties experimentally. [Divergent synthesis](https://en.wikipedia.org/wiki/Divergent_synthesis) can create a library of related compounds. One approach is to start with a diversity of commercially-available molecules, run the same reaction on them using the same co-reactant(s), and produce a diversity of target molecules that have a promising scaffold (core structure). A key question is, which starting materials are commercially available?
 
 Here's an example graphical summary:
 
@@ -337,7 +337,7 @@ boolean_dict = {True: "Yes", False: "No"}
 ```python
 async def is_commercially_available(smiles):
     """
-    Asynchronously check the availability of a queue of SMILES strings (chemicals) in PubChem
+    Asynchronously check the availability of a SMILES string (chemical) in PubChem
     Based on https://realpython.com/python-async-features/#asynchronous-non-blocking-http-calls
 
     :param smiles: A SMILES string (representing a molecule)
@@ -412,7 +412,7 @@ async def safe_calls(smiles):
 ```python
 async def check_avail_smiles_set(smiles_set: set[str]) -> dict[str, Reactant]:
     """
-    Feed asynchronous queue to check the availability of several SMILES strings (chemicals) in PubChem
+    Check set of SMILES strings (chemicals) for their availability in PubChem
     Adapted from https://stackoverflow.com/questions/48483348/how-to-limit-concurrency-with-python-asyncio#48486557
 
     :param smiles_set: Set of SMILES strings (representing molecules)
@@ -492,8 +492,7 @@ async def check_reactions(target_reaction_list: list[list[str, str, str]]):
     # Check commercial availability of set of starting materials
     smiles_avail = await check_avail_smiles_list(all_reactants_list)
 
-    # reaction_reactants_avail format is:
-    #   [[reaction object 0, all reactants available], [reaction object 1, all reactants available], ...]
+    # Distribute Reactant objects into Reaction objects
     reaction_reactants_avail = []
     for reaction in reactions:
         # Add information to Reaction objects
@@ -503,10 +502,12 @@ async def check_reactions(target_reaction_list: list[list[str, str, str]]):
 
         reaction.tally_all_reactants_commercially_available()
 
-        # Return results
+        # Put Reaction information into nested list--reaction_reactants_avail format is:
+        #   [[reaction object 0, all reactants available], [reaction object 1, all reactants available], ...]
         reaction_reactants_avail.append([reaction, reaction._reactants_commercially_available])
 
-    # Create and format molgrid output
+    # Create and format molgrid output to graphically summarize 
+    #   which targets are accessible and which reactants are commercially available
     mols_2D = []
     legends_2D = []
     for reaction in reactions:
@@ -520,7 +521,7 @@ async def check_reactions(target_reaction_list: list[list[str, str, str]]):
         mols_2D.append(mols_row)
         legends_2D.append(legends_row)
     
-    # Create null molecule (has no atoms) as filler for empty molecule cells
+    # Create null molecule (has no atoms) as filler for empty molecule cells in molecular grid plot of results
     null_mol = Chem.MolFromSmiles("")
     pad_rows(mols_2D, longest_row(mols_2D), filler=null_mol)
     pad_rows(legends_2D, longest_row(mols_2D))
@@ -564,7 +565,7 @@ rxn3 = [naphthyl_target, amine_oxidation_rxn, "Amine oxidation"]
 rxns = [rxn1, rxn2, rxn3]
 ```
 
-RDKit models reactions as SMARTS patterns in the form for example `reactant1Pattern.reactant2Pattern>>productPattern`, so molecules that match those patterns can undergo that reaction. For example, here's the Pictet-Spengler forward (synthesis) reaction as a SMARTS pattern, where a ["β-arylethylamine undergoes condensation with an aldehyde or ketone followed by ring closure](https://en.wikipedia.org/wiki/Pictet%E2%80%93Spengler_reaction)."
+RDKit models reactions as SMARTS patterns in the form for example `reactant1Pattern.reactant2Pattern>>productPattern`, so molecules that match those patterns can undergo that reaction. For example, here's the Pictet-Spengler forward (synthesis) reaction where a ["β-arylethylamine undergoes condensation with an aldehyde or ketone followed by ring closure"](https://en.wikipedia.org/wiki/Pictet%E2%80%93Spengler_reaction) as a SMARTS pattern.
 
 
 ```python
@@ -627,6 +628,8 @@ dwg
     
 
 
+
+Notice that the total time taken for the API calls is less than the sum of the calls for each reactant because we're running calls for two reactants concurrently.
 
 `check_reactions()` returns two results, a drawing and a list of reactions and whether each is accessible, that is, whether all its reactants are commercially available. To view the results graphically, call the drawing. The first column is the target and tells whether it's accessible. Each subsequent column is a reactant and tells whether it's commercially available.
 
