@@ -4,23 +4,19 @@ title: Contact
 permalink: /contact/
 ---
 
-<form action="https://getform.io/f/bcfafffe-acf5-4ca6-acb4-17d9374b1eb0" method="POST">
-    <input type="text" name="name">
-    <input type="email" name="email">
-    <input type="text" name="message">
-    <!-- add hidden Honeypot input to prevent spams -->
-    <input type="hidden" name="_gotcha" style="display:none !important">
-    <!-- checkbox handle -->
-    <input type="checkbox" name="subscribe" value="yes" checked>
-    <input type="hidden" name="subscribe" value="no">
-    <!-- radio button handle -->
-    <input type="radio" name="gender" value="male" checked>
-    <input type="radio" name="gender" value="female">
-    <input type="radio" name="gender" value="other">
-    <!-- select field handle -->
-    <select name="work-experience">
-        <option value="one-year">0-1 years</option>
-        <option value="one-five-years">1-5 years</option>
-    </select>
-    <button type="submit">Send</button>
+<form accept-charset="UTF-8" action="https://getform.io/{YOUR_UNIQUE_FORM_ENDPOINT}" method="POST" enctype="multipart/form-data" target="_blank">
+    <div class="form-group">
+    <label for="Email1" required="required">Email address</label><br>
+    <input type="email" name="email" class="form-control" id="Email1" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="form-group">
+    <label for="Name">Name</label><br>
+    <input type="text" name="name" class="form-control" id="Name" placeholder="Enter your name" required="required">
+    </div>
+    <div class="form-group">
+        <label for="Comment">Comment</label><br>
+        <textarea id="Comment" name="Comment" placeholder="Enter email" rows="4" cols="50">
+        </textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
