@@ -14,8 +14,8 @@ permalink: /contact/
     <input type="text" name="name" class="form-control" id="Name" placeholder="Enter your name" required="required">
     </div>
     <div class="form-group">
-        <label for="Comment">Comment</label><br>
-        <textarea id="Comment" name="Comment" placeholder="Enter comment" rows="4" cols="50"></textarea>
+        <label for="Message">Message</label><br>
+        <textarea id="Message" name="Message" placeholder="Enter message" rows="4" cols="50"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
