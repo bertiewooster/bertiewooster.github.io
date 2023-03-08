@@ -61,6 +61,9 @@ Understand how the elements are related to each other. Emphasizes electronic con
 
 # My open-source contributions
 
+## RDKit cheminformatics package
+- [Improved documentation](https://github.com/rdkit/rdkit/pulls?q=is%3Amerged+is%3Apr+author%3Abertiewooster+) by illustrating drawing capability in tutorial and adding SMILES (chemical notation) for R groups
+
 ## SymPy computer algebra system in pure Python
 - Technical writer for funded 2022 Season of Docs project: Creating documentation for how to [solve equations](https://docs.sympy.org/dev/guides/solving/index.html)
 - Core developer wrote "I think you are doing excellent work on the SymPy documentation. Thank you!"
