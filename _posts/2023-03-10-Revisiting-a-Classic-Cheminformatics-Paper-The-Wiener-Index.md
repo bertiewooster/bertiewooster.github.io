@@ -10,6 +10,8 @@ His paper is impressive for the density of data--much of the paper is tables of 
 
 ![Graph of calculated against observed boiling point for alkanes](/images/Wiener-boiling-point-calc-against-observed.png)
 
+_[Open this notebook in Google Colab](https://colab.research.google.com/drive/1KibRL643SEcCtcBvK1bnDSdhDt2Pubo4?usp=sharing)_
+
 ## Models From Wiener's Paper
 
 Wiener models the boiling points of alkanes using the linear formula
@@ -548,6 +550,8 @@ plt.plot(egloff_x, egloff_y, color="black", linewidth=0.1)
 
 
 The [mol_frame package](https://github.com/apahl/mol_frame) lets us show the molecules as pop-ups (tooltips) when we mouse over each data point. We will reproduce each plot as a mol_frame plot. For mol_frame, we have to convert the dataframe from Polars to pandas.
+
+*Unfortunately, the interactive plots are not working in the blog version of this notebook. Please visit the [Google Colab notebook](https://colab.research.google.com/drive/1KibRL643SEcCtcBvK1bnDSdhDt2Pubo4?usp=sharing) to access the interactive plot.*
 
 
 ```python
