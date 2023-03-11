@@ -4,7 +4,7 @@ This example uses machine learning to predict the lipophilicty of compounds.
 
 [Lipophilicty](https://en.wikipedia.org/wiki/Lipophilicity) measures how well a compound dissolves in non-polar media such as fats and lipids. So it's important for drugs that are delivered orally (for example, via a pill) because the active ingredient [needs to be absorbed into the lipids](https://emerypharma.com/blog/drug-lipophilicity-and-absorption-a-continuous-challenge-toward-the-goal-of-drug-discovery/) of biological membranes.
 
-_[Open this notebook in Google Colab](https://colab.research.google.com/drive/1pWK3h6en6rwnGHIDgbz6M5Yo1eDxy9Rr?usp=sharing)_
+_[Open this notebook in Google Colab](https://colab.research.google.com/drive/1P7txNo9M6cln-iukWRrLkqFFrZvx7jI3?usp=sharing)_
 
 
 ```python
@@ -339,7 +339,7 @@ plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
 
 We can also use [mol_frame](https://github.com/apahl/mol_frame) to make an interactive plot: If you mouse over a marker on the graph, the molecular structure will be displayed! (One interesting thing to note is that molecules which are close together on the plot may have very different molecular structures.) Also, you can pan and zoom the graph, and save it.
 
-*Unfortunately, the interactive plot is not working in the blog version of this notebook. Please visit the [Google Colab notebook](https://colab.research.google.com/drive/1pWK3h6en6rwnGHIDgbz6M5Yo1eDxy9Rr?usp=sharing) to access the interactive plot.*
+*Unfortunately, the interactive plot is not working in the blog version of this notebook. Please visit the [Google Colab notebook](https://colab.research.google.com/drive/1P7txNo9M6cln-iukWRrLkqFFrZvx7jI3?usp=sharing) to access the interactive plot.*
 
 
 ```python
@@ -352,14 +352,8 @@ cpds.scatter("measured", "predicted")
     * using Smiles
     * add b64:               (  420 |    5)
 
-
-
-
-
-
     * using Mol_b64
     * add img:               (  420 |    6)
-
 
 
 Let's plot the train data set to visually compare those two sets. We made the markers (points) smaller because there are so many and we don't want them to overlap with each other so much.
