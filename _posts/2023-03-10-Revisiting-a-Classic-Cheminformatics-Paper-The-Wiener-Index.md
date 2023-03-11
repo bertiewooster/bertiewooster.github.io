@@ -207,7 +207,8 @@ for table_num in ("II", "III"):
     with open(table_file) as f:
         content = f.readlines()
 
-        # Ignore lines that start with period or comma--these were incorrectly split across two lines
+        # Ignore lines that start with period or comma--
+        #   these were incorrectly split across two lines
         ignore_line_chars = (".", ",")
 
         for line in content:
@@ -221,7 +222,8 @@ for table_num in ("II", "III"):
                 words = line_clean[end_of_molecule:].split()
                 t_read_in = words[0]
 
-                # Some table entries have no observed data; we process only molecules with observed data
+                # Some table entries have no observed data; 
+                #   we process only molecules with observed data
                 if t_read_in != "Null":
                     molecules.append(no_spaces_in_molecule)
                     tables.append(table_num)
@@ -232,7 +234,7 @@ for table_num in ("II", "III"):
                         ts_which.append("t")
 ```
 
-To convert the chemical names to SMILES strings so they can be interpreted by RDKit as molecules, the name parser py2opsin saves us from having to make API calls to a web site, which would be slow.
+To convert the chemical names to SMILES strings so they can be interpreted by RDKit as molecules, the name parser [py2opsin](https://github.com/JacksonBurns/py2opsin) saves us from having to make API calls to a web site, which would be slow.
 
 
 ```python
@@ -524,7 +526,8 @@ We start with the baseline of linear alkanes and verify that Egloff's equation f
 
 
 ```python
-# Plot experimental straight-chain alkane data: Boiling point against number of carbons
+# Plot experimental straight-chain alkane data:
+#   Boiling point against number of carbons
 seaborn.scatterplot(data=linear_alkanes, x="n", y="t0_obs °C")
 
 # Add to the plot a curve for the Egloff model
