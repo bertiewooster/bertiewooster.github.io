@@ -188,7 +188,8 @@ tables = []
 ts_read_in = []
 ts_which = []
 
-# Dictionary of typos and corrections. Italicized "n" in "n-" is particularly difficult for OCR.
+# Dictionary of typos and corrections. 
+#   Italicized "n" in "n-" is particularly difficult for OCR.
 replace_typos = {
     "w-": "n-",
     "ro-": "n-",
@@ -572,7 +573,7 @@ linear_alkanes_mf.scatter("n", "t0_obs °C")
     * using Mol_b64
     * add img:               (    9 |   10)
 
-## Visualizing Wiener's Model for Δt for Boiling Point of Alkanes
+## Visualizing Wiener's Model for $Δt$ for Boiling Point of Alkanes
 
 Considering now the substance of the paper, we plot the calculated against observed boiling points for the 94 alkanes. The diagonal line represents a perfect fit of model to experiment.
 
