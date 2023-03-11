@@ -8,11 +8,12 @@
 #     c) Paste the output (starting with data:image/) into the quotes in the img tag
 #  3) Change the name of the notebook (input) and markdown (output) files in the non-commented code below
 #  4) Save this script
-#  5) Use venv in this folder, not conda, in terminal
+#  5) Use venv in this folder, not conda, in terminal using 
+#        . venv/bin/activate
 
 # Run this script in the terminal using ./nb_md
 
-jupyter nbconvert _notebooks/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available.ipynb --to markdown --output 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available.md
+jupyter nbconvert _notebooks/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.ipynb --to markdown --output 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
