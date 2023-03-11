@@ -2,11 +2,11 @@
 
 Harry Wiener was "[a pioneer in cheminformatics and chemical graph theory](https://en.wikipedia.org/wiki/Harry_Wiener)". In his 1947 Journal of the American Chemical Society article "[Structural Determination of Paraffin Boiling Points](https://pubs.acs.org/doi/10.1021/ja01193a005)", he introduced the path number $\omega$ "as the sum of the distances between any two carbon atoms in the molecule, in terms of carbon-carbon bonds", which is now known as the Wiener index. He used his index to model the boiling points of alkanes (also known as paraffins). This post revisits that article, extracts data for molecules from it, recalculates cheminformatics parameters and boiling points, and plots the data.
 
+![Graph of calculated against observed boiling point for alkanes](/images/Wiener-boiling-point-calc-against-observed.png)
+
 In addition to the Wiener index, Wiener's paper defines another cheminformatic parameter, the polarity number $p$, as "the number of pairs of carbon atoms which are separated by three carbon-carbon bonds."
 
 His paper is impressive for the density of data--much of the paper is tables of data--and discovering cheminformatics parameters that model physical data with simple relationships. The [Wiener index has been generalized and applied to bioactivity and materials](https://en.wikipedia.org/wiki/Harry_Wiener#Achievements).
-
-![Graph of calculated against observed boiling point for alkanes](/images/Wiener-boiling-point-calc-against-observed.png)
 
 _[Open this notebook in Google Colab](https://colab.research.google.com/drive/1KibRL643SEcCtcBvK1bnDSdhDt2Pubo4?usp=sharing)_
 
