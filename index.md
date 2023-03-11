@@ -2,6 +2,13 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [Revisiting a Classic Cheminformatics Paper: The Wiener Index]({% post_url 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index %})
+*Uses Python, RDKit, Polars, matplotlib, seaborn, py2opsin, and mol_frame*
+
+[<img alt="Graph of calculated against observed boiling point for alkanes" style="width:818px; height:549px" src="/images/Wiener-boiling-point-calc-against-observed.png">]({% post_url 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index %})
+
+This post revisits Harry Wiener's article "Structural Determination of Paraffin Boiling Points", extracts data for molecules from it, recalculates cheminformatics parameters and boiling points, and plots the data.
+
 ## [RDKit Utility to Check Whether Starting Materials for Synthesizing Your Target Molecules Are Commercially Available]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
 *Uses Python, RDKit, PubChem's API, asyncio, and Semaphore*
 
