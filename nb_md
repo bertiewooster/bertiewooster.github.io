@@ -30,8 +30,8 @@ jupyter nbconvert _notebooks/2023-03-10-Revisiting-a-Classic-Cheminformatics-Pap
 #             ![svg](
 #         with 
 #            ![svg](/images/
-#  4) Add alt tags to Jupyter images by replacing ![png] or ![svg] with a description, e.g. ![Annotated tree]
-#  5) If you have a link to an image in the top-level /images folder, in the markdown file, replace
+#  4) If you have a link to an image in the top-level /images folder, in the markdown file, replace
 #            ../images
 #         with 
 #            /images
+#  5) Add alt tags to Jupyter images by replacing ![png] or ![svg] with a description, e.g. ![Annotated tree]
