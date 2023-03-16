@@ -699,7 +699,7 @@ This code uses a SMILES string as a dictionary key. It would be better to use a 
 
 Similarly, you might want to use an identifier for each Reaction object, so you could use it as a key in a dictionary.
 
-This code assumes only one product for a reaction. In the vast majority of cases, you're interested in only one product for a reaction, but for a reaction which produces a byproduct, such as water for a condensation reaction, there could be multiple products.
+This code assumes only one product for a reaction. In the vast majority of cases, you're interested in only one product for a reaction, but for a reaction which produces a byproduct, such as water for a dehydration reaction, there could be multiple products.
 
 If there are many reactions or reactants, you might want to process and present results to the user as they come in. That way, the user can tell there's progress, and start getting some results before they all come in.
 
