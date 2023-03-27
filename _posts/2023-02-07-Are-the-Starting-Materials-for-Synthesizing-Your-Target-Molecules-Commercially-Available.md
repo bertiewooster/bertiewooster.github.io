@@ -8,7 +8,7 @@ Here's an example graphical summary:
 
 ![Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available.](/images/reaction-accessible.png)
 
-*[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available.ipynb)*
+*[Download this notebook from GitHub by right-clicking and choosing Save Link As...](https://raw.githubusercontent.com/bertiewooster/bertiewooster.github.io/main/_notebooks/2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available.ipynb) or access and run [this notebook on Google Colab](https://colab.research.google.com/drive/1Kwr_08FJ-pfO9KhyHTXYTSisi4d4vZVk)*
 
 
 ```python
