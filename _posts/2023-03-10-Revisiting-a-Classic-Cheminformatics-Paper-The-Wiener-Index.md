@@ -22,11 +22,11 @@ $\Delta t = a\Delta\omega + b\Delta p$ (eqn 2)
 
 Wiener determines that the eqn 2 fits the data if $\Delta\omega$ is divided by $n^{2}$, so he rewrites eqn 2 as
 
-$\Delta t = \frac{k}{n^{2}}\omega + b\Delta p$ (eqn 3)
+$\Delta t = \frac{k}{n^{2}}\Delta\omega + b\Delta p$ (eqn 3)
 
 and fits it to the data to determine that $k$ = 98 and b = 5.5:
 
-$\Delta t = \frac{98}{n^{2}}\omega + 5.5\Delta p$ (eqn 4)
+$\Delta t = \frac{98}{n^{2}}\Delta\omega + 5.5\Delta p$ (eqn 4)
 
 $\omega$ and $p$ are cheminformatic parameters than can be calculated from the molecular graph. The boiling point of the straight-chain alkanes needs to be empirically modeled, and [Egloff's equation](https://pubs.acs.org/doi/10.1021/j150402a006) neatly expresses those boiling points in terms of only the number of carbons $n$:
 
