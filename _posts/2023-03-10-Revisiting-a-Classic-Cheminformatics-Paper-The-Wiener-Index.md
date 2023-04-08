@@ -890,7 +890,7 @@ s = seaborn.scatterplot(data=octanes_moving_methyl, x="methyl position", y="t_ca
 # Create integer tick labels for methyl position by passing in list of integers
 methyl_pos_col = octanes_moving_methyl.select("methyl position")
 methyl_pos = methyl_pos_col.to_numpy().tolist()
-s.set_xticks(methyl_pos)
+s.set_xticks(methyl_pos[0])
 
 ## Label data points with omega and p values
 # Allow enough space for labels to the right of rightmost data point
