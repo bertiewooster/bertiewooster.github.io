@@ -170,8 +170,7 @@ def egloff(n: int) -> float:
     """
     Calculate boiling point for linear alkane using Egloff's equation
     https://pubs.acs.org/doi/pdf/10.1021/j150402a006
-    :returns: Δt, difference in boiling point between alkane and its structral
-    isomer of a linear alkane
+    :returns: t, boiling point for a linear alkane
     :param n: number of carbon atoms
     """
     return 745.42 * math.log10(n + 4.4) - 689.4
