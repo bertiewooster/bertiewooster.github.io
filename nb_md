@@ -13,7 +13,7 @@
 
 # Run this script in the terminal using ./nb_md
 
-jupyter nbconvert _notebooks/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.ipynb --to markdown --output 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.md
+jupyter nbconvert _notebooks/2023-04-25-Refitting-Data-from-Wiener.ipynb --to markdown --output 2023-04-25-Refitting-Data-from-Wiener.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
@@ -35,3 +35,13 @@ jupyter nbconvert _notebooks/2023-03-10-Revisiting-a-Classic-Cheminformatics-Pap
 #         with 
 #            /images
 #  5) Add alt tags to Jupyter images by replacing ![png] or ![svg] with a description, e.g. ![Annotated tree]
+#  6) If notebook had molframe graphs, delete from
+#            <style>.bk-root
+#         to the </div> after
+#            float: left'></img>
+#         and from
+#            <div id='1291'>
+#         to
+#            })(window);</script>
+#         (You can triple-click on the enormous block of text to select it)
+
