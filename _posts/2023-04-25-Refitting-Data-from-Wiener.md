@@ -1,7 +1,5 @@
 # Refitting Data From Wiener's Classic Cheminformatics Paper
 
-*Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
-
 In a previous post, I [revisited Wiener's paper predicting alkanes' boiling points using modern cheminformatics](https://colab.research.google.com/drive/1KibRL643SEcCtcBvK1bnDSdhDt2Pubo4) tools. This follow-up post refits the data with modern mathematical tools to check how well the literature parameters, and the current parameters optimized here, fit the data.
 
 Wiener and Egloff's works are impressive for using cheminformatics parameters that model physical data with simple relationships. Let's double-check how well their models fit the data. Equations reference Wiener's 1947 Journal of the American Chemical Society article "[Structural Determination of Paraffin Boiling Points](https://pubs.acs.org/doi/10.1021/ja01193a005)".
@@ -17,6 +15,8 @@ $\Delta t = \frac{k}{n^{2}}\Delta\omega + b\Delta p$ (eqn 3)
 Wiener fit that model to the data to find values $k$ = 98 and b = 5.5:
 
 $\Delta t = \frac{98}{n^{2}}\Delta\omega + 5.5\Delta p$ (eqn 4)
+
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1TEedx8QaWmVXkfpD3aFgR3E8qSVawIHN)*
 
 ## Approach Used in This Blog Post
 

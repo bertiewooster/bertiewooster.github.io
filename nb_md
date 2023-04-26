@@ -18,6 +18,7 @@ jupyter nbconvert _notebooks/2023-04-25-Refitting-Data-from-Wiener.ipynb --to ma
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
 #  2) Move the _files folder (containing the images) into the images folder
+#  ----- The rest of these instructions are for the markdown file -----
 #  3) Fix the image links in the markdown file by converting e.g.
 #          ![png](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
 #      to
@@ -44,4 +45,9 @@ jupyter nbconvert _notebooks/2023-04-25-Refitting-Data-from-Wiener.ipynb --to ma
 #         to
 #            })(window);</script>
 #         (You can triple-click on the enormous block of text to select it)
+#  ---If you downloaded the notebook from Google Colab---
+#  7) Delete the first paragraph:
+#            *Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
+#  8) Add, to the end o
+#            *[Open this notebook in Google Colab](link)*
 
