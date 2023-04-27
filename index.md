@@ -2,6 +2,13 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [Refitting Data From Wiener’s Classic Cheminformatics Paper]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
+*Uses Python, SciPy, Polars, NumPy, seaborn, matplotlib, and mol_frame*
+
+[<img alt="Graph of calculated against observed boiling point for alkanes" style="width:894px; height:647px" src="/images/refitting_egloff.png">]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
+
+How well did cheminformatics pioneers Egloff and Wiener fit their models to boiling points of alkanes in the 1940s? This blog post revisits their fits using digital tools.
+
 ## [Revisiting a Classic Cheminformatics Paper: The Wiener Index]({% post_url 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index %})
 *Uses Python, RDKit, Polars, matplotlib, seaborn, py2opsin, and mol_frame*
 
