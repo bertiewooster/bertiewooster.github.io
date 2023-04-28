@@ -1,3 +1,4 @@
+<a rel="me" href="https://fosstodon.org/@jemonat">Mastodon</a>
 Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
