@@ -45,7 +45,7 @@ Given a collection of molecules as SMILES strings, find the maximum common subst
 
 Use the DeepChem deep learning package to predict compounds' lipophilicity--how well they are absorbed into the lipids of biological membranes, which is important for oral delivery of drugs.
 
-## [RDKit Utility to Visualize Retrosynthetic Analysis Hierarchically]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %})
+## [RDKit Utility to Visualize Retrosynthetic Analysis Hierarchically]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 *Uses Python and RDKit*
 
 [<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:513px; height:418px" src="/images/tree_marked_up.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
@@ -77,6 +77,7 @@ Understand how the elements are related to each other. Emphasizes electronic con
 # My open-source contributions
 
 ## RDKit cheminformatics package
+- Conceived, proposed, and coded [MolsMatrixToGridImage](https://github.com/rdkit/rdkit/pull/6080) feature to use a two-dimensional (nested) data structure as input to create molecular grid images. Feature was merged into the main codebase by the project maintainer and scheduled for 2023_09_1 release.
 - [Improved documentation](https://github.com/rdkit/rdkit/pulls?q=is%3Amerged+is%3Apr+author%3Abertiewooster+) by illustrating drawing capability in tutorial and adding SMILES (chemical notation) for R groups
 
 ## SymPy computer algebra system in pure Python
