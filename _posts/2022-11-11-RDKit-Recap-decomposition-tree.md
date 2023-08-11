@@ -6,7 +6,7 @@
 
 RDKit helpfully provides a `RecapHierarchyNode` structure of nodes, where the keys are SMILES strings corresponding to the fragment, and the values are nodes containing child fragments. However, it is not easy to visualize the results, because the results are SMILES strings and the hierarchy is not shown visually.
 
-This utility function `molecule_recap_tree` allows you to visualize both the fragments and their hierarchy. Here is an example, of 6-(Hydroxymethoxy)pyridin-2-yl]oxymethanol, annotated to explain the hierarchy:
+This utility function `molecule_recap_tree` allows you to visualize both the fragments and their hierarchy. Here is an example, of [6-(Hydroxymethoxy)pyridin-2-yl]oxymethanol, annotated to explain the hierarchy:
 
 ![Annotated Recap retrosynthetic hierarchy tree](/images/tree_marked_up.png)
 
