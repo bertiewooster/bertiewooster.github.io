@@ -27,13 +27,17 @@ class MolecularIsotope():
   def __init__(
       self,
       sml: str,
+      mol: Chem.rdchem.Mol = None,
       abundance: float = None):
     self.sml = sml
     self.abundance = abundance
-    try:
-      self.mol = Chem.MolFromSmiles(sml)
-    except:
-      self.mol = Chem.MolFromSmiles(sml, sanitize=False)
+    if mol is not None:
+      self.mol = mol
+    else:
+      try:
+        self.mol = Chem.MolFromSmiles(sml)
+      except:
+        self.mol = Chem.MolFromSmiles(sml, sanitize=False)
     self.mass = Descriptors.ExactMolWt(self.mol)
   def update(self):
     self.mass = Descriptors.ExactMolWt(self.mol)
@@ -177,6 +181,9 @@ plt.show()
 # Potassium cyanide; three elements
 sml = "[K+].[C-]#N"
 
+# Four atoms, each a different element
+# sml = "C(=O)(F)N"
+
 # FeCl3; good for distinguishing very similar masses
 # sml = "Cl[Fe](Cl)Cl"
 
@@ -265,14 +272,14 @@ def atom_set(molecule):
     if molecule:
       # Add hydrogen atoms--RDKit excludes them by default
       molecule_with_Hs = Chem.AddHs(molecule)
-      atom_symbols = set(atom.GetSymbol() for atom in mol.GetAtoms())
+      atom_symbols = set(atom.GetSymbol() for atom in molecule_with_Hs.GetAtoms())
       return atom_symbols
 
 # %%
 from mendeleev import element, isotope
 
 set_of_atoms = atom_set(mol)
-# print(set_of_atoms)
+print(set_of_atoms)
 isotopes = {}
 for atom in set_of_atoms:
   # print(f"{atom=}")
@@ -293,15 +300,14 @@ def print_ndarray_elements(arr, prefix=''):
 
 # %%
 def assign_isotopes(arr, isotope_count_distribution, prefix):
-    if isinstance(arr, Chem.Mol):
-        try:
-          if prefix[1] == 1:
-            pass
-        except:
-           pass
+    if isinstance(arr, np.ndarray):
+        for i in range(len(arr)):
+            new_prefix = prefix + [i]
+            assign_isotopes(arr[i], isotope_count_distribution, new_prefix)
+    else:
         distribution = copy.deepcopy(isotope_count_distribution[prefix[0]])
         # print(f"{distribution=}")
-        for atom_index, atom in enumerate(arr.GetAtoms()):
+        for atom_index, atom in enumerate(arr.mol.GetAtoms()):
           if atom.GetSymbol() == this_element:
             # Count down each isotope, going on to the next when zero
             for isotope_index, isotope in enumerate(distribution):
@@ -310,48 +316,57 @@ def assign_isotopes(arr, isotope_count_distribution, prefix):
                   atom.SetIsotope(isotopes[this_element][isotope_index][0])
                   distribution[isotope_index] -= 1
         isotopes_list = []
-        for atom_index, atom in enumerate(arr.GetAtoms()):
+        for atom_index, atom in enumerate(arr.mol.GetAtoms()):
           isotopes_list.append(atom.GetIsotope())
         isotopes_str = ','.join(map(str, isotopes_list))
-        print("".join([f"[{i}]" for i in prefix]) + Chem.MolToSmiles(arr) + isotopes_str)
-    else:
-        for i in range(len(arr)):
-            new_prefix = prefix + [i]
-            assign_isotopes(arr[i], isotope_count_distribution, new_prefix)
+        print("".join([f"[{i}]" for i in prefix]) + Chem.MolToSmiles(arr.mol) + isotopes_str)
     return arr
+
+# %%
+def extract_properties(arr, prop_name):
+    if isinstance(arr, np.ndarray):
+        # If arr is a NumPy ndarray, iterate through its elements and apply the function recursively
+        return np.array([extract_properties(item, prop_name) for item in arr])
+    elif isinstance(arr, list):
+        # If arr is a list, iterate through its elements and apply the function recursively
+        return [extract_properties(item, prop_name) for item in arr]
+    elif hasattr(arr, prop_name):
+        # If arr has the specified property, extract its value
+        return getattr(arr, prop_name)
+    else:
+        # If the property is not found, return None
+        return None
 
 # %%
 #Debugging only!
 # isotopes = {'Cl': [[35, 0.5], [37, 0.5]]}
 # isotopes = {'O': [[16, 0.5], [17, 0.5]]}
 
-# Create a list to store the dimensions at each step
-dimensions = []
-
-mols:np.ndarray = np.array(Chem.Mol(mol))
-# print(f"{type(mols)=}")
-# print(f"Start: {mols=}")
+#TODO Assign abundances and mols that correspond;
+#  can create them both in one loop?
+#  Think can add abundance calcs to assign_isotopes:
+#  only on last element, calculate overall abundance by multiplying for each element.
+#  Read isotopes from RDKit mol? (Requires iterating through atoms and assigning isotope counts to each element)
+# Or put them in another property of class MolecularIsotope? (Seems cleaner)
+# mols:np.ndarray = np.array(Chem.Mol(mol))
+molecular_isotopes:np.ndarray = np.array(MolecularIsotope)
+print(f"original {molecular_isotopes=}")
 for this_element, n_this_element in composition(mol).items():
   print("--------------------------------")
   print(this_element, n_this_element)
   print("--------------------------------")
-  #Debugging
-  if this_element == "N":
-    pass
   n_isotopes_this_element = len(isotopes[this_element])
   isotope_count_distribution = distribute_items(n_this_element, n_isotopes_this_element)
   n_distributions = len(isotope_count_distribution)
-  print(f"{isotope_count_distribution=}")
 
-  if mols.shape == ():
-     mols = np.array([Chem.Mol(mol) for _ in range(n_distributions)], dtype=object)
-     print(f"{type(mols)=}")
+  if molecular_isotopes.shape == ():
+     molecular_isotopes = np.array([MolecularIsotope(sml=sml, mol=mol) for _ in range(n_distributions)], dtype=object)
   else:
     # Create a list of m copies of the current object
-    mols_list = [copy.deepcopy(mols) for _ in range(n_distributions)]
+    molecular_isotopes_list = [copy.deepcopy(molecular_isotopes) for _ in range(n_distributions)]
     
     # Convert the list of copies to a NumPy ndarray
-    mols = np.array(mols_list, dtype=object)
+    molecular_isotopes = np.array(molecular_isotopes_list, dtype=object)
     
   sum_ab = 0
   masses = []
@@ -368,20 +383,17 @@ for this_element, n_this_element in composition(mol).items():
       sum_ab += ab
       # print(f"{a=} {b=} {a*b=} {sum_ab=}")
 
-  print(f"Before assign_isotopes: {mols=}")
+  print(f"Before assign_isotopes: {molecular_isotopes=}")
 
   # Create molecules so can compute masses
-  mols = assign_isotopes(mols, isotope_count_distribution, [])
+  molecular_isotopes = assign_isotopes(molecular_isotopes, isotope_count_distribution, [])
 
 print(f"{sum_ab=}")
-print(f"{mols=}")
-print(f"{type(mols)=}")
-
 
 # %%
-# Chem.Draw.MolsToGridImage(mols, legends=[str(mass) for mass in masses])
-
-mols_flat = flatten_ndarray(mols)
+print(f"{molecular_isotopes.shape=}")
+mols_array = extract_properties(molecular_isotopes, "mol")
+mols_flat = flatten_ndarray(mols_array)
 
 Chem.Draw.MolsToGridImage(mols_flat, subImgSize=(100, 100)) #, legends=[str(mass) for mass in masses])
 
