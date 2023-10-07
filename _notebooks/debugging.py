@@ -38,7 +38,6 @@ class MolecularIsotope():
         self.mol = Chem.MolFromSmiles(sml)
       except:
         self.mol = Chem.MolFromSmiles(sml, sanitize=False)
-    self.mass = Descriptors.ExactMolWt(self.mol)
   def update(self):
     self.mass = Descriptors.ExactMolWt(self.mol)
     self.canon_sml = Chem.MolToSmiles(mol)
@@ -357,14 +356,14 @@ def assign_isotopes(
     return arr
 
 # %%
-def calc_masses(
+def update_molecular_isotopes(
       arr, 
       ):
     if isinstance(arr, np.ndarray):
         for i in range(len(arr)):
-            calc_masses(arr[i])
-    else:
-        arr.mass = Descriptors.ExactMolWt(arr.mol)
+            update_molecular_isotopes(arr[i])
+    elif isinstance(arr, MolecularIsotope):
+        arr.update()
 
 # %%
 #Debugging only!
@@ -394,7 +393,7 @@ for this_element, n_this_element in composition(mol).items():
      prefix=[],
      n_this_element=n_this_element,
      )
-calc_masses(molecular_isotopes)
+update_molecular_isotopes(molecular_isotopes)
 
 # %%
 print(f"{molecular_isotopes.shape=}")
