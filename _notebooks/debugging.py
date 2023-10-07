@@ -307,6 +307,7 @@ def assign_isotopes(arr, isotope_count_distribution, prefix):
     else:
         distribution = copy.deepcopy(isotope_count_distribution[prefix[0]])
         # print(f"{distribution=}")
+        # Assign isotopes to atoms of this element type
         for atom_index, atom in enumerate(arr.mol.GetAtoms()):
           if atom.GetSymbol() == this_element:
             # Count down each isotope, going on to the next when zero
@@ -315,6 +316,14 @@ def assign_isotopes(arr, isotope_count_distribution, prefix):
               if distribution[isotope_index] > 0:
                   atom.SetIsotope(isotopes[this_element][isotope_index][0])
                   distribution[isotope_index] -= 1
+        a = 1
+        b = binomial_coefficient(n_this_element, distribution[0])
+        for isotope_index, isotope_count in enumerate(distribution):
+          a_this_isotope = isotopes[this_element][isotope_index][1]
+          a *= a_this_isotope**isotope_count
+        ab = a*b
+        arr.abundance = ab
+
         isotopes_list = []
         for atom_index, atom in enumerate(arr.mol.GetAtoms()):
           isotopes_list.append(atom.GetIsotope())
@@ -350,7 +359,7 @@ def extract_properties(arr, prop_name):
 # Or put them in another property of class MolecularIsotope? (Seems cleaner)
 # mols:np.ndarray = np.array(Chem.Mol(mol))
 molecular_isotopes:np.ndarray = np.array(MolecularIsotope)
-print(f"original {molecular_isotopes=}")
+
 for this_element, n_this_element in composition(mol).items():
   print("--------------------------------")
   print(this_element, n_this_element)
@@ -360,7 +369,7 @@ for this_element, n_this_element in composition(mol).items():
   n_distributions = len(isotope_count_distribution)
 
   if molecular_isotopes.shape == ():
-     molecular_isotopes = np.array([MolecularIsotope(sml=sml, mol=mol) for _ in range(n_distributions)], dtype=object)
+     molecular_isotopes = np.array([MolecularIsotope(sml=sml, mol=Chem.Mol(mol)) for _ in range(n_distributions)], dtype=object)
   else:
     # Create a list of m copies of the current object
     molecular_isotopes_list = [copy.deepcopy(molecular_isotopes) for _ in range(n_distributions)]
@@ -382,8 +391,6 @@ for this_element, n_this_element in composition(mol).items():
       ab = a*b
       sum_ab += ab
       # print(f"{a=} {b=} {a*b=} {sum_ab=}")
-
-  print(f"Before assign_isotopes: {molecular_isotopes=}")
 
   # Create molecules so can compute masses
   molecular_isotopes = assign_isotopes(molecular_isotopes, isotope_count_distribution, [])

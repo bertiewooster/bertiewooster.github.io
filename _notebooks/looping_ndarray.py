@@ -1,38 +1,22 @@
 import numpy as np
 
-mols=np.array([[[range(0),
-         range(1),
-         range(2)],
-        [range(3),
-         range(4),
-         range(5)]],
 
-       [[range(6),
-         range(7),
-         range(8)],
-        [range(9),
-         range(10),
-         range(11)]]], dtype=object)
+# Define the simplified MolecularIsotope class with only the 'name' property
+class MolecularIsotope:
+    def __init__(self, name):
+        self.name = name
 
-for block in mols:
-    for row in block:
-        for mol in row:
-            print(mol)
+# Define the number of elements you want in the array
+num_elements = 5  # You can change this to any desired number
 
-def print_ndarray_elements(arr, prefix=''):
-    if len(arr.shape) == 0:
-        print(prefix + str(arr))
-    else:
-        for i in range(arr.shape[0]):
-            new_prefix = prefix + "[" + str(i) + "]"
-            print_ndarray_elements(arr[i], new_prefix)
+# Create a 1-dimensional ndarray with the specified number of elements and element type of object
+arr = np.empty(num_elements, dtype=object)
 
-print_ndarray_elements(mols)
+# Create separate instances of the simplified MolecularIsotope class for each element
+for i in range(num_elements):
+    arr[i] = MolecularIsotope("Hydrogen")
 
-# for item in mols:
-#     current_level_item = item
-#     if isinstance(current_level_item, np.ndarray):
-#         while isinstance(current_level_item, np.ndarray):
-#                     for current_level_index, current_level_item in enumerate(current_level_item):
-#             print(f"{level=} {current_level_index=}, {current_level_item=}, is ndarray={isinstance(item, np.ndarray)}")
-
+# Print the elements of the ndarray and their memory addresses
+for i, isotope in enumerate(arr):
+    print(f"Element {i}: {isotope.name}")
+    print(f"Memory Address: {id(isotope)}")
