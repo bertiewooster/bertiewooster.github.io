@@ -165,7 +165,7 @@ for x, y in zip(df['Mass'], df['Abundance']):
 plt.show()
 
 # %%
-# sml = "C=C=O"
+sml = "C=C=O"
 
 # sml = "ClC(Cl)Cl"
 
@@ -178,7 +178,7 @@ plt.show()
 # sml = "[Ca+2].[O-]C([O-])=O"
 
 # Potassium cyanide; three elements
-sml = "[K+].[C-]#N"
+# sml = "[K+].[C-]#N"
 
 # Four atoms, each a different element
 # sml = "C(=O)(F)N"
@@ -366,21 +366,24 @@ def update_molecular_isotopes(
         arr.update()
 
 # %%
-#Debugging only!
-# isotopes = {'Cl': [[35, 0.5], [37, 0.5]]}
-# isotopes = {'O': [[16, 0.5], [17, 0.5]]}
-
+# Initialize ndarray to hold MolecularIsotope objects
 molecular_isotopes:np.ndarray = np.array(MolecularIsotope)
 
+# Loop through the elements in this molecule
 for this_element, n_this_element in composition(mol).items():
   n_isotopes_this_element = len(isotopes[this_element])
+
+  # Calculate possible distributions of isotopes across atoms of this element
   isotope_count_distribution = distribute_items(n_this_element, n_isotopes_this_element)
   n_distributions = len(isotope_count_distribution)
 
   if molecular_isotopes.shape == ():
+     # Start by creating a 1-dimensional array,
+     # making sure to make each mol an independent object
      molecular_isotopes = np.array([MolecularIsotope(sml=sml, mol=Chem.Mol(mol)) for _ in range(n_distributions)], dtype=object)
   else:
-    # Create a list of m copies of the current object
+    # Create a list of m copies of the current object, 
+    # namely the n-1 dimensional ndarray representing elements prior to this element
     molecular_isotopes_list = [copy.deepcopy(molecular_isotopes) for _ in range(n_distributions)]
     
     # Convert the list of copies to a NumPy ndarray
@@ -393,6 +396,8 @@ for this_element, n_this_element in composition(mol).items():
      prefix=[],
      n_this_element=n_this_element,
      )
+  
+# Update the properties of each MolecularIsotope to get exact masses
 update_molecular_isotopes(molecular_isotopes)
 
 # %%
