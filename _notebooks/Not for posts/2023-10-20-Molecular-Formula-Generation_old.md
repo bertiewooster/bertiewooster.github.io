@@ -51,7 +51,7 @@ The RDKit does not include a composition function to give the number of each ele
 def composition(
         molecule: Chem.Mol,
         isotopes: bool = False,
-        ) -> defaultdict:
+        ):
     """Get the composition of an RDKit molecule:
     Atomic counts, including hydrogen atoms, and isotopes if requested.
     For example, ethanol (SMILES [13C](H)(H)(H)CO, formula C2H6O) returns:
@@ -131,10 +131,7 @@ Now that we have the count of each element (with isotopes if desired) in the mol
 
 
 ```python
-def mol_to_formatted_formula(
-        mol: Chem.Mol,
-        isotopes: bool = False,
-        ) -> dict[str, str]:
+def mol_to_formatted_formula(mol, isotopes=False):
     if mol is not None:
         comp = composition(mol, isotopes)
 
@@ -267,9 +264,7 @@ To go directly from a SMILES string to a formula, we can use this utility functi
 
 
 ```python
-def smiles_to_formatted_formula(
-        smiles:str,
-        isotopes:bool=False):
+def smiles_to_formatted_formula(smiles, isotopes=False):
     mol = Chem.MolFromSmiles(smiles)
     if mol is not None:
         return mol_to_formatted_formula(mol, isotopes=isotopes)
@@ -294,7 +289,7 @@ LaTeX italicizes letters by default, so we can use the [LaTeX `\mathrm`](https:/
 
 
 ```python
-def markdown_formula(latex:str) -> str:
+def markdown_formula(latex:str):
     latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return latex_markdown
 ```
@@ -309,7 +304,7 @@ Markdown(markdown_formula(isotope_formula_latex))
 
 
 
-$\mathrm{ C^{13}CH_{6}{}^{18}O}$
+$\mathrm{C^{13}CH_{6}{}^{18}O}$
 
 
 
@@ -317,7 +312,7 @@ As a further utility, we can immediately display the result as Markdown by incor
 
 
 ```python
-def display_markdown_formula(latex:str) -> str:
+def display_markdown_formula(latex):
     latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return Markdown(latex_markdown)
 ```
@@ -330,7 +325,7 @@ display_markdown_formula(isotope_formula_latex)
 
 
 
-$\mathrm{ C^{13}CH_{6}{}^{18}O}$
+$\mathrm{C^{13}CH_{6}{}^{18}O}$
 
 
 
