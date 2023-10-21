@@ -37,7 +37,7 @@ mol
 
 
     
-![Ethanol molecule where the oxygen is the O-18 isotope and the carbon not bonded to the oxygen in is C-13 isotope](2023-10-20-Molecular-Formula-Generation_files/2023-10-20-Molecular-Formula-Generation_8_0.png)
+![Ethanol molecule where the oxygen is the O-18 isotope and the carbon not bonded to the oxygen in is C-13 isotope](/images/2023-10-20-Molecular-Formula-Generation_files/2023-10-20-Molecular-Formula-Generation_8_0.png)
     
 
 
