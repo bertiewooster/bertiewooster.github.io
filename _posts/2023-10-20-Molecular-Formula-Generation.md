@@ -8,6 +8,7 @@ For example, the molecular formula is sufficient to determine the molecular mass
 
 I'm working on a blog post where I need to calculate the molecular formula including isotopes. I was unable to find a package that produced molecular formulas including isotopes from SMILES strings, so I wrote a function to do so. (I tried [chemparse](https://pypi.org/project/chemparse/) and did not succeed.)
 
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1cno_Na8-FDVuyRnuoJcRwf-GYTQqIRex?usp=sharing)*
 
 ```python
 %%capture
