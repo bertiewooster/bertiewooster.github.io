@@ -10,6 +10,7 @@ I'm working on a blog post where I need to calculate the molecular formula inclu
 
 
 ```python
+%%capture
 !pip install rdkit
 ```
 
