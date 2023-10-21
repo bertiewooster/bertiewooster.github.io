@@ -290,7 +290,7 @@ LaTeX italicizes letters by default, so we can use the [LaTeX `\mathrm`](https:/
 
 ```python
 def markdown_formula(latex:str):
-    latex_markdown = r"$\mathrm{%s}$" % (latex.strip("$"))
+    latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return latex_markdown
 ```
 
@@ -313,7 +313,7 @@ As a further utility, we can immediately display the result as Markdown by incor
 
 ```python
 def display_markdown_formula(latex):
-    latex_markdown = r"$\mathrm{%s}$" % (latex.strip("$"))
+    latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return Markdown(latex_markdown)
 ```
 
