@@ -1,6 +1,8 @@
 # Molecular Formula Generation
 
-In cheminformatics, the typical way of representing a molecule is with a SMILES string such as `CCO` for ethanol. A SMILES string can be converted into a molecular graph, which can be used to determine molecular structure and related properties. However, there are still cases where the molecular formula such as C<sub>2</sub>H<sub>6</sub>O is useful. 
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1cno_Na8-FDVuyRnuoJcRwf-GYTQqIRex?usp=sharing) so you can run it without installing anything on your computer*
+
+In cheminformatics, the typical way of representing a molecule is with a SMILES string such as `CCO` for ethanol. A SMILES string can be converted into a molecular graph, which can be used to determine molecular structure and related properties. However, there are still cases where the molecular formula such as C<sub>2</sub>H<sub>6</sub>O is useful.
 
 For example, the molecular formula is sufficient to determine the molecular mass, to calculate the predicted results from an elemental analysis, to get a sense for the elemental composition of a given molecule, or balancing chemical equations. One of the best-known [chemical equations describes photosynthesis](https://bio.libretexts.org/Bookshelves/Botany/Botany_(Ha_Morrow_and_Algiers)/04%3A_Plant_Physiology_and_Regulation/4.01%3A_Photosynthesis_and_Respiration/4.1.03%3A_Photosynthesis_Overview_and_Equation):
 
@@ -8,12 +10,34 @@ For example, the molecular formula is sufficient to determine the molecular mass
 
 I'm working on a blog post where I need to calculate the molecular formula including isotopes. I was unable to find a package that produced molecular formulas including isotopes from SMILES strings, so I wrote a function to do so. (I tried [chemparse](https://pypi.org/project/chemparse/) and did not succeed.)
 
-*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1cno_Na8-FDVuyRnuoJcRwf-GYTQqIRex?usp=sharing)*
 
 ```python
 %%capture
 !pip install rdkit
+%pip install black[jupyter]
 ```
+
+
+```python
+# Mount Google Drive so can read format code in this notebook using black
+from google.colab import drive
+
+drive.mount("/content/drive")
+```
+
+    Mounted at /content/drive
+
+
+
+```python
+# Format code using black
+# procedure at https://stackoverflow.com/questions/63076002/code-formatter-like-nb-black-for-google-colab#71001241
+!black "/content/drive/MyDrive/Colab Notebooks/Molecular Formula Generation.ipynb"
+```
+
+    [1mAll done! ✨ 🍰 ✨[0m
+    [34m1 file [0mleft unchanged.
+
 
 
 ```python
@@ -39,7 +63,7 @@ mol
 
 
     
-![Ethanol molecule where the oxygen is the O-18 isotope and the carbon not bonded to the oxygen in is C-13 isotope](/images/2023-10-20-Molecular-Formula-Generation_files/2023-10-20-Molecular-Formula-Generation_8_0.png)
+![Ethanol molecule where the oxygen is the O-18 isotope and the carbon not bonded to the oxygen in is C-13 isotope](/images/2023-10-20-Molecular-Formula-Generation_files/2023-10-20-Molecular-Formula-Generation_11_0.png)
     
 
 
@@ -51,9 +75,9 @@ The RDKit does not include a composition function to give the number of each ele
 
 ```python
 def composition(
-        molecule: Chem.Mol,
-        isotopes: bool = False,
-        ) -> defaultdict:
+    molecule: Chem.Mol,
+    isotopes: bool = False,
+) -> defaultdict:
     """Get the composition of an RDKit molecule:
     Atomic counts, including hydrogen atoms, and isotopes if requested.
     For example, ethanol (SMILES [13C](H)(H)(H)CO, formula C2H6O) returns:
@@ -134,13 +158,13 @@ Now that we have the count of each element (with isotopes if desired) in the mol
 
 ```python
 def mol_to_formatted_formula(
-        mol: Chem.Mol,
-        isotopes: bool = False,
-        ) -> dict[str, str]:
+    mol: Chem.Mol,
+    isotopes: bool = False,
+) -> dict[str, str]:
     if mol is not None:
         comp = composition(mol, isotopes)
 
-        formula = {'markdown': "", 'latex': ""}
+        formula = {"markdown": "", "latex": ""}
 
         if isotopes:
             isotopes_dict = defaultdict(lambda: defaultdict(str))
@@ -169,7 +193,7 @@ def mol_to_formatted_formula(
                         if isotope in superscripts[element]:
                             formula["markdown"] += f"<sup>{isotope}</sup>"
 
-                            # If superscript immediately follows subscript, 
+                            # If superscript immediately follows subscript,
                             # add a small amount of horizontal space using an empty group {}
                             # to prevent them from vertically overlapping
                             if last_item_is_subscript:
@@ -269,9 +293,7 @@ To go directly from a SMILES string to a formula, we can use this utility functi
 
 
 ```python
-def smiles_to_formatted_formula(
-        smiles:str,
-        isotopes:bool=False):
+def smiles_to_formatted_formula(smiles: str, isotopes: bool = False):
     mol = Chem.MolFromSmiles(smiles)
     if mol is not None:
         return mol_to_formatted_formula(mol, isotopes=isotopes)
@@ -279,7 +301,9 @@ def smiles_to_formatted_formula(
 
 
 ```python
-isotope_formula_latex_from_smiles = smiles_to_formatted_formula(sml, isotopes=True)["latex"]
+isotope_formula_latex_from_smiles = smiles_to_formatted_formula(sml, isotopes=True)[
+    "latex"
+]
 Markdown(isotope_formula_latex_from_smiles)
 ```
 
@@ -296,7 +320,7 @@ LaTeX italicizes letters by default, so we can use the [LaTeX `\mathrm`](https:/
 
 
 ```python
-def markdown_formula(latex:str) -> str:
+def markdown_formula(latex: str) -> str:
     latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return latex_markdown
 ```
@@ -319,7 +343,7 @@ As a further utility, we can immediately display the result as Markdown by incor
 
 
 ```python
-def display_markdown_formula(latex:str) -> str:
+def display_markdown_formula(latex: str) -> str:
     latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return Markdown(latex_markdown)
 ```
@@ -354,20 +378,34 @@ photosynthesis_smls = {
 
 
 ```python
-mols = {name:Chem.MolFromSmiles(sml) for name, sml in photosynthesis_smls.items()}
+mols = {name: Chem.MolFromSmiles(sml) for name, sml in photosynthesis_smls.items()}
 ```
 
 
 ```python
-formulas = {name:markdown_formula(mol_to_formatted_formula(mol)["latex"]) for name, mol in mols.items()}
+formulas = {
+    name: markdown_formula(mol_to_formatted_formula(mol)["latex"])
+    for name, mol in mols.items()
+}
 ```
 
 
 ```python
-photosynthesis = "$" + "6" + formulas["Carbon Dioxide"].strip("$") + "+ 6" + formulas["Water"].strip("$") + "→" + formulas["Glucose"].strip("$") + "+ 6" + formulas["Oxygen"].strip("$") + "$"
+photosynthesis = (
+    "$"
+    + "6"
+    + formulas["Carbon Dioxide"].strip("$")
+    + "+ 6"
+    + formulas["Water"].strip("$")
+    + "→"
+    + formulas["Glucose"].strip("$")
+    + "+ 6"
+    + formulas["Oxygen"].strip("$")
+    + "$"
+)
 display(Markdown(photosynthesis))
 ```
 
 
-$6\mathrm{CO_{2}}+ 6\mathrm{H_{2}O}→\mathrm{C_{6}H_{12}O_{6}}+ 6\mathrm{O_{2}}$
+$6\mathrm{ CO_{2}}+ 6\mathrm{ H_{2}O}→\mathrm{ C_{6}H_{12}O_{6}}+ 6\mathrm{ O_{2}}$
 

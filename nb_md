@@ -11,7 +11,8 @@
 #  5) Use venv in this folder, not conda, in terminal using 
 #        . venv/bin/activate
 
-# Run this script in the terminal using ./nb_md
+# Run this script in the terminal using:
+# ./nb_md
 
 jupyter nbconvert _notebooks/2023-10-20-Molecular-Formula-Generation.ipynb --to markdown --output 2023-10-20-Molecular-Formula-Generation.md
 
@@ -49,5 +50,5 @@ jupyter nbconvert _notebooks/2023-10-20-Molecular-Formula-Generation.ipynb --to 
 #  7) Delete the first paragraph:
 #            *Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
 #  8) Add, to the end o
-#            *[Open this notebook in Google Colab](link)*
+#            *[Open this notebook in Google Colab so you can run it without installing anything on your computer](link)*
 
