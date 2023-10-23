@@ -49,6 +49,6 @@ jupyter nbconvert _notebooks/2023-10-20-Molecular-Formula-Generation.ipynb --to 
 #  ---If you downloaded the notebook from Google Colab---
 #  7) Delete the first paragraph:
 #            *Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
-#  8) Add, to the end o
+#  8) Add, to the end of the first section:
 #            *[Open this notebook in Google Colab so you can run it without installing anything on your computer](link)*
 
