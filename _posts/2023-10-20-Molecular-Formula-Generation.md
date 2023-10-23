@@ -1,7 +1,5 @@
 # Molecular Formula Generation
 
-*Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
-
 In cheminformatics, the typical way of representing a molecule is with a SMILES string such as `CCO` for ethanol. A SMILES string can be converted into a molecular graph, which can be used to determine molecular structure and related properties. However, there are still cases where the molecular formula such as C<sub>2</sub>H<sub>6</sub>O is useful.
 
 For example, the molecular formula is sufficient to determine the molecular mass, to calculate the predicted results from an elemental analysis, to get a sense for the elemental composition of a given molecule, or for balancing chemical equations. One of the best-known [chemical equations describes photosynthesis](https://bio.libretexts.org/Bookshelves/Botany/Botany_(Ha_Morrow_and_Algiers)/04%3A_Plant_Physiology_and_Regulation/4.01%3A_Photosynthesis_and_Respiration/4.1.03%3A_Photosynthesis_Overview_and_Equation):
@@ -10,6 +8,7 @@ For example, the molecular formula is sufficient to determine the molecular mass
 
 I'm working on a blog post where I need to calculate the molecular formula including isotopes. I was unable to find a package that produced molecular formulas including isotopes from SMILES strings, so I wrote a function to do so. (I tried [chemparse](https://pypi.org/project/chemparse/) and did not succeed.)
 
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/14PxN0AdT0hSJPjL4w5RntBxMx7DssBfQ?usp=sharing) so you can run it without installing anything on your computer*
 
 ```python
 %%capture
