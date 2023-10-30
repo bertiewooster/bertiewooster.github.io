@@ -16,10 +16,10 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 
 # %%
-mol = Chem.MolFromSmiles(sml)
+# mol = Chem.MolFromSmiles(sml)
 
 # %%
-mol
+# mol
 
 # %%
 class MolecularIsotope():
@@ -68,10 +68,10 @@ def set_isotopes(arr:np.ndarray, sml: str, current_index=()):
 num_atoms = len(mol.GetAtoms())
 
 # Build iterable of number of isotopes by atom index
-isotopes_by_atom_index = ()
-for atom_index, atom in enumerate(mol.GetAtoms()):
-  atom_symbol = atom.GetSymbol()
-  isotopes_by_atom_index += (len(isotopes[atom_symbol]),)
+# isotopes_by_atom_index = ()
+# for atom_index, atom in enumerate(mol.GetAtoms()):
+#   atom_symbol = atom.GetSymbol()
+#   isotopes_by_atom_index += (len(isotopes[atom_symbol]),)
 
 # %%
 # Create the empty numpy ndarray with the specified shape
