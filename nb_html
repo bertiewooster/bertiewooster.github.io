@@ -1,9 +1,0 @@
-#!/bin/bash
-
-jupyter nbconvert _notebooks/2022-10-09-RDKit-find-highlight-maximum-common-substructure.ipynb --to html --output ../_posts/2022-10-09-RDKit-find-highlight-maximum-common-substructure.html
-
-# jupyter nbconvert notebooks/2022-03-20-survey-pipeline-1.ipynb --to html --output ../_posts/2022-03-20-survey-pipeline-1.html
-
-# jupyter nbconvert notebooks/2022-03-26-survey-pipeline-2.ipynb --to html --output ../_posts/2022-03-26-survey-pipeline-2.html
-
-# jupyter nbconvert notebooks/2022-03-26-survey-pipeline-3.ipynb --to html --output ../_posts/2022-03-26-survey-pipeline-3.html

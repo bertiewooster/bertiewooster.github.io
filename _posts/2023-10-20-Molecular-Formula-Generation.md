@@ -10,33 +10,26 @@ I'm working on a blog post where I need to calculate the molecular formula inclu
 
 *[Open this notebook in Google Colab](https://colab.research.google.com/drive/14PxN0AdT0hSJPjL4w5RntBxMx7DssBfQ?usp=sharing) so you can run it without installing anything on your computer*
 
+
 ```python
 %%capture
-!pip install rdkit
-!pip install black[jupyter]
+%!pip install rdkit
+%!pip install black[jupyter]
 ```
 
 
 ```python
 # Mount Google Drive so can format code in this notebook using black
-from google.colab import drive
-
-drive.mount("/content/drive")
+try:
+    from google.colab import drive
+except:
+    pass
+else:
+    drive.mount("/content/drive")
+    # Format code using black
+    # procedure at https://stackoverflow.com/questions/63076002/code-formatter-like-nb-black-for-google-colab#71001241
+    !black "/content/drive/MyDrive/Colab Notebooks/Molecular Formula Generation.ipynb"
 ```
-
-    Mounted at /content/drive
-
-
-
-```python
-# Format code using black
-# procedure at https://stackoverflow.com/questions/63076002/code-formatter-like-nb-black-for-google-colab#71001241
-!black "/content/drive/MyDrive/Colab Notebooks/Molecular Formula Generation.ipynb"
-```
-
-    [1mAll done! ✨ 🍰 ✨[0m
-    [34m1 file [0mleft unchanged.
-
 
 
 ```python
@@ -62,7 +55,7 @@ mol
 
 
     
-![Ethanol molecule where the oxygen is the O-18 isotope and the carbon not bonded to the oxygen in is C-13 isotope](/images/2023-10-20-Molecular-Formula-Generation_files/2023-10-20-Molecular-Formula-Generation_11_0.png)
+![Ethanol molecule where the oxygen is the O-18 isotope and the carbon not bonded to the oxygen in is C-13 isotope](2023-10-20-Molecular-Formula-Generation_files/2023-10-20-Molecular-Formula-Generation_10_0.png)
     
 
 
@@ -166,6 +159,12 @@ def mol_to_formatted_formula(
     mol: Chem.Mol,
     isotopes: bool = False,
 ) -> dict[str, str]:
+    """Convert an RDKit molecule to a formatted formula, in Markdown and LaTeX
+
+    :param mol: RDKit molecule
+    :param isotopes: Whether to consider isotopes
+    :returns: a dictionary of format:string pairs, e.g. {"markdown":"markdown_string", "latex":"latex_string"}
+    """
     if mol is None:
         return "Invalid molecule"
     comp = composition(mol, isotopes)
@@ -297,7 +296,13 @@ To go directly from a SMILES string to a formula, we can use this utility functi
 
 
 ```python
-def smiles_to_formatted_formula(smiles: str, isotopes: bool = False):
+def smiles_to_formatted_formula(smiles: str, isotopes: bool = False) -> dict[str,str]:
+    """Convert a SMILES string to a formatted formula, in Markdown and LaTeX
+
+    :param smiles: SMILES string
+    :param isotopes: Whether to consider isotopes
+    :returns: a dictionary of format:string pairs, e.g. {"markdown":"markdown_string", "latex":"latex_string"}
+    """
     mol = Chem.MolFromSmiles(smiles)
     if mol is not None:
         return mol_to_formatted_formula(mol, isotopes=isotopes)
@@ -314,7 +319,7 @@ Markdown(isotope_formula_latex_from_smiles)
 
 
 
-$C^{13}CH_{6}{}^{18}O$
+$C^{ 13}CH_{ 6}{}^{ 18}O$
 
 
 
@@ -325,6 +330,10 @@ LaTeX italicizes letters by default, so we can use [LaTeX `\mathrm`](https://www
 
 ```python
 def markdown_formula(latex: str) -> str:
+    """Make a LaTeX molecular formula non-italicized by removing math formatting
+    :param latex: the molecular formula
+    :returns: the non-italicized molecular formula
+    """
     latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return latex_markdown
 ```
@@ -339,7 +348,7 @@ Markdown(markdown_formula(isotope_formula_latex))
 
 
 
-$\mathrm{ C^{13}CH_{6}{}^{18}O}$
+$\mathrm{ C^{ 13}CH_{ 6}{}^{ 18}O}$
 
 
 
@@ -348,6 +357,10 @@ As a further utility, we can immediately display the result as Markdown by incor
 
 ```python
 def display_markdown_formula(latex: str) -> str:
+    """Display a LaTeX molecular formula, non-italicized
+    :param latex: the molecular formula
+    :returns: Markdown display of the non-italicized molecular formula
+    """
     latex_markdown = r"$\mathrm{ %s}$" % (latex.strip("$"))
     return Markdown(latex_markdown)
 ```
@@ -360,12 +373,12 @@ display_markdown_formula(isotope_formula_latex)
 
 
 
-$\mathrm{ C^{13}CH_{6}{}^{18}O}$
+$\mathrm{ C^{ 13}CH_{ 6}{}^{ 18}O}$
 
 
 
 ## Conclusion
-Now that we have a way to calculate molecular formulas, and two formats to display them in, the next blog post will give an application of each format.
+Now that we have a way to calculate molecular formulas, and two formats to display them in, the next blog post will give applications of each format.
 
 ## Postscript
 Here's how to use LaTeX to create the photosynthesis chemical equation shown at the top of the blog post.
@@ -411,5 +424,5 @@ display(Markdown(photosynthesis))
 ```
 
 
-$6\mathrm{ CO_{2}}+ 6\mathrm{ H_{2}O}→\mathrm{ C_{6}H_{12}O_{6}}+ 6\mathrm{ O_{2}}$
+$6\mathrm{ CO_{ 2}}+ 6\mathrm{ H_{ 2}O}→\mathrm{ C_{ 6}H_{ 12}O_{ 6}}+ 6\mathrm{ O_{ 2}}$
 
