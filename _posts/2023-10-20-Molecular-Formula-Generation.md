@@ -19,20 +19,6 @@ I'm working on a blog post where I need to calculate the molecular formula inclu
 
 
 ```python
-# Mount Google Drive so can format code in this notebook using black
-try:
-    from google.colab import drive
-except:
-    pass
-else:
-    drive.mount("/content/drive")
-    # Format code using black
-    # procedure at https://stackoverflow.com/questions/63076002/code-formatter-like-nb-black-for-google-colab#71001241
-    !black "/content/drive/MyDrive/Colab Notebooks/Molecular Formula Generation.ipynb"
-```
-
-
-```python
 from collections import defaultdict
 from IPython.display import display, Markdown
 
