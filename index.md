@@ -3,6 +3,14 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [Molecular Formula Generation]({% post_url 2023-10-20-Molecular-Formula-Generation %})
+*Uses Python and RDKit*
+
+[<img alt="Photosynthesis chemical equation: 6CO2 + 6H2O → C6H12O6 + 6O2" style="width:2818px; height:220px" src="/images/photosynthesis_chemical_equation.png">]({% post_url 2023-10-20-Molecular-Formula-Generation %})
+
+In cheminformatics, the typical way of representing a molecule is with a SMILES string such as `CCO` for ethanol. However, there are still cases where the molecular formula such as C<sub>2</sub>H<sub>6</sub>O is useful.
+
+
 ## [Refitting Data From Wiener’s Classic Cheminformatics Paper]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
 *Uses Python, SciPy, Polars, NumPy, seaborn, matplotlib, and mol_frame*
 
