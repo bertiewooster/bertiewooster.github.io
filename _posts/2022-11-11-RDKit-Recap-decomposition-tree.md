@@ -52,7 +52,14 @@ def molecule_recap_tree(smiles:str, name:str="", verbose=False, **kwargs):
     recap_labels = [item for sublist in fragment_grid for item in sublist]
     if name:
         recap_labels[0] = name
-    drawing = Draw.MolsToGridImage([Chem.MolFromSmiles(smile) for smile in recap_plot], legends=recap_labels, molsPerRow=mols_per_row, **kwargs)
+
+    # Use MolsMatrixToGridImage if available in the installed version of RDKit
+    molsMatrix = [[Chem.MolFromSmiles(smile) for smile in sublist] for sublist in fragment_grid]
+    try:
+        drawing = Draw.MolsMatrixToGridImage(molsMatrix=molsMatrix, legendsMatrix=fragment_grid, **kwargs)
+    except AttributeError:
+        drawing = Draw.MolsToGridImage([Chem.MolFromSmiles(smile) for smile in recap_plot], legends=recap_labels, molsPerRow=mols_per_row, **kwargs)
+        
     if verbose:
           return drawing, molecule, RecapHierarchy, molecule_nonbinary_tree, fragment_grid
     else:
