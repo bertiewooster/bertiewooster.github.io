@@ -221,14 +221,18 @@ def SmilesMCStoGridImage(smiles: list[str] or dict[str, str], align_substructure
                # atom.SetProp("atomNote", str(atom.GetIdx())) # Can set atomNote to put atom index off to the side, but too small to read
                atom.SetProp("molAtomMapNumber", str(atom.GetIdx()))
 
-          # Convert 2D list back to 1D so MolsToGridImage can handle it
-          mcs_and_mols = flatten_twoD_list(mcs_and_mols_2D)
-          legends = flatten_twoD_list(legends_2D)
-          matches = flatten_twoD_list(matches_2D)
+          # Use MolsMatrixToGridImage if available in the installed version of RDKit
+          try:
+               drawing = Draw.MolsMatrixToGridImage(molsMatrix=mcs_and_mols_2D, legendsMatrix=legends_2D, highlightAtomListsMatrix=matches_2D, useSVG=useSVG)
+          except AttributeError:
+               # Convert 2D list back to 1D so MolsToGridImage can handle it
+               mcs_and_mols = flatten_twoD_list(mcs_and_mols_2D)
+               legends = flatten_twoD_list(legends_2D)
+               matches = flatten_twoD_list(matches_2D)
 
-          mcs_and_mols[0] = mcs_mol
+               mcs_and_mols[0] = mcs_mol
 
-          drawing = Draw.MolsToGridImage(mcs_and_mols, highlightAtomLists = matches, legends = legends, molsPerRow = longest_row, useSVG=useSVG)
+               drawing = Draw.MolsToGridImage(mcs_and_mols, legends = legends, highlightAtomLists = matches, molsPerRow = longest_row, useSVG=useSVG)
 
      # Do not include groups off core, using 1D grid
      else:
