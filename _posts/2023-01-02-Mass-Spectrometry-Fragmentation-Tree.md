@@ -220,11 +220,14 @@ def mass_spec_frag_tree(non_bin_tree, ndigits:int or None = 2, addHs:bool=False,
             descrs_row += [descr]
         descrs_grid += [descrs_row]
 
-    # Flatten grids (2D lists) into 1D lists for MolsToGridImage
-    mols = flatten_twoD_list(mols_grid)
-    descrs = flatten_twoD_list(descrs_grid)
-
-    drawing = Draw.MolsToGridImage(mols, legends=descrs, molsPerRow=row_length, **kwargs)
+    # Use MolsMatrixToGridImage if available in the installed version of RDKit
+    try:
+        drawing = Draw.MolsMatrixToGridImage(molsMatrix=mols_grid, legendsMatrix=descrs_grid, **kwargs)
+    except AttributeError:
+        # Flatten grids (2D lists) into 1D lists for MolsToGridImage
+        mols = flatten_twoD_list(mols_grid)
+        descrs = flatten_twoD_list(descrs_grid)
+        drawing = Draw.MolsToGridImage(mols, legends=descrs, molsPerRow=row_length, **kwargs)
     if verbose:
           return drawing, smiles_grid, labels_grid, mols_grid, masses_grid, charges_grid, mzs_grid
     else:

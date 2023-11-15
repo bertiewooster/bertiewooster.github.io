@@ -521,15 +521,19 @@ async def check_reactions(target_reaction_list: list[list[str, str, str]]):
         mols_2D.append(mols_row)
         legends_2D.append(legends_row)
     
-    # Create null molecule (has no atoms) as filler for empty molecule cells in molecular grid plot of results
-    null_mol = Chem.MolFromSmiles("")
-    pad_rows(mols_2D, longest_row(mols_2D), filler=null_mol)
-    pad_rows(legends_2D, longest_row(mols_2D))
+    # Use MolsMatrixToGridImage if available in the installed version of RDKit
+    try:
+        dwg = Draw.MolsMatrixToGridImage(molsMatrix=mols_2D, legendsMatrix=legends_2D)
+    except AttributeError:
+        # Create null molecule (has no atoms) as filler for empty molecule cells in molecular grid plot of results
+        null_mol = Chem.MolFromSmiles("")
+        pad_rows(mols_2D, longest_row(mols_2D), filler=null_mol)
+        pad_rows(legends_2D, longest_row(mols_2D))
 
-    mols = flatten_twoD_list(mols_2D)
-    legends = flatten_twoD_list(legends_2D)
+        mols = flatten_twoD_list(mols_2D)
+        legends = flatten_twoD_list(legends_2D)
 
-    dwg = Draw.MolsToGridImage(mols=mols, legends=legends, molsPerRow=len(mols_2D[0]))
+        dwg = Draw.MolsToGridImage(mols=mols, legends=legends, molsPerRow=len(mols_2D[0]))
     return dwg, reaction_reactants_avail
 ```
 
