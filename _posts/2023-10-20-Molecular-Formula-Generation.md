@@ -366,7 +366,16 @@ $\mathrm{ C^{ 13}CH_{ 6}{}^{ 18}O}$
 ## Conclusion
 Now that we have a way to calculate molecular formulas, and two formats to display them in, the next blog post will give applications of each format.
 
-## Postscript
+## Postscripts
+I later [learned from Wim](https://fosstodon.org/@molecule@mstdn.science/111420808831893240) that there is an RDKit function to create a non-formatted molecular formula, [`CalcMolFormula`](https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.CalcMolFormula). One could probably parse its output to produce formatted formulas, though I find that parsing strings is finnicky, and it would probably be about the same amount of effort as the approach above.
+
+
+```python
+from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+print(CalcMolFormula(mol, separateIsotopes=True))
+```
+C[13C]H6[18O]
+
 Here's how to use LaTeX to create the photosynthesis chemical equation shown at the top of the blog post.
 
 
