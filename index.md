@@ -3,6 +3,13 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [Display Molecular Formulas]({% post_url 2023-10-28-Display-Molecular-Formulas %})
+*Uses Python and RDKit*
+
+[<img alt="Two series of molecules with carbon chains 3, 2, and 1 atoms long. Top: Dialdehydes, with the one-carbon molecule, CO2, not shown. Bottom: Diols." style="width:600px; height:400px" src="/images/molgrid_formatted_molecular_formulas.png">]({% post_url 2023-10-28-Display-Molecular-Formulas %})
+
+How to display molecular formulas such as C<sub>3</sub>H<sub>4</sub>O<sub>2</sub> in molecular grids, tables, and graphs. Also works for other HTML-, Markdown-, or LaTeX-formatted text. 
+
 ## [Molecular Formula Generation]({% post_url 2023-10-20-Molecular-Formula-Generation %})
 *Uses Python and RDKit*
 

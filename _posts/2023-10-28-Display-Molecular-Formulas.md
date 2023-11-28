@@ -242,7 +242,7 @@ The first series is dialdehydes, and the second is diols. For the purpose of thi
 
 We can take advantage of the new [feature that I contributed to the RDKit 2023.9.1 release, MolsMatrixToGridImage](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html), to put each series in its own data structure and then plot each series in its own row without worrying about how many compounds are in each series. Taking advantage of the nested input parameters of [MolsMatrixToGridImage](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsMatrixToGridImage) also means we don't have to add an empty placeholder SMILES string `""` for the excluded compound carbon dioxide, which would cause empty cells in tables or graphs below.
 
-If you do not yet have RDKit 2023.9.1 or greater, the except block below will use [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage) as a fallback. Note that a different list of SMILES has to be created to add the empty placeholder SMILES string `""`.
+If you do not yet have RDKit 2023.9.1 or greater, the `except` block below will use [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage) as a fallback. Note that a different list of SMILES has to be created to add the empty placeholder SMILES string `""`.
 
 Either RDKit drawing function will correctly display Markdown in legends under the molecules, so we use `mol_to_formatted_formula(mol)["markdown"]`. LaTeX does not seem to be supported by those drawing functions. Because we'll calculate the weight percent of each element, including hydrogen, let's display the hydrogen atoms.
 
