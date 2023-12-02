@@ -2,6 +2,8 @@
 
 I [contributed MolsMatrixToGridImage](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) to the RDKit 2023.09.1 release because I found myself writing similar code over and over to draw row-and-column grids of molecules. For projects where each row represented something, such as a molecule and the fragments off a common core, my mental model corresponded to a two-dimensional (nested) data structure, whereas the pre-existing function [MolsToGridImage](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage) supported only linear (flat) data structures.
 
+<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:600px; height:600px" src="/images/reaction-accessible.png">
+
 Using [MolsMatrixToGridImage](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsMatrixToGridImage) can save a considerable amount of code. The most extreme example is from my post [Are the Starting Materials for Synthesizing Your Target Molecules Commercially Available?]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %}). Using MolsMatrixToGridImage requires only one line of code:
 
         dwg = Draw.MolsMatrixToGridImage(molsMatrix=mols_2D, legendsMatrix=legends_2D)

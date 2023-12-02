@@ -3,8 +3,14 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [RDKit Contribution MolsMatrixToGridImage()]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
+
+[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:513px; height:418px" src="/images/tree_marked_up.png">]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
+
+I contributed MolsMatrixToGridImage to the RDKit 2023.09.1 release to draw row-and-column grids of molecules.
+
 ## [Display Molecular Formulas]({% post_url 2023-10-28-Display-Molecular-Formulas %})
-*Uses Python and RDKit*
+*Uses Python, RDKit, seaborn, and matplotlib*
 
 [<img alt="Two series of molecules with carbon chains 3, 2, and 1 atoms long. Top: Dialdehydes, with the one-carbon molecule, CO2, not shown. Bottom: Diols." style="width:600px; height:400px" src="/images/molgrid_formatted_molecular_formulas.png">]({% post_url 2023-10-28-Display-Molecular-Formulas %})
 
