@@ -5,7 +5,7 @@ Scientific software developer in the Washington, D.C. area.
 
 ## [RDKit Contribution MolsMatrixToGridImage()]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
 
-[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:513px; height:418px" src="/images/tree_marked_up.png">]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
+[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:600px; height:600px" src="/images/reaction-accessible.png">]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
 
 I contributed MolsMatrixToGridImage to the RDKit 2023.09.1 release to draw row-and-column grids of molecules.
 
