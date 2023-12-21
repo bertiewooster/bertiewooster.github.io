@@ -115,7 +115,7 @@ To learn more about how well the model works, let's apply it to the test data an
 lipos = model.predict_on_batch(test_dataset.X)
 ```
 
-Then we make put the measured and model-predicted results into a [pandas dataframe](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easy processing.
+Then we put the measured and model-predicted results into a [pandas dataframe](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easy processing.
 
 
 ```python
