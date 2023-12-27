@@ -1,20 +1,21 @@
 #!/bin/bash
 
 # Note: Before running this script,
-#  1) If you downloaded the notebook from Google Colab, replace file name underscores with hyphens
-#  2) If you want to embed an image in the notebook rather than importing it from an external file,
+#  1) If you created the notebook locally, format with Black by ensuring no cell is selected, then pressing Option+Shift+F on Mac (Alt+Shift+F on Windows)
+#  2) If you downloaded the notebook from Google Colab, replace file name underscores with hyphens
+#  3) If you want to embed an image in the notebook rather than importing it from an external file,
 #     a) Set up Markdown cell with <img src="" />
 #     b) Convert image to Base64 at https://www.base64-image.de/ (can be JPG, PNG, GIF, WebP, SVG or BMP, up to 1MB)
 #     c) Paste the <img> output (starting with data:image/) into the quotes in the img tag
-#  3) Change the name of the notebook (input) and markdown (output) files in the non-commented code below
-#  4) Save this script
-#  5) Use venv in this folder, not conda, in terminal using 
+#  4) Change the name of the notebook (input) and markdown (output) files in the non-commented code below
+#  5) Save this script
+#  6) Use venv in this folder, not conda, in terminal using 
 #        . venv/bin/activate
 
 # Run this script in the terminal using:
 # ./nb_md
 
-jupyter nbconvert _notebooks/2023-12-02-MolsMatrixToGridImage-simplifies-code.ipynb --to markdown --output 2023-12-02-MolsMatrixToGridImage-simplifies-code.md
+jupyter nbconvert _notebooks/2023-12-26-Molecular-isotopes-1-permutations.ipynb --to markdown --output 2023-12-26-Molecular-isotopes-1-permutations.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
