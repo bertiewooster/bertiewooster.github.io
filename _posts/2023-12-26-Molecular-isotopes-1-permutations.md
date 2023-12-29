@@ -563,7 +563,7 @@ hash_nested_dict(example_composition)
 
 
 
-We use functions from previous posts to [create molecular formulas]({% post_url 2023-10-20-Molecular-Formula-Generation %}) and [present the molecular formulas in a Markdown table](({% post_url 2023-10-28-Display-Molecular-Formulas %})).
+We use functions from previous posts to [create molecular formulas]({% post_url 2023-10-20-Molecular-Formula-Generation %}) and [present the molecular formulas in a Markdown table]({% post_url 2023-10-28-Display-Molecular-Formulas %}).
 
 
 ```python
@@ -884,7 +884,7 @@ Markdown(table_cutoff)
 
 These results are in fairly good agreement with those calculated with two [online](https://mstools.epfl.ch/info/) molecular isotope abundance [tools](https://www.sisweb.com/mstools/isotope.htm). Small differences between tools are likely due to differences in the values of natural abundances used (we used values from the [Mendeleev package](https://pypi.org/project/mendeleev/)), or perhaps computational methods such as approximations.
 
-Now we can plot the isotopomers above that cutoff level of abundance. To display Markdown-formatted molecular formulas on the graph, we avoid conflicts with using {braces} for both LaTeX versus [f-strings](https://realpython.com/python-f-strings/) or [`{}.format()`](https://realpython.com/python-f-strings/#the-strformat-method) by resorting to [C-style string formatting with the % operator](https://realpython.com/lessons/old-school-string-formatting-python/).
+Now we can plot the isotopomers above that cutoff level of abundance. To display Markdown-formatted molecular formulas on the graph, we avoid conflicts with using {braces} for both LaTeX versus [f-strings](https://realpython.com/python-f-strings/) or [`{}.format()`](https://realpython.com/python-f-strings/#the-strformat-method) by resorting to [C-style string formatting with the % operator](https://realpython.com/python-f-strings/#the-modulo-operator).
 
 
 ```python
