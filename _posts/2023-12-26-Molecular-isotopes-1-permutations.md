@@ -6,7 +6,7 @@ Each element has a set of isotopes and associated natural abundances, meaning th
 
 When atoms combine into molecules, the mass distributions get richer. For example, in the diatomic molecule chlorine Cl<sub>2</sub>, there are three possible molecular isotopes considering the two chlorine atoms:
 
-*[Open this notebook in Google Colab so you can run it without installing anything on your computer](https://colab.research.google.com/drive/1mvbv5dxKSZM_4HOS2a9JsidQxJZt-QEe?usp=sharing)*
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1mvbv5dxKSZM_4HOS2a9JsidQxJZt-QEe?usp=sharing) so you can run it without installing anything on your computer*
 
 
 ```python
