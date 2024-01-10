@@ -936,7 +936,7 @@ plt.show()
 
 
     
-![Abundance against mass for SCl2 with the values in the table above](/images/2023-12-26-Molecular-isotopes-1-permutations_files/2023-12-26-Molecular-isotopes-1-permutations_84_1.png)
+![Abundance against mass for SCl2 molecular isotopes with the values in the table above](/images/2023-12-26-Molecular-isotopes-1-permutations_files/2023-12-26-Molecular-isotopes-1-permutations_84_1.png)
     
 
 
