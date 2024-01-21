@@ -2,14 +2,14 @@
 
 This blog post presents a more computationally-efficient way to determine the abundance of the molecular isotopes of a molecule.
 
+<img alt="Abundance against mass for SCl2 molecular isotopes" style="width:567px; height:467px" src="/images/Cl2S-molecular-isotopic-distribution.png">
+
 In [part 1]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %}), we created a molecule for each possible placement of each isotope in a molecule. While that worked, it was computationally expensive because it required creating each permutation. In this blog post, we'll create each combination only once and calculate its abundance using the binomial distribution. While calculating the molecular isotopes of naphthalene (C<sub>10</sub>H<sub>8</sub>, SMILES `c1c2ccccc2ccc1`) took about 170 seconds using the permutations method, it takes 0.1 seconds using the combinations method below.
 
 While molecular isotope distribution calculations are available on [web sites](https://mstools.epfl.ch/info/) and [desktop software](https://pnnl-comp-mass-spec.github.io/Molecular-Weight-Calculator-VB6/#software-instructions), I was unable to find an open-source option.
 
 
 *[Open this notebook in Google Colab](https://colab.research.google.com/drive/1hBJCtmxMdK-KCb6Wv8HTOhFXUki9gnY2?usp=sharing) so you can run it without installing anything on your computer*
-
-<img alt="Abundance against mass for SCl2 molecular isotopes" style="width:567px; height:467px" src="/images/Cl2S-molecular-isotopic-distribution.png">
 
 ```python
 %%capture
