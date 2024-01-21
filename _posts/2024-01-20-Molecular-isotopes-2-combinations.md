@@ -9,6 +9,7 @@ While molecular isotope distribution calculations are available on [web sites](h
 
 *[Open this notebook in Google Colab](https://colab.research.google.com/drive/1hBJCtmxMdK-KCb6Wv8HTOhFXUki9gnY2?usp=sharing) so you can run it without installing anything on your computer*
 
+<img alt="Abundance against mass for SCl2 molecular isotopes" style="width:567px; height:467px" src="/images/Cl2S-molecular-isotopic-distribution.png">
 
 ```python
 %%capture
