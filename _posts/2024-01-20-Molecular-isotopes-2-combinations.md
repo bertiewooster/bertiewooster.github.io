@@ -7,6 +7,8 @@ In [part 1]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %}), we cre
 While molecular isotope distribution calculations are available on [web sites](https://mstools.epfl.ch/info/) and [desktop software](https://pnnl-comp-mass-spec.github.io/Molecular-Weight-Calculator-VB6/#software-instructions), I was unable to find an open-source option.
 
 
+*[Open this notebook in Google Colab](https://drive.google.com/file/d/1NWIMOzf8wIE0Suo4MOwRV0L1p8ma6k_7/view?usp=sharing) so you can run it without installing anything on your computer*
+
 ```python
 %%capture
 %!pip install rdkit

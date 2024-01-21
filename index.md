@@ -3,6 +3,12 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## Molecular Isotopic Distributions: [Permutations]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %}) and [Combinations]({% post_url 2024-01-20-Molecular-isotopes-2-combinations %})
+
+[<img alt="Abundance against mass for SCl2 molecular isotopes" style="width:567px; height:467px" src="/images/Cl2S-molecular-isotopic-distribution.png">]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %})
+
+These posts use two different methods to calculate molecular isotopic mass distributions.
+
 ## [RDKit Contribution MolsMatrixToGridImage()]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
 
 [<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:600px; height:600px" src="/images/reaction-accessible.png">]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
