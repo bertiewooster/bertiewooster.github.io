@@ -92,7 +92,7 @@ mol
 
 
     
-![Molecular structure of sulful dichloride: Cl-S-Cl](/images/2023-12-26-Molecular-isotopes-1-permutations_files/2023-12-26-Molecular-isotopes-1-permutations_11_0.png)
+![Molecular structure of sulfur dichloride: Cl-S-Cl](/images/2023-12-26-Molecular-isotopes-1-permutations_files/2023-12-26-Molecular-isotopes-1-permutations_11_0.png)
     
 
 

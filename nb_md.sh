@@ -13,9 +13,9 @@
 #        . venv/bin/activate
 
 # Run this script in the terminal using:
-# ./nb_md
+# ./nb_md.sh
 
-jupyter nbconvert _notebooks/2023-12-26-Molecular-isotopes-1-permutations.ipynb --to markdown --output 2023-12-26-Molecular-isotopes-1-permutations.md
+jupyter nbconvert _notebooks/2024-01-20-Molecular-isotopes-2-combinations.ipynb --to markdown --output 2024-01-20-Molecular-isotopes-2-combinations.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
