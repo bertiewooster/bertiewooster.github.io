@@ -945,3 +945,5 @@ plt.show()
 Using permutations worked fine for this triatomic molecule. However, that it is computationally infeasible for large molecules: for example, assigning isotopes for all permutations of napthlene, C<sub>10</sub>H<sub>8</sub> (SMILES of `c1c2ccccc2ccc1`), where each element has two isotopes and there are thus [2<sup>18</sup> = 262,144 permutations](https://en.wikipedia.org/wiki/Power_of_two#Table_of_values), took about 170 seconds. So in part 2 I'll share a more sophisticated and tractable approach using combinations.
 
 *Acknowledgement: I thank my late father [Robert Monat](https://www.arnmortuary.com/obituary/Robert-Monat) for teaching me about combinations vs. permutations.*
+
+Postscript: After this was published, [Arnoud Buzing](https://www.linkedin.com/in/arnoudbuzing/) translated the core of this code to a [Wolfram Notebook](https://www.wolframcloud.com/obj/arnoudbuzing/Published/SulfurDichloride.nb) and showed that the results could be reproduced in the Wolfram Language.
