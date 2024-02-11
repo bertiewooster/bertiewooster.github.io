@@ -15,7 +15,7 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-jupyter nbconvert _notebooks/2024-01-20-Molecular-isotopes-2-combinations.ipynb --to markdown --output 2024-01-20-Molecular-isotopes-2-combinations.md
+jupyter nbconvert _notebooks/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.ipynb --to markdown --output 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
@@ -39,11 +39,12 @@ jupyter nbconvert _notebooks/2024-01-20-Molecular-isotopes-2-combinations.ipynb 
 #            /images
 #  5) Add alt tags to Jupyter images by replacing ![png] or ![svg] with a description, e.g. ![Annotated tree]
 #  6) If notebook had molframe graphs, delete from
-#            <style>.bk-root
+#            <style>*[data-root-id]
 #         to the </div> after
 #            float: left'></img>
+#
 #         and from
-#            <div id='1291'>
+#            <div id='p
 #         to
 #            })(window);</script>
 #         (You can triple-click on the enormous block of text to select it)

@@ -1,5 +1,7 @@
 # Revisiting a Classic Cheminformatics Paper: The Wiener Index
 
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1OfaHxo08tRCVrDf0rIf1dBQbfBPYXVNX?usp=sharing) so you can run it without installing anything on your computer*
+
 Harry Wiener was "[a pioneer in cheminformatics and chemical graph theory](https://en.wikipedia.org/wiki/Harry_Wiener)". In his 1947 Journal of the American Chemical Society article "[Structural Determination of Paraffin Boiling Points](https://pubs.acs.org/doi/10.1021/ja01193a005)", he introduced the path number $\omega$ "as the sum of the distances between any two carbon atoms in the molecule, in terms of carbon-carbon bonds", which is now known as the Wiener index. He used his index to model the boiling points of alkanes (also known as paraffins). This post revisits that article, extracts data for molecules from it, recalculates cheminformatics parameters and boiling points, and plots the data.
 
 ![Graph of calculated against observed boiling point for 94 alkanes](/images/Wiener-boiling-point-calc-against-observed.png)
@@ -7,8 +9,6 @@ Harry Wiener was "[a pioneer in cheminformatics and chemical graph theory](https
 In addition to the Wiener index, Wiener's paper defines another cheminformatic parameter, the polarity number $p$, as "the number of pairs of carbon atoms which are separated by three carbon-carbon bonds."
 
 His paper is impressive for the density of data--much of the paper is tables of data--and discovering cheminformatics parameters that model physical data with simple relationships. The [Wiener index has been generalized and applied to bioactivity and materials](https://en.wikipedia.org/wiki/Harry_Wiener#Achievements).
-
-*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1KibRL643SEcCtcBvK1bnDSdhDt2Pubo4?usp=sharing)*
 
 ## Models From Wiener's Paper
 
@@ -36,8 +36,8 @@ $t_{0} = 745.42 \log(n + 4.4) - 689.4$ (eqn 5)
 
 With the availability of open-source cheminformatics software such as RDKit, it becomes a matter of reading in the molecules and their observed boiling points from Wiener's paper, converting the molecules' names to structures, calculating $\Delta\omega$ and $\Delta p$, then $\Delta t$ values. We can then plot the results to visualize how well Wiener's eqn 4 fits the experimental data and identify trends.
 
-My approach was to import the data from the paper's tables as easily as possible: 
-- For tables with little data and simple patterns, namely table I, I entered it manually. 
+My approach was to import the data from the paper's tables as easily as possible:
+- For tables with little data and simple patterns, namely table I, I entered it manually.
 - For tables with a lot of data (tables II and III), I decided the easier and less error-prone approach was to automatically extract the data from a PDF of the article. The American Chemical Society used optical character recognition (OCR) to digitize the image of the paper, which led to errors in chemical names. I then used [pypdf](https://pypi.org/project/pypdf/) to extract the text. I manually copied the data for each of those tables into its own text file, then fixed some issues due to formatting in the original paper. I saved those tables as text files, then read their data in as lists, then fixed the typos.
 
 The key packages this post uses are:
@@ -58,7 +58,7 @@ from google.colab import drive
 drive.mount("/content/drive")
 ```
 
-    Mounted at /content/drive
+    Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount("/content/drive", force_remount=True).
 
 
 
@@ -91,10 +91,8 @@ os.environ["HV_DOC_HTML"] = "true"
 !black "/content/drive/MyDrive/Colab Notebooks/RevisitingWiener.ipynb"
 ```
 
-    [1mreformatted /content/drive/MyDrive/Colab Notebooks/RevisitingWiener.ipynb[0m
-    
     [1mAll done! ✨ 🍰 ✨[0m
-    [34m[1m1 file [0m[1mreformatted[0m.
+    [34m1 file [0mleft unchanged.
 
 
 
@@ -153,7 +151,7 @@ def CalculatePolarityNumber(mol: Chem.Mol) -> int:
     return res
 
 
-def calc_Δt(n: int, Δomega: int, Δp: int) -> float:
+def calc_Δt(n: int | pl.Expr, Δomega: int | pl.Expr, Δp: int | pl.Expr) -> float:
     """
     Calculate Δt using Wiener equation 4
     https://pubs.acs.org/doi/10.1021/ja01193a005
@@ -268,7 +266,7 @@ print(df)
     │ 2           ┆ 2-Methylpropane            ┆ II    ┆ CC(C)C             ┆ 11.2      ┆ Δt      │
     │ 3           ┆ n-Pentane                  ┆ II    ┆ CCCCC              ┆ 0.0       ┆ Δt      │
     │ 4           ┆ 2-Methylbutane             ┆ II    ┆ CC(C)CC            ┆ 8.2       ┆ Δt      │
-    │ ...         ┆ ...                        ┆ ...   ┆ ...                ┆ ...       ┆ ...     │
+    │ …           ┆ …                          ┆ …     ┆ …                  ┆ …         ┆ …       │
     │ 91          ┆ 2,2-Dimethyl-4-ethylhexane ┆ III   ┆ CC(C)(CC(CC)CC)C   ┆ 148.0     ┆ t       │
     │ 92          ┆ 2,2,3,4-Tetramethylhexane  ┆ III   ┆ CC(C)(C(C(CC)C)C)C ┆ 156.5     ┆ t       │
     │ 93          ┆ 2,2,4,5-Tetramethylhexane  ┆ III   ┆ CC(C)(CC(C(C)C)C)C ┆ 145.8     ┆ t       │
@@ -282,7 +280,7 @@ The first crucial step is to convert each SMILES string to a molecule. If there 
 ```python
 df = df.with_columns(
     [
-        pl.col("Smiles").apply(lambda s: Chem.MolFromSmiles(s)).alias("mol"),
+        pl.col("Smiles"). map_elements(lambda s: Chem.MolFromSmiles(s)).alias("mol"),
     ]
 )
 ```
@@ -295,37 +293,36 @@ Now that we have RDKit molecules, we can use RDKit's cheminformatic functions to
 ```python
 df = df.with_columns(
     [
-        pl.col("mol").apply(lambda m: Chem.MolToSmiles(m)).alias("CanonicalSMILES"),
-        pl.col("mol").apply(lambda m: wiener_index(m)).alias("omega"),
-        pl.col("mol").apply(lambda m: CalculatePolarityNumber(m)).alias("p"),
-        pl.col("mol").apply(lambda m: m.GetNumAtoms()).alias("n"),
+        pl.col("mol").map_elements(lambda m: Chem.MolToSmiles(m)).alias("CanonicalSMILES"),
+        pl.col("mol").map_elements(lambda m: wiener_index(m)).alias("omega"),
+        pl.col("mol").map_elements(lambda m: CalculatePolarityNumber(m)).alias("p"),
+        pl.col("mol").map_elements(lambda m: m.GetNumAtoms()).alias("n"),
     ]
 )
 print(df)
 ```
 
     shape: (94, 11)
-    ┌─────────────┬────────────────┬───────┬────────────────┬─────┬────────────────┬───────┬─────┬─────┐
-    │ Compound_Id ┆ molecule       ┆ table ┆ Smiles         ┆ ... ┆ CanonicalSMILE ┆ omega ┆ p   ┆ n   │
-    │ ---         ┆ ---            ┆ ---   ┆ ---            ┆     ┆ S              ┆ ---   ┆ --- ┆ --- │
-    │ u32         ┆ str            ┆ str   ┆ str            ┆     ┆ ---            ┆ i64   ┆ i64 ┆ i64 │
-    │             ┆                ┆       ┆                ┆     ┆ str            ┆       ┆     ┆     │
-    ╞═════════════╪════════════════╪═══════╪════════════════╪═════╪════════════════╪═══════╪═════╪═════╡
-    │ 1           ┆ n-Butane       ┆ II    ┆ CCCC           ┆ ... ┆ CCCC           ┆ 10    ┆ 1   ┆ 4   │
-    │ 2           ┆ 2-Methylpropan ┆ II    ┆ CC(C)C         ┆ ... ┆ CC(C)C         ┆ 9     ┆ 0   ┆ 4   │
-    │             ┆ e              ┆       ┆                ┆     ┆                ┆       ┆     ┆     │
-    │ 3           ┆ n-Pentane      ┆ II    ┆ CCCCC          ┆ ... ┆ CCCCC          ┆ 20    ┆ 2   ┆ 5   │
-    │ 4           ┆ 2-Methylbutane ┆ II    ┆ CC(C)CC        ┆ ... ┆ CCC(C)C        ┆ 18    ┆ 2   ┆ 5   │
-    │ ...         ┆ ...            ┆ ...   ┆ ...            ┆ ... ┆ ...            ┆ ...   ┆ ... ┆ ... │
-    │ 91          ┆ 2,2-Dimethyl-4 ┆ III   ┆ CC(C)(CC(CC)CC ┆ ... ┆ CCC(CC)CC(C)(C ┆ 126   ┆ 9   ┆ 10  │
-    │             ┆ -ethylhexane   ┆       ┆ )C             ┆     ┆ )C             ┆       ┆     ┆     │
-    │ 92          ┆ 2,2,3,4-Tetram ┆ III   ┆ CC(C)(C(C(CC)C ┆ ... ┆ CCC(C)C(C)C(C) ┆ 118   ┆ 12  ┆ 10  │
-    │             ┆ ethylhexane    ┆       ┆ )C)C           ┆     ┆ (C)C           ┆       ┆     ┆     │
-    │ 93          ┆ 2,2,4,5-Tetram ┆ III   ┆ CC(C)(CC(C(C)C ┆ ... ┆ CC(C)C(C)CC(C) ┆ 124   ┆ 9   ┆ 10  │
-    │             ┆ ethylhexane    ┆       ┆ )C)C           ┆     ┆ (C)C           ┆       ┆     ┆     │
-    │ 94          ┆ 2,2,5,5-Tetram ┆ III   ┆ CC(C)(CCC(C)(C ┆ ... ┆ CC(C)(C)CCC(C) ┆ 127   ┆ 7   ┆ 10  │
-    │             ┆ ethylhexane    ┆       ┆ )C)C           ┆     ┆ (C)C           ┆       ┆     ┆     │
-    └─────────────┴────────────────┴───────┴────────────────┴─────┴────────────────┴───────┴─────┴─────┘
+    ┌─────────────┬─────────────────┬───────┬─────────────────┬───┬────────────────┬───────┬─────┬─────┐
+    │ Compound_Id ┆ molecule        ┆ table ┆ Smiles          ┆ … ┆ CanonicalSMILE ┆ omega ┆ p   ┆ n   │
+    │ ---         ┆ ---             ┆ ---   ┆ ---             ┆   ┆ S              ┆ ---   ┆ --- ┆ --- │
+    │ u32         ┆ str             ┆ str   ┆ str             ┆   ┆ ---            ┆ i64   ┆ i64 ┆ i64 │
+    │             ┆                 ┆       ┆                 ┆   ┆ str            ┆       ┆     ┆     │
+    ╞═════════════╪═════════════════╪═══════╪═════════════════╪═══╪════════════════╪═══════╪═════╪═════╡
+    │ 1           ┆ n-Butane        ┆ II    ┆ CCCC            ┆ … ┆ CCCC           ┆ 10    ┆ 1   ┆ 4   │
+    │ 2           ┆ 2-Methylpropane ┆ II    ┆ CC(C)C          ┆ … ┆ CC(C)C         ┆ 9     ┆ 0   ┆ 4   │
+    │ 3           ┆ n-Pentane       ┆ II    ┆ CCCCC           ┆ … ┆ CCCCC          ┆ 20    ┆ 2   ┆ 5   │
+    │ 4           ┆ 2-Methylbutane  ┆ II    ┆ CC(C)CC         ┆ … ┆ CCC(C)C        ┆ 18    ┆ 2   ┆ 5   │
+    │ …           ┆ …               ┆ …     ┆ …               ┆ … ┆ …              ┆ …     ┆ …   ┆ …   │
+    │ 91          ┆ 2,2-Dimethyl-4- ┆ III   ┆ CC(C)(CC(CC)CC) ┆ … ┆ CCC(CC)CC(C)(C ┆ 126   ┆ 9   ┆ 10  │
+    │             ┆ ethylhexane     ┆       ┆ C               ┆   ┆ )C             ┆       ┆     ┆     │
+    │ 92          ┆ 2,2,3,4-Tetrame ┆ III   ┆ CC(C)(C(C(CC)C) ┆ … ┆ CCC(C)C(C)C(C) ┆ 118   ┆ 12  ┆ 10  │
+    │             ┆ thylhexane      ┆       ┆ C)C             ┆   ┆ (C)C           ┆       ┆     ┆     │
+    │ 93          ┆ 2,2,4,5-Tetrame ┆ III   ┆ CC(C)(CC(C(C)C) ┆ … ┆ CC(C)C(C)CC(C) ┆ 124   ┆ 9   ┆ 10  │
+    │             ┆ thylhexane      ┆       ┆ C)C             ┆   ┆ (C)C           ┆       ┆     ┆     │
+    │ 94          ┆ 2,2,5,5-Tetrame ┆ III   ┆ CC(C)(CCC(C)(C) ┆ … ┆ CC(C)(C)CCC(C) ┆ 127   ┆ 7   ┆ 10  │
+    │             ┆ thylhexane      ┆       ┆ C)C             ┆   ┆ (C)C           ┆       ┆     ┆     │
+    └─────────────┴─────────────────┴───────┴─────────────────┴───┴────────────────┴───────┴─────┴─────┘
 
 
 Because Wiener frames values for each structural isomer as deltas from the corresponding linear alkane, we need to reference the corresponding linear alkane for each molecule. We can create a table for the linear alkanes, then join that to the table of all molecules based on the number of carbon atoms, $n$. The `linear_alkanes` dataframe comes from Wiener's table I. The data were so quick to enter that I did so manually rather than use py2opsin to determine SMILES strings, etc. as above.
@@ -365,9 +362,7 @@ linear_alkanes = pl.DataFrame(
 )
 
 linear_alkanes = linear_alkanes.with_columns(
-    [
-        pl.col("n").apply(lambda n: egloff(n)).alias("t0_calc"),
-    ]
+        pl.col("n").map_elements(lambda n: egloff(n)).alias("t0_calc"),
 )
 ```
 
@@ -387,11 +382,9 @@ df = df.with_columns(
     [
         # Conditional: If t_read is delta vs. t (absolute)
         pl.when(pl.col("t_which") == "t")
-        .then(pl.col("t_read_in").map(lambda n: n))
+        .then(pl.col("t_read_in"))
         .otherwise(
-            pl.struct(["t_read_in", "t0_obs °C"]).apply(
-                lambda x: x["t0_obs °C"] - x["t_read_in"]
-            )
+            (pl.col("t0_obs °C") - pl.col("t_read_in"))
         )
         .alias("t_obs °C"),
     ]
@@ -412,7 +405,7 @@ print(row_t)
     │ 2-Methylpropane            ┆ 11.2      ┆ Δt      ┆ -0.5      ┆ -11.7    │
     │ n-Pentane                  ┆ 0.0       ┆ Δt      ┆ 36.1      ┆ 36.1     │
     │ 2-Methylbutane             ┆ 8.2       ┆ Δt      ┆ 36.1      ┆ 27.9     │
-    │ ...                        ┆ ...       ┆ ...     ┆ ...       ┆ ...      │
+    │ …                          ┆ …         ┆ …       ┆ …         ┆ …        │
     │ 2,2-Dimethyl-4-ethylhexane ┆ 148.0     ┆ t       ┆ 174.0     ┆ 148.0    │
     │ 2,2,3,4-Tetramethylhexane  ┆ 156.5     ┆ t       ┆ 174.0     ┆ 156.5    │
     │ 2,2,4,5-Tetramethylhexane  ┆ 145.8     ┆ t       ┆ 174.0     ┆ 145.8    │
@@ -425,8 +418,7 @@ print(row_t)
 df = df.with_columns(
     [
         # Calculate Δt_obs °C
-        pl.struct(["t_obs °C", "t0_obs °C"])
-        .apply(lambda x: x["t0_obs °C"] - x["t_obs °C"])
+        (pl.col("t0_obs °C") - pl.col("t_obs °C"))
         .alias("Δt_obs °C")
     ]
 )
@@ -447,7 +439,7 @@ print(row_t)
     │ 2-Methylpropane            ┆ 11.2      ┆ Δt      ┆ -0.5      ┆ -11.7    ┆ 11.2      │
     │ n-Pentane                  ┆ 0.0       ┆ Δt      ┆ 36.1      ┆ 36.1     ┆ 0.0       │
     │ 2-Methylbutane             ┆ 8.2       ┆ Δt      ┆ 36.1      ┆ 27.9     ┆ 8.2       │
-    │ ...                        ┆ ...       ┆ ...     ┆ ...       ┆ ...      ┆ ...       │
+    │ …                          ┆ …         ┆ …       ┆ …         ┆ …        ┆ …         │
     │ 2,2-Dimethyl-4-ethylhexane ┆ 148.0     ┆ t       ┆ 174.0     ┆ 148.0    ┆ 26.0      │
     │ 2,2,3,4-Tetramethylhexane  ┆ 156.5     ┆ t       ┆ 174.0     ┆ 156.5    ┆ 17.5      │
     │ 2,2,4,5-Tetramethylhexane  ┆ 145.8     ┆ t       ┆ 174.0     ┆ 145.8    ┆ 28.2      │
@@ -462,48 +454,50 @@ Next we calculate the cheminformatic parameters and use them to calculate predic
 # Calculate delta omega, p values
 df = df.with_columns(
     [
-        pl.struct(["omega", "omega0"])
-        .apply(lambda x: x["omega0"] - x["omega"])
-        .alias("Δomega"),
-        pl.struct(["p", "p0"]).apply(lambda x: x["p0"] - x["p"]).alias("Δp"),
+        (pl.col("omega0") - pl.col("omega")).alias("Δomega"),
+        (pl.col("p0") - pl.col("p")).alias("Δp"),
     ]
 )
 
 # Calculate delta t
 df = df.with_columns(
-    [
-        pl.struct(["n", "Δomega", "Δp"])
-        .apply(lambda x: calc_Δt(x["n"], x["Δomega"], x["Δp"]))
-        .alias("Δt_calc °C"),
-    ]
+        # Use the calc_Δt function directly, passing the columns as arguments
+        calc_Δt(pl.col("n"), pl.col("Δomega"), pl.col("Δp")).alias("Δt_calc °C"),
 )
 
 df = df.with_columns(
     [
         # Calculate t_calc °C
-        pl.struct(["t0_calc", "Δt_calc °C"])
-        .apply(lambda x: x["t0_calc"] - x["Δt_calc °C"])
-        .alias("t_calc °C"),
+        (pl.col("t0_calc") - pl.col("Δt_calc °C")).alias("t_calc °C"),
         # Calculate t_obs °C
-        pl.struct(["t0_obs °C", "Δt_obs °C"])
-        .apply(lambda x: x["t0_obs °C"] - x["Δt_obs °C"])
-        .alias("t_obs °C"),
+        (pl.col("t0_obs °C") - pl.col("Δt_obs °C")).alias("t_obs °C"),
         # Calculate deviation in delta t: obs - calc
-        pl.struct(["Δt_obs °C", "Δt_calc °C"])
-        .apply(lambda x: x["Δt_obs °C"] - x["Δt_calc °C"])
-        .alias("Deviation °C"),
+        (pl.col("Δt_obs °C") - pl.col("Δt_calc °C")).alias("Deviation °C"),
     ]
 )
 
 df = df.with_columns(
     [
         # Take absolute value of deviation
-        pl.col("Deviation °C")
-        .map(lambda d: abs(d))
-        .alias("Absolute Deviation °C"),
+        pl.col("Deviation °C").abs().alias("Absolute Deviation °C"),
     ]
 )
+df.head(3)
 ```
+
+
+
+
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3, 26)</small><table border="1" class="dataframe"><thead><tr><th>Compound_Id</th><th>molecule</th><th>table</th><th>Smiles</th><th>t_read_in</th><th>t_which</th><th>mol</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>n</th><th>molecule_lin_alkane</th><th>t0_obs °C</th><th>Smiles_lin_alkane</th><th>omega0</th><th>p0</th><th>Compound_Id_lin_alkane</th><th>t0_calc</th><th>t_obs °C</th><th>Δt_obs °C</th><th>Δomega</th><th>Δp</th><th>Δt_calc °C</th><th>t_calc °C</th><th>Deviation °C</th><th>Absolute Deviation °C</th></tr><tr><td>u32</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>object</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>1</td><td>&quot;n-Butane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036baba70&gt;</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-0.5</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>-0.423735</td><td>0.0</td><td>0.0</td></tr><tr><td>2</td><td>&quot;2-Methylpropan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C&quot;</td><td>11.2</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34350&gt;</td><td>&quot;CC(C)C&quot;</td><td>9</td><td>0</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-11.7</td><td>11.2</td><td>1</td><td>1</td><td>11.625</td><td>-12.048735</td><td>-0.425</td><td>0.425</td></tr><tr><td>3</td><td>&quot;n-Pentane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34430&gt;</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>36.1</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>35.988965</td><td>0.0</td><td>0.0</td></tr></tbody></table></div>
+
+
 
 ## Visualizing Egloff's Equation Modeling Boiling Point for Linear Alkanes
 
@@ -523,9 +517,12 @@ We start with the baseline of linear alkanes and verify that Egloff's equation f
 
 
 ```python
+# Convert to pandas manually because automatic conversion fails in Google Colab for some reason
+linear_alkanes_pd = linear_alkanes.to_pandas()
+
 # Plot experimental straight-chain alkane data:
 #   Boiling point against number of carbons
-seaborn.scatterplot(data=linear_alkanes, x="n", y="t0_obs °C")
+seaborn.scatterplot(data=linear_alkanes_pd, x="n", y="t0_obs °C")
 
 # Add to the plot a curve for the Egloff model
 egloff_x = np.linspace(4, 12, 41)
@@ -538,20 +535,19 @@ plt.plot(egloff_x, egloff_y, color="black", linewidth=0.1)
 
 
 
-    [<matplotlib.lines.Line2D at 0x7f601b946520>]
+    [<matplotlib.lines.Line2D at 0x7900368dfaf0>]
 
 
 
 
     
-![Boiling point against number of carbon atoms for linear alkanes between 4 and 12 carbon atoms. Points are experimental data, curve is Egloff's equation.](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_44_1.png)
+![Boiling point against number of carbon atoms for linear alkanes between 4 and 12 carbon atoms. Points are experimental data, curve is Egloff's equation.](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_43_1.png)
     
 
 
 The [mol_frame package](https://github.com/apahl/mol_frame) lets us show the molecules as pop-ups (tooltips) when we mouse over each data point. We will reproduce each plot as a mol_frame plot. For mol_frame, we have to convert the dataframe from Polars to pandas.
 
-*Unfortunately, the interactive plots are not working in the blog version of this notebook. Please visit the [Google Colab notebook](https://colab.research.google.com/drive/1KibRL643SEcCtcBvK1bnDSdhDt2Pubo4?usp=sharing) to access the interactive plot.*
-
+*Unfortunately, the interactive plots are not working in the blog version of this notebook. Please visit the [Google Colab notebook](https://colab.research.google.com/drive/1OfaHxo08tRCVrDf0rIf1dBQbfBPYXVNX?usp=sharing) to access the interactive plot.*
 
 ```python
 linear_alkanes_pandas = linear_alkanes.to_pandas()
@@ -571,9 +567,6 @@ linear_alkanes_mf.scatter("n", "t0_obs °C")
 ```
 
 
-
-
-
     * using Mol_b64
     * add img:               (    9 |   10)
 
@@ -584,9 +577,12 @@ Considering now the substance of the paper, we plot the calculated against obser
 
 
 ```python
+# Convert to pandas manually because automatic conversion fails in Google Colab for some reason
+df_pd = df.drop(["mol"]).to_pandas()
+
 # Plot alkane boiling point data: calculated against observed
 seaborn.scatterplot(
-    data=df, x="t_obs °C", y="t_calc °C", hue="n", palette="colorblind", style="n"
+    data=df_pd, x="t_obs °C", y="t_calc °C", hue="n", palette="colorblind", style="n"
 )
 
 plt.xlabel(t_obs_label)
@@ -604,26 +600,25 @@ plt.plot(equality_range, equality_range, color="black", linewidth=0.1)
 
 
 
-    [<matplotlib.lines.Line2D at 0x7f60186418e0>]
+    [<matplotlib.lines.Line2D at 0x790034adbeb0>]
 
 
 
 
     
-![Graph of calculated against observed boiling point for 94 alkanes](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_51_1.png)
+![Graph of calculated against observed boiling point for 94 alkanes](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_49_1.png)
     
 
 
 
 ```python
 # Prepare dataframe for plotting with mol_frame
-df_pandas = df.to_pandas()
-df_mf = mf.MolFrame(df_pandas)
+df_mf = mf.MolFrame(df_pd)
 df_mf = df_mf.add_b64()
 ```
 
     * using Smiles
-    * add b64:               (   94 |   27)
+    * add b64:               (   94 |   26)
 
 
 
@@ -635,8 +630,7 @@ df_mf.scatter("t_obs °C", "t_calc °C", colorby="n")
 
 
     * using Mol_b64
-    * add img:               (   94 |   28)
-
+    * add img:               (   94 |   27)
 
 
 
@@ -674,7 +668,7 @@ We can also plot the deviations ("residuals").
 ```python
 # Plot the deviation against t observed
 seaborn.scatterplot(
-    data=df, x="t_obs °C", y="Deviation °C", hue="n", palette="colorblind", style="n"
+    data=df_pd, x="t_obs °C", y="Deviation °C", hue="n", palette="colorblind", style="n"
 )
 
 plt.xlabel(t_obs_label)
@@ -687,13 +681,13 @@ plt.axhline(0, color="black", linewidth=0.5)
 
 
 
-    <matplotlib.lines.Line2D at 0x7f601129fbe0>
+    <matplotlib.lines.Line2D at 0x79002c5bc640>
 
 
 
 
     
-![Graph of deviation against observed boiling point for 94 alkanes](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_57_1.png)
+![Graph of deviation against observed boiling point for 94 alkanes](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_55_1.png)
     
 
 
@@ -706,11 +700,8 @@ df_mf.scatter("t_obs °C", "Deviation °C", colorby="n")
 
 
 
-
     * using Mol_b64
-    * add img:               (   94 |   28)
-
-
+    * add img:               (   94 |   27)
 
 
 
@@ -746,13 +737,18 @@ df_table = q_table.collect()
 df_table
 ```
 
+    <ipython-input-27-9a638adec0a4>:3: DeprecationWarning: `groupby` is deprecated. It has been renamed to `group_by`.
+      .groupby("table")
+
+
 
 
 
 <div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
   text-align: right;
+  white-space: pre-wrap;
 }
 </style>
 <small>shape: (2, 3)</small><table border="1" class="dataframe"><thead><tr><th>table</th><th>count</th><th>Absolute Deviation °C</th></tr><tr><td>str</td><td>u32</td><td>f64</td></tr></thead><tbody><tr><td>&quot;II&quot;</td><td>37</td><td>0.5</td></tr><tr><td>&quot;III&quot;</td><td>57</td><td>1.28</td></tr></tbody></table></div>
@@ -781,13 +777,18 @@ df_n = q_n.collect()
 df_n
 ```
 
+    <ipython-input-28-0bf4216f526f>:3: DeprecationWarning: `groupby` is deprecated. It has been renamed to `group_by`.
+      .groupby("n")
+
+
 
 
 
 <div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
   text-align: right;
+  white-space: pre-wrap;
 }
 </style>
 <small>shape: (7, 3)</small><table border="1" class="dataframe"><thead><tr><th>n</th><th>count</th><th>Absolute Deviation °C</th></tr><tr><td>i64</td><td>u32</td><td>f64</td></tr></thead><tbody><tr><td>4</td><td>2</td><td>0.21</td></tr><tr><td>5</td><td>3</td><td>0.15</td></tr><tr><td>6</td><td>5</td><td>0.09</td></tr><tr><td>7</td><td>9</td><td>0.5</td></tr><tr><td>8</td><td>18</td><td>0.7</td></tr><tr><td>9</td><td>29</td><td>1.27</td></tr><tr><td>10</td><td>28</td><td>1.3</td></tr></tbody></table></div>
@@ -805,9 +806,10 @@ df.select(value_mean=pl.mean("Absolute Deviation °C").round(2))
 
 
 <div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
   text-align: right;
+  white-space: pre-wrap;
 }
 </style>
 <small>shape: (1, 1)</small><table border="1" class="dataframe"><thead><tr><th>value_mean</th></tr><tr><td>f64</td></tr></thead><tbody><tr><td>0.97</td></tr></tbody></table></div>
@@ -822,6 +824,25 @@ In the last section of his paper, Wiener considers how the path number (Wiener i
 
 
 ```python
+df.head()
+```
+
+
+
+
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 26)</small><table border="1" class="dataframe"><thead><tr><th>Compound_Id</th><th>molecule</th><th>table</th><th>Smiles</th><th>t_read_in</th><th>t_which</th><th>mol</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>n</th><th>molecule_lin_alkane</th><th>t0_obs °C</th><th>Smiles_lin_alkane</th><th>omega0</th><th>p0</th><th>Compound_Id_lin_alkane</th><th>t0_calc</th><th>t_obs °C</th><th>Δt_obs °C</th><th>Δomega</th><th>Δp</th><th>Δt_calc °C</th><th>t_calc °C</th><th>Deviation °C</th><th>Absolute Deviation °C</th></tr><tr><td>u32</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>object</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>1</td><td>&quot;n-Butane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036baba70&gt;</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-0.5</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>-0.423735</td><td>0.0</td><td>0.0</td></tr><tr><td>2</td><td>&quot;2-Methylpropan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C&quot;</td><td>11.2</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34350&gt;</td><td>&quot;CC(C)C&quot;</td><td>9</td><td>0</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-11.7</td><td>11.2</td><td>1</td><td>1</td><td>11.625</td><td>-12.048735</td><td>-0.425</td><td>0.425</td></tr><tr><td>3</td><td>&quot;n-Pentane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34430&gt;</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>36.1</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>35.988965</td><td>0.0</td><td>0.0</td></tr><tr><td>4</td><td>&quot;2-Methylbutane…</td><td>&quot;II&quot;</td><td>&quot;CC(C)CC&quot;</td><td>8.2</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c344a0&gt;</td><td>&quot;CCC(C)C&quot;</td><td>18</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>27.9</td><td>8.2</td><td>2</td><td>0</td><td>7.84</td><td>28.148965</td><td>0.36</td><td>0.36</td></tr><tr><td>5</td><td>&quot;2,2-Dimethylpr…</td><td>&quot;II&quot;</td><td>&quot;CC(C)(C)C&quot;</td><td>26.6</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34510&gt;</td><td>&quot;CC(C)(C)C&quot;</td><td>16</td><td>0</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>9.5</td><td>26.6</td><td>4</td><td>2</td><td>26.68</td><td>9.308965</td><td>-0.08</td><td>0.08</td></tr></tbody></table></div>
+
+
+
+
+```python
 octanes_methyl_molecules = [
     "n-Octane",
     "2-Methylheptane",
@@ -832,7 +853,7 @@ octanes_moving_methyl = df.filter(pl.col("molecule").is_in(octanes_methyl_molecu
 
 octanes_moving_methyl = octanes_moving_methyl.with_columns(
     [
-        pl.col("molecule").apply(lambda m: m[0]).alias("first char"),
+        pl.col("molecule").str.slice(0,1).alias("first char"),
     ]
 )
 
@@ -841,14 +862,14 @@ positions = ("2", "3", "4", "5", "6", "7", "8", "9")
 octanes_moving_methyl = octanes_moving_methyl.with_columns(
     [
         pl.when(pl.col("first char").is_in(positions))
-        .then(pl.col("first char").apply(lambda c: c))
-        .otherwise("1")
+        .then(pl.col("first char"))
+        .otherwise(pl.lit("1"))
         .alias("methyl position str"),
     ]
 )
 octanes_moving_methyl = octanes_moving_methyl.with_columns(
     [
-        pl.col("methyl position str").apply(lambda s: int(s)).alias("methyl position"),
+        pl.col("methyl position str").cast(pl.Int64).alias("methyl position"),
     ]
 )
 octanes_moving_methyl.select(
@@ -860,12 +881,13 @@ octanes_moving_methyl.select(
 
 
 <div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
   text-align: right;
+  white-space: pre-wrap;
 }
 </style>
-<small>shape: (4, 7)</small><table border="1" class="dataframe"><thead><tr><th>molecule</th><th>n</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>methyl position</th><th>t_calc °C</th></tr><tr><td>str</td><td>i64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td></tr></thead><tbody><tr><td>&quot;n-Octane&quot;</td><td>8</td><td>&quot;CCCCCCCC&quot;</td><td>84</td><td>5</td><td>1</td><td>125.658393</td></tr><tr><td>&quot;2-Methylheptan...</td><td>8</td><td>&quot;CCCCCC(C)C&quot;</td><td>79</td><td>5</td><td>2</td><td>118.002143</td></tr><tr><td>&quot;3-Methylheptan...</td><td>8</td><td>&quot;CCCCC(C)CC&quot;</td><td>76</td><td>6</td><td>3</td><td>118.908393</td></tr><tr><td>&quot;4-Methylheptan...</td><td>8</td><td>&quot;CCCC(C)CCC&quot;</td><td>75</td><td>6</td><td>4</td><td>117.377143</td></tr></tbody></table></div>
+<small>shape: (4, 7)</small><table border="1" class="dataframe"><thead><tr><th>molecule</th><th>n</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>methyl position</th><th>t_calc °C</th></tr><tr><td>str</td><td>i64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td></tr></thead><tbody><tr><td>&quot;n-Octane&quot;</td><td>8</td><td>&quot;CCCCCCCC&quot;</td><td>84</td><td>5</td><td>1</td><td>125.658393</td></tr><tr><td>&quot;2-Methylheptan…</td><td>8</td><td>&quot;CCCCCC(C)C&quot;</td><td>79</td><td>5</td><td>2</td><td>118.002143</td></tr><tr><td>&quot;3-Methylheptan…</td><td>8</td><td>&quot;CCCCC(C)CC&quot;</td><td>76</td><td>6</td><td>3</td><td>118.908393</td></tr><tr><td>&quot;4-Methylheptan…</td><td>8</td><td>&quot;CCCC(C)CCC&quot;</td><td>75</td><td>6</td><td>4</td><td>117.377143</td></tr></tbody></table></div>
 
 
 
@@ -882,9 +904,12 @@ Wiener interprets the path number (Wiener index) as a measure of compactness: "T
 
 
 ```python
+# Convert to pandas manually because automatic conversion fails in Google Colab for some reason
+octanes_moving_methyl_pd = octanes_moving_methyl.drop("mol").to_pandas()
+
 # Plot the calculated boiling point against methyl position
 plt.ylabel(t_calc_label)
-s = seaborn.scatterplot(data=octanes_moving_methyl, x="methyl position", y="t_calc °C")
+s = seaborn.scatterplot(data=octanes_moving_methyl_pd, x="methyl position", y="t_calc °C")
 
 # Create integer tick labels for methyl position by passing in list of integers
 methyl_pos_col = octanes_moving_methyl.select("methyl position")
@@ -912,17 +937,21 @@ for row_num, isomer in enumerate(
 
 
     
-![Graph of calculated boiling point against methyl position for octanes](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_75_0.png)
+![Graph of calculated boiling point against methyl position for octanes](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_74_0.png)
     
 
 
 
 ```python
 # Prepare dataframe for plotting with mol_frame
-octanes_moving_methyl_pandas = octanes_moving_methyl.to_pandas()
-octanes_moving_methyl_mf = mf.MolFrame(octanes_moving_methyl_pandas)
+# octanes_moving_methyl_pandas = octanes_moving_methyl.to_pandas()
+octanes_moving_methyl_mf = mf.MolFrame(octanes_moving_methyl_pd)
 octanes_moving_methyl_mf = octanes_moving_methyl_mf.add_b64()
 ```
+
+    * using Smiles
+    * add b64:               (    4 |   29)
+
 
 
 ```python
@@ -930,6 +959,13 @@ octanes_moving_methyl_mf = octanes_moving_methyl_mf.add_b64()
 hv.extension('bokeh')
 octanes_moving_methyl_mf.scatter("methyl position", "t_calc °C")
 ```
+
+
+
+    * using Mol_b64
+    * add img:               (    4 |   30)
+
+
 
 ## Concluding Thoughts
 
@@ -940,3 +976,7 @@ Reviewing Wiener's classic paper made me appreciate the advances in cheminformat
 If we wanted to extract data from many papers, it would be worthwhile to automate more of this process. It would probably be possible to prepare (for example, extract) each table separately and clean (correct optical character recognition mistakes) the data with AI tools such as [ChemDataExtractorv2](http://chemdataextractor2.org/) and [ChatGPT](https://openai.com/blog/chatgpt). You could also use regular expressions to correct classes of typos, for example changing the typo I (uppercase "eye") to l (lowercase "el") in "Ihexane", "Iheptane", and "Ioctane".
 
 If we wanted to prioritize speed over modular code, we could combine the functions to calculate the Wiener index and polarity number because each uses [RDKit's GetDistanceMatrix](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html?highlight=getdistancematrix#rdkit.Chem.rdmolops.GetDistanceMatrix) function.
+
+## Postscript
+
+2024-02-11: Thanks to thomasaarholt on the [Polars Discord](https://discord.com/channels/908022250106667068) for suggestions for improving the Polars code.
