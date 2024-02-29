@@ -1,6 +1,6 @@
 # Revisiting a Classic Cheminformatics Paper: The Wiener Index
 
-*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1OfaHxo08tRCVrDf0rIf1dBQbfBPYXVNX?usp=sharing) so you can run it without installing anything on your computer*
+*Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
 
 Harry Wiener was "[a pioneer in cheminformatics and chemical graph theory](https://en.wikipedia.org/wiki/Harry_Wiener)". In his 1947 Journal of the American Chemical Society article "[Structural Determination of Paraffin Boiling Points](https://pubs.acs.org/doi/10.1021/ja01193a005)", he introduced the path number $\omega$ "as the sum of the distances between any two carbon atoms in the molecule, in terms of carbon-carbon bonds", which is now known as the Wiener index. He used his index to model the boiling points of alkanes (also known as paraffins). This post revisits that article, extracts data for molecules from it, recalculates cheminformatics parameters and boiling points, and plots the data.
 
@@ -276,54 +276,51 @@ print(df)
 
 The first crucial step is to convert each SMILES string to a molecule. If there any remaining typos in the chemical names, py2opsin might be unable to parse the names into SMILES strings and would give an empty string. RDKit would create an empty molecule (with no atoms), but we would run into problems in the subsequent step when we tried to calculate the Wiener index or polarity number because the molecule has no [distance matrix](https://www.rdkit.org/docs/source/rdkit.Chem.rdmolops.html?highlight=getdistancematrix#rdkit.Chem.rdmolops.GetDistanceMatrix).
 
+To avoid storing Python objects in the dataframe, which uses extra memory, we create a function `mol_props` to convert a SMILES string into a molecule, and then return all the desired molecular properties (canonical SMILES, omega, p, and n) as a dictionary. That data is added to the Polars dataframe as a [struct column](https://docs.pola.rs/user-guide/expressions/structs/#encountering-the-struct-type), which we can then [`unnest`](https://docs.pola.rs/docs/python/dev/reference/dataframe/api/polars.DataFrame.unnest.html#polars.DataFrame.unnest) to produce a column for each molecular property.
+
 
 ```python
+def mol_props(sml):
+    """
+    Convert SMILES to an RDKit molecule, then calculate various properties of it
+    :returns: dictionary of molecular properties
+    :param sml: SMILES to convert to a molecule
+    """
+    mol = Chem.MolFromSmiles(sml)
+    CanonicalSMILES = Chem.MolToSmiles(mol)
+    omega = wiener_index(mol)
+    p = CalculatePolarityNumber(mol)
+    n = mol.GetNumAtoms()
+    return dict(
+        CanonicalSMILES=CanonicalSMILES,
+        omega=omega,
+        p=p,
+        n=n,
+        )
+
 df = df.with_columns(
-    [
-        pl.col("Smiles"). map_elements(lambda s: Chem.MolFromSmiles(s)).alias("mol"),
-    ]
-)
+   molecular_props = pl.col('Smiles').map_elements(mol_props)
+).unnest('molecular_props')
+df
 ```
+
+
+
+
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (94, 10)</small><table border="1" class="dataframe"><thead><tr><th>Compound_Id</th><th>molecule</th><th>table</th><th>Smiles</th><th>t_read_in</th><th>t_which</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>n</th></tr><tr><td>u32</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>i64</td><td>i64</td><td>i64</td></tr></thead><tbody><tr><td>1</td><td>&quot;n-Butane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td></tr><tr><td>2</td><td>&quot;2-Methylpropan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C&quot;</td><td>11.2</td><td>&quot;Δt&quot;</td><td>&quot;CC(C)C&quot;</td><td>9</td><td>0</td><td>4</td></tr><tr><td>3</td><td>&quot;n-Pentane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td></tr><tr><td>4</td><td>&quot;2-Methylbutane…</td><td>&quot;II&quot;</td><td>&quot;CC(C)CC&quot;</td><td>8.2</td><td>&quot;Δt&quot;</td><td>&quot;CCC(C)C&quot;</td><td>18</td><td>2</td><td>5</td></tr><tr><td>5</td><td>&quot;2,2-Dimethylpr…</td><td>&quot;II&quot;</td><td>&quot;CC(C)(C)C&quot;</td><td>26.6</td><td>&quot;Δt&quot;</td><td>&quot;CC(C)(C)C&quot;</td><td>16</td><td>0</td><td>5</td></tr><tr><td>6</td><td>&quot;n-Hexane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCCCC&quot;</td><td>35</td><td>3</td><td>6</td></tr><tr><td>7</td><td>&quot;2-Methylpentan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)CCC&quot;</td><td>8.5</td><td>&quot;Δt&quot;</td><td>&quot;CCCC(C)C&quot;</td><td>32</td><td>3</td><td>6</td></tr><tr><td>8</td><td>&quot;3-Methylpentan…</td><td>&quot;II&quot;</td><td>&quot;CC(CC)CC&quot;</td><td>5.4</td><td>&quot;Δt&quot;</td><td>&quot;CCC(C)CC&quot;</td><td>31</td><td>4</td><td>6</td></tr><tr><td>9</td><td>&quot;2,2-Dimethylbu…</td><td>&quot;II&quot;</td><td>&quot;CC(C)(CC)C&quot;</td><td>19.0</td><td>&quot;Δt&quot;</td><td>&quot;CCC(C)(C)C&quot;</td><td>28</td><td>3</td><td>6</td></tr><tr><td>10</td><td>&quot;2,3-Dimethylbu…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C(C)C&quot;</td><td>10.8</td><td>&quot;Δt&quot;</td><td>&quot;CC(C)C(C)C&quot;</td><td>29</td><td>4</td><td>6</td></tr><tr><td>11</td><td>&quot;n-Heptane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCCCCC&quot;</td><td>56</td><td>4</td><td>7</td></tr><tr><td>12</td><td>&quot;2-Methylhexane…</td><td>&quot;II&quot;</td><td>&quot;CC(C)CCCC&quot;</td><td>8.4</td><td>&quot;Δt&quot;</td><td>&quot;CCCCC(C)C&quot;</td><td>52</td><td>4</td><td>7</td></tr><tr><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td></tr><tr><td>83</td><td>&quot;2,2,4-Trimethy…</td><td>&quot;III&quot;</td><td>&quot;CC(C)(CC(CCC)C…</td><td>147.0</td><td>&quot;t&quot;</td><td>&quot;CCCC(C)CC(C)(C…</td><td>131</td><td>8</td><td>10</td></tr><tr><td>84</td><td>&quot;2,2,6-Trimethy…</td><td>&quot;III&quot;</td><td>&quot;CC(C)(CCCC(C)C…</td><td>148.9</td><td>&quot;t&quot;</td><td>&quot;CC(C)CCCC(C)(C…</td><td>139</td><td>7</td><td>10</td></tr><tr><td>85</td><td>&quot;2,3,3-Trimethy…</td><td>&quot;III&quot;</td><td>&quot;CC(C)C(CCCC)(C…</td><td>160.0</td><td>&quot;t&quot;</td><td>&quot;CCCCC(C)(C)C(C…</td><td>127</td><td>11</td><td>10</td></tr><tr><td>86</td><td>&quot;2,3,6-Trimethy…</td><td>&quot;III&quot;</td><td>&quot;CC(C)C(CCC(C)C…</td><td>155.3</td><td>&quot;t&quot;</td><td>&quot;CC(C)CCC(C)C(C…</td><td>136</td><td>9</td><td>10</td></tr><tr><td>87</td><td>&quot;2,4,4-Trimethy…</td><td>&quot;III&quot;</td><td>&quot;CC(C)CC(CCC)(C…</td><td>151.0</td><td>&quot;t&quot;</td><td>&quot;CCCC(C)(C)CC(C…</td><td>127</td><td>9</td><td>10</td></tr><tr><td>88</td><td>&quot;2,4,6-Trimethy…</td><td>&quot;III&quot;</td><td>&quot;CC(C)CC(CC(C)C…</td><td>147.6</td><td>&quot;t&quot;</td><td>&quot;CC(C)CC(C)CC(C…</td><td>135</td><td>8</td><td>10</td></tr><tr><td>89</td><td>&quot;2,5,5-Trimethy…</td><td>&quot;III&quot;</td><td>&quot;CC(C)CCC(CC)(C…</td><td>152.8</td><td>&quot;t&quot;</td><td>&quot;CCC(C)(C)CCC(C…</td><td>131</td><td>9</td><td>10</td></tr><tr><td>90</td><td>&quot;3,4-Diethylhex…</td><td>&quot;III&quot;</td><td>&quot;C(C)C(CC)C(CC)…</td><td>160.7</td><td>&quot;t&quot;</td><td>&quot;CCC(CC)C(CC)CC…</td><td>125</td><td>12</td><td>10</td></tr><tr><td>91</td><td>&quot;2,2-Dimethyl-4…</td><td>&quot;III&quot;</td><td>&quot;CC(C)(CC(CC)CC…</td><td>148.0</td><td>&quot;t&quot;</td><td>&quot;CCC(CC)CC(C)(C…</td><td>126</td><td>9</td><td>10</td></tr><tr><td>92</td><td>&quot;2,2,3,4-Tetram…</td><td>&quot;III&quot;</td><td>&quot;CC(C)(C(C(CC)C…</td><td>156.5</td><td>&quot;t&quot;</td><td>&quot;CCC(C)C(C)C(C)…</td><td>118</td><td>12</td><td>10</td></tr><tr><td>93</td><td>&quot;2,2,4,5-Tetram…</td><td>&quot;III&quot;</td><td>&quot;CC(C)(CC(C(C)C…</td><td>145.8</td><td>&quot;t&quot;</td><td>&quot;CC(C)C(C)CC(C)…</td><td>124</td><td>9</td><td>10</td></tr><tr><td>94</td><td>&quot;2,2,5,5-Tetram…</td><td>&quot;III&quot;</td><td>&quot;CC(C)(CCC(C)(C…</td><td>136.8</td><td>&quot;t&quot;</td><td>&quot;CC(C)(C)CCC(C)…</td><td>127</td><td>7</td><td>10</td></tr></tbody></table></div>
+
+
 
 ## Calculating the Wiener Index and Other Cheminformatic Parameters
 
 Now that we have RDKit molecules, we can use RDKit's cheminformatic functions to get the canonical SMILES, molecular weight, and number of atoms (by default, RDKit excludes hydrogen atoms from molecules, so GetNumAtons gives the number of carbon atoms). We call the utility functions above to get the cheminformatic parameters from Wiener's paper: Wiener index and polarity number.
-
-
-```python
-df = df.with_columns(
-    [
-        pl.col("mol").map_elements(lambda m: Chem.MolToSmiles(m)).alias("CanonicalSMILES"),
-        pl.col("mol").map_elements(lambda m: wiener_index(m)).alias("omega"),
-        pl.col("mol").map_elements(lambda m: CalculatePolarityNumber(m)).alias("p"),
-        pl.col("mol").map_elements(lambda m: m.GetNumAtoms()).alias("n"),
-    ]
-)
-print(df)
-```
-
-    shape: (94, 11)
-    ┌─────────────┬─────────────────┬───────┬─────────────────┬───┬────────────────┬───────┬─────┬─────┐
-    │ Compound_Id ┆ molecule        ┆ table ┆ Smiles          ┆ … ┆ CanonicalSMILE ┆ omega ┆ p   ┆ n   │
-    │ ---         ┆ ---             ┆ ---   ┆ ---             ┆   ┆ S              ┆ ---   ┆ --- ┆ --- │
-    │ u32         ┆ str             ┆ str   ┆ str             ┆   ┆ ---            ┆ i64   ┆ i64 ┆ i64 │
-    │             ┆                 ┆       ┆                 ┆   ┆ str            ┆       ┆     ┆     │
-    ╞═════════════╪═════════════════╪═══════╪═════════════════╪═══╪════════════════╪═══════╪═════╪═════╡
-    │ 1           ┆ n-Butane        ┆ II    ┆ CCCC            ┆ … ┆ CCCC           ┆ 10    ┆ 1   ┆ 4   │
-    │ 2           ┆ 2-Methylpropane ┆ II    ┆ CC(C)C          ┆ … ┆ CC(C)C         ┆ 9     ┆ 0   ┆ 4   │
-    │ 3           ┆ n-Pentane       ┆ II    ┆ CCCCC           ┆ … ┆ CCCCC          ┆ 20    ┆ 2   ┆ 5   │
-    │ 4           ┆ 2-Methylbutane  ┆ II    ┆ CC(C)CC         ┆ … ┆ CCC(C)C        ┆ 18    ┆ 2   ┆ 5   │
-    │ …           ┆ …               ┆ …     ┆ …               ┆ … ┆ …              ┆ …     ┆ …   ┆ …   │
-    │ 91          ┆ 2,2-Dimethyl-4- ┆ III   ┆ CC(C)(CC(CC)CC) ┆ … ┆ CCC(CC)CC(C)(C ┆ 126   ┆ 9   ┆ 10  │
-    │             ┆ ethylhexane     ┆       ┆ C               ┆   ┆ )C             ┆       ┆     ┆     │
-    │ 92          ┆ 2,2,3,4-Tetrame ┆ III   ┆ CC(C)(C(C(CC)C) ┆ … ┆ CCC(C)C(C)C(C) ┆ 118   ┆ 12  ┆ 10  │
-    │             ┆ thylhexane      ┆       ┆ C)C             ┆   ┆ (C)C           ┆       ┆     ┆     │
-    │ 93          ┆ 2,2,4,5-Tetrame ┆ III   ┆ CC(C)(CC(C(C)C) ┆ … ┆ CC(C)C(C)CC(C) ┆ 124   ┆ 9   ┆ 10  │
-    │             ┆ thylhexane      ┆       ┆ C)C             ┆   ┆ (C)C           ┆       ┆     ┆     │
-    │ 94          ┆ 2,2,5,5-Tetrame ┆ III   ┆ CC(C)(CCC(C)(C) ┆ … ┆ CC(C)(C)CCC(C) ┆ 127   ┆ 7   ┆ 10  │
-    │             ┆ thylhexane      ┆       ┆ C)C             ┆   ┆ (C)C           ┆       ┆     ┆     │
-    └─────────────┴─────────────────┴───────┴─────────────────┴───┴────────────────┴───────┴─────┴─────┘
-
 
 Because Wiener frames values for each structural isomer as deltas from the corresponding linear alkane, we need to reference the corresponding linear alkane for each molecule. We can create a table for the linear alkanes, then join that to the table of all molecules based on the number of carbon atoms, $n$. The `linear_alkanes` dataframe comes from Wiener's table I. The data were so quick to enter that I did so manually rather than use py2opsin to determine SMILES strings, etc. as above.
 
@@ -362,9 +359,24 @@ linear_alkanes = pl.DataFrame(
 )
 
 linear_alkanes = linear_alkanes.with_columns(
-        pl.col("n").map_elements(lambda n: egloff(n)).alias("t0_calc"),
+        pl.col("n").map_elements(egloff).alias("t0_calc"),
 )
+linear_alkanes
 ```
+
+
+
+
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (9, 8)</small><table border="1" class="dataframe"><thead><tr><th>molecule</th><th>t0_obs °C</th><th>Smiles</th><th>n</th><th>omega0</th><th>p0</th><th>Compound_Id</th><th>t0_calc</th></tr><tr><td>str</td><td>f64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td></tr></thead><tbody><tr><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>4</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td></tr><tr><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>5</td><td>20</td><td>2</td><td>5</td><td>35.988965</td></tr><tr><td>&quot;n-Hexane&quot;</td><td>68.7</td><td>&quot;CCCCCC&quot;</td><td>6</td><td>35</td><td>3</td><td>6</td><td>68.716992</td></tr><tr><td>&quot;n-Heptane&quot;</td><td>98.4</td><td>&quot;CCCCCCC&quot;</td><td>7</td><td>56</td><td>4</td><td>7</td><td>98.438014</td></tr><tr><td>&quot;n-Octane&quot;</td><td>125.7</td><td>&quot;CCCCCCCC&quot;</td><td>8</td><td>84</td><td>5</td><td>8</td><td>125.658393</td></tr><tr><td>&quot;n-Nonane&quot;</td><td>150.8</td><td>&quot;CCCCCCCCC&quot;</td><td>9</td><td>120</td><td>6</td><td>9</td><td>150.766459</td></tr><tr><td>&quot;n-Decane&quot;</td><td>174.0</td><td>&quot;CCCCCCCCCC&quot;</td><td>10</td><td>165</td><td>7</td><td>10</td><td>174.066569</td></tr><tr><td>&quot;n-Undecane&quot;</td><td>195.8</td><td>&quot;CCCCCCCCCCC&quot;</td><td>11</td><td>220</td><td>8</td><td>11</td><td>195.801696</td></tr><tr><td>&quot;n-Dodecane&quot;</td><td>216.2</td><td>&quot;CCCCCCCCCCCC&quot;</td><td>12</td><td>286</td><td>9</td><td>12</td><td>216.168901</td></tr></tbody></table></div>
+
+
 
 [Polars' join](https://pola-rs.github.io/polars-book/user-guide/howcani/combining_data/joining.html) syntax is similar to SQL: You state which field to join on (here, $n$), and the join type (inner) as `how`.
 
@@ -495,7 +507,7 @@ df.head(3)
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 26)</small><table border="1" class="dataframe"><thead><tr><th>Compound_Id</th><th>molecule</th><th>table</th><th>Smiles</th><th>t_read_in</th><th>t_which</th><th>mol</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>n</th><th>molecule_lin_alkane</th><th>t0_obs °C</th><th>Smiles_lin_alkane</th><th>omega0</th><th>p0</th><th>Compound_Id_lin_alkane</th><th>t0_calc</th><th>t_obs °C</th><th>Δt_obs °C</th><th>Δomega</th><th>Δp</th><th>Δt_calc °C</th><th>t_calc °C</th><th>Deviation °C</th><th>Absolute Deviation °C</th></tr><tr><td>u32</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>object</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>1</td><td>&quot;n-Butane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036baba70&gt;</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-0.5</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>-0.423735</td><td>0.0</td><td>0.0</td></tr><tr><td>2</td><td>&quot;2-Methylpropan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C&quot;</td><td>11.2</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34350&gt;</td><td>&quot;CC(C)C&quot;</td><td>9</td><td>0</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-11.7</td><td>11.2</td><td>1</td><td>1</td><td>11.625</td><td>-12.048735</td><td>-0.425</td><td>0.425</td></tr><tr><td>3</td><td>&quot;n-Pentane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34430&gt;</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>36.1</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>35.988965</td><td>0.0</td><td>0.0</td></tr></tbody></table></div>
+<small>shape: (3, 25)</small><table border="1" class="dataframe"><thead><tr><th>Compound_Id</th><th>molecule</th><th>table</th><th>Smiles</th><th>t_read_in</th><th>t_which</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>n</th><th>molecule_lin_alkane</th><th>t0_obs °C</th><th>Smiles_lin_alkane</th><th>omega0</th><th>p0</th><th>Compound_Id_lin_alkane</th><th>t0_calc</th><th>t_obs °C</th><th>Δt_obs °C</th><th>Δomega</th><th>Δp</th><th>Δt_calc °C</th><th>t_calc °C</th><th>Deviation °C</th><th>Absolute Deviation °C</th></tr><tr><td>u32</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>1</td><td>&quot;n-Butane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-0.5</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>-0.423735</td><td>0.0</td><td>0.0</td></tr><tr><td>2</td><td>&quot;2-Methylpropan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C&quot;</td><td>11.2</td><td>&quot;Δt&quot;</td><td>&quot;CC(C)C&quot;</td><td>9</td><td>0</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-11.7</td><td>11.2</td><td>1</td><td>1</td><td>11.625</td><td>-12.048735</td><td>-0.425</td><td>0.425</td></tr><tr><td>3</td><td>&quot;n-Pentane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>36.1</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>35.988965</td><td>0.0</td><td>0.0</td></tr></tbody></table></div>
 
 
 
@@ -513,7 +525,7 @@ n_label = "n (number of carbon atoms)"
 plt.rcParams["figure.dpi"] = 150
 ```
 
-We start with the baseline of linear alkanes and verify that Egloff's equation fits their boiling points well as a function of number of carbon atoms $n$. We can call a Polars dataframe directly using seaborn the same as with a pandas dataframe.
+We start with the baseline of linear alkanes and verify that Egloff's equation fits their boiling points well as a function of number of carbon atoms $n$.
 
 
 ```python
@@ -535,7 +547,7 @@ plt.plot(egloff_x, egloff_y, color="black", linewidth=0.1)
 
 
 
-    [<matplotlib.lines.Line2D at 0x7900368dfaf0>]
+    [<matplotlib.lines.Line2D at 0x7ce9958c3ca0>]
 
 
 
@@ -545,13 +557,11 @@ plt.plot(egloff_x, egloff_y, color="black", linewidth=0.1)
     
 
 
-The [mol_frame package](https://github.com/apahl/mol_frame) lets us show the molecules as pop-ups (tooltips) when we mouse over each data point. We will reproduce each plot as a mol_frame plot. For mol_frame, we have to convert the dataframe from Polars to pandas.
+The [mol_frame package](https://github.com/apahl/mol_frame) lets us show the molecules as pop-ups (tooltips) when we mouse over each data point. We will reproduce each plot as a mol_frame plot. The mol_frame package requires a pandas dataframe.
 
-*Unfortunately, the interactive plots are not working in the blog version of this notebook. Please visit the [Google Colab notebook](https://colab.research.google.com/drive/1OfaHxo08tRCVrDf0rIf1dBQbfBPYXVNX?usp=sharing) to access the interactive plot.*
 
 ```python
-linear_alkanes_pandas = linear_alkanes.to_pandas()
-linear_alkanes_mf = mf.MolFrame(linear_alkanes_pandas)
+linear_alkanes_mf = mf.MolFrame(linear_alkanes_pd)
 linear_alkanes_mf = linear_alkanes_mf.add_b64()
 ```
 
@@ -567,8 +577,23 @@ linear_alkanes_mf.scatter("n", "t0_obs °C")
 ```
 
 
+
+
+
+
+
+
     * using Mol_b64
     * add img:               (    9 |   10)
+
+
+
+
+
+
+
+
+
 
 
 ## Visualizing Wiener's Model for $Δt$ for Boiling Point of Alkanes
@@ -578,7 +603,7 @@ Considering now the substance of the paper, we plot the calculated against obser
 
 ```python
 # Convert to pandas manually because automatic conversion fails in Google Colab for some reason
-df_pd = df.drop(["mol"]).to_pandas()
+df_pd = df.to_pandas()
 
 # Plot alkane boiling point data: calculated against observed
 seaborn.scatterplot(
@@ -600,7 +625,7 @@ plt.plot(equality_range, equality_range, color="black", linewidth=0.1)
 
 
 
-    [<matplotlib.lines.Line2D at 0x790034adbeb0>]
+    [<matplotlib.lines.Line2D at 0x7ce995761c00>]
 
 
 
@@ -629,79 +654,22 @@ df_mf.scatter("t_obs °C", "t_calc °C", colorby="n")
 ```
 
 
-    * using Mol_b64
-    * add img:               (   94 |   27)
 
 
 
-The greatest deviations can also be shown in tabluar form using [Polars' filter](https://pola-rs.github.io/polars-book/user-guide/quickstart/quick-exploration-guide.html?highlight=filter#filter) method.
-
-
-```python
-# Identify molecules with the greatest deviation
-# --where Wiener's equation 4 is least accurate
-row = df.filter(abs(pl.col("Deviation °C")) > 3)
-row_t = row.select(
-    ["molecule", "t_obs °C", "t_calc °C", "n", "Δomega", "Δp", "Deviation °C"]
-)
-print(row_t)
-```
-
-    shape: (6, 7)
-    ┌────────────────────────────┬──────────┬────────────┬─────┬────────┬─────┬──────────────┐
-    │ molecule                   ┆ t_obs °C ┆ t_calc °C  ┆ n   ┆ Δomega ┆ Δp  ┆ Deviation °C │
-    │ ---                        ┆ ---      ┆ ---        ┆ --- ┆ ---    ┆ --- ┆ ---          │
-    │ str                        ┆ f64      ┆ f64        ┆ i64 ┆ i64    ┆ i64 ┆ f64          │
-    ╞════════════════════════════╪══════════╪════════════╪═════╪════════╪═════╪══════════════╡
-    │ 2,4,4-Trimethylhexane      ┆ 131.0    ┆ 127.889916 ┆ 9   ┆ 28     ┆ -2  ┆ -3.076543    │
-    │ 2,2,4,4-Tetramethylpentane ┆ 122.3    ┆ 112.050409 ┆ 9   ┆ 32     ┆ 0   ┆ -10.216049   │
-    │ 2,4-Dimethyloctane         ┆ 153.2    ┆ 157.026569 ┆ 10  ┆ 23     ┆ -1  ┆ 3.76         │
-    │ 4-n-Propylheptane          ┆ 161.7    ┆ 158.606569 ┆ 10  ┆ 27     ┆ -2  ┆ -3.16        │
-    │ 3-Methyl-3-ethylheptane    ┆ 156.3    ┆ 160.786569 ┆ 10  ┆ 36     ┆ -4  ┆ 4.42         │
-    │ 2,4,4-Trimethylheptane     ┆ 151.0    ┆ 147.826569 ┆ 10  ┆ 38     ┆ -2  ┆ -3.24        │
-    └────────────────────────────┴──────────┴────────────┴─────┴────────┴─────┴──────────────┘
-
-
-We can also plot the deviations ("residuals").
-
-
-```python
-# Plot the deviation against t observed
-seaborn.scatterplot(
-    data=df_pd, x="t_obs °C", y="Deviation °C", hue="n", palette="colorblind", style="n"
-)
-
-plt.xlabel(t_obs_label)
-plt.ylabel(dev_C_label)
-
-# Plot Deviation (y) = 0 line
-plt.axhline(0, color="black", linewidth=0.5)
-```
-
-
-
-
-    <matplotlib.lines.Line2D at 0x79002c5bc640>
-
-
-
-
-    
-![Graph of deviation against observed boiling point for 94 alkanes](/images/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_files/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index_55_1.png)
-    
-
-
-
-```python
-%%output filename="df_deviation_mol_frame_scatter"
-hv.extension('bokeh')
-df_mf.scatter("t_obs °C", "Deviation °C", colorby="n")
-```
 
 
 
     * using Mol_b64
     * add img:               (   94 |   27)
+
+
+
+
+
+
+
+
 
 
 
@@ -723,7 +691,7 @@ Here are the average deviations grouped by table:
 ```python
 q_table = (
     df.lazy()
-    .groupby("table")
+    .group_by("table")
     .agg(
         [
             pl.count(),
@@ -736,10 +704,6 @@ q_table = (
 df_table = q_table.collect()
 df_table
 ```
-
-    <ipython-input-27-9a638adec0a4>:3: DeprecationWarning: `groupby` is deprecated. It has been renamed to `group_by`.
-      .groupby("table")
-
 
 
 
@@ -763,7 +727,7 @@ Here are the average deviations grouped by $n$:
 ```python
 q_n = (
     df.lazy()
-    .groupby("n")
+    .group_by("n")
     .agg(
         [
             pl.count(),
@@ -776,10 +740,6 @@ q_n = (
 df_n = q_n.collect()
 df_n
 ```
-
-    <ipython-input-28-0bf4216f526f>:3: DeprecationWarning: `groupby` is deprecated. It has been renamed to `group_by`.
-      .groupby("n")
-
 
 
 
@@ -837,7 +797,7 @@ df.head()
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (5, 26)</small><table border="1" class="dataframe"><thead><tr><th>Compound_Id</th><th>molecule</th><th>table</th><th>Smiles</th><th>t_read_in</th><th>t_which</th><th>mol</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>n</th><th>molecule_lin_alkane</th><th>t0_obs °C</th><th>Smiles_lin_alkane</th><th>omega0</th><th>p0</th><th>Compound_Id_lin_alkane</th><th>t0_calc</th><th>t_obs °C</th><th>Δt_obs °C</th><th>Δomega</th><th>Δp</th><th>Δt_calc °C</th><th>t_calc °C</th><th>Deviation °C</th><th>Absolute Deviation °C</th></tr><tr><td>u32</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>object</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>1</td><td>&quot;n-Butane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036baba70&gt;</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-0.5</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>-0.423735</td><td>0.0</td><td>0.0</td></tr><tr><td>2</td><td>&quot;2-Methylpropan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C&quot;</td><td>11.2</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34350&gt;</td><td>&quot;CC(C)C&quot;</td><td>9</td><td>0</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-11.7</td><td>11.2</td><td>1</td><td>1</td><td>11.625</td><td>-12.048735</td><td>-0.425</td><td>0.425</td></tr><tr><td>3</td><td>&quot;n-Pentane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34430&gt;</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>36.1</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>35.988965</td><td>0.0</td><td>0.0</td></tr><tr><td>4</td><td>&quot;2-Methylbutane…</td><td>&quot;II&quot;</td><td>&quot;CC(C)CC&quot;</td><td>8.2</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c344a0&gt;</td><td>&quot;CCC(C)C&quot;</td><td>18</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>27.9</td><td>8.2</td><td>2</td><td>0</td><td>7.84</td><td>28.148965</td><td>0.36</td><td>0.36</td></tr><tr><td>5</td><td>&quot;2,2-Dimethylpr…</td><td>&quot;II&quot;</td><td>&quot;CC(C)(C)C&quot;</td><td>26.6</td><td>&quot;Δt&quot;</td><td>&lt;rdkit.Chem.rdchem.Mol object at 0x790036c34510&gt;</td><td>&quot;CC(C)(C)C&quot;</td><td>16</td><td>0</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>9.5</td><td>26.6</td><td>4</td><td>2</td><td>26.68</td><td>9.308965</td><td>-0.08</td><td>0.08</td></tr></tbody></table></div>
+<small>shape: (5, 25)</small><table border="1" class="dataframe"><thead><tr><th>Compound_Id</th><th>molecule</th><th>table</th><th>Smiles</th><th>t_read_in</th><th>t_which</th><th>CanonicalSMILES</th><th>omega</th><th>p</th><th>n</th><th>molecule_lin_alkane</th><th>t0_obs °C</th><th>Smiles_lin_alkane</th><th>omega0</th><th>p0</th><th>Compound_Id_lin_alkane</th><th>t0_calc</th><th>t_obs °C</th><th>Δt_obs °C</th><th>Δomega</th><th>Δp</th><th>Δt_calc °C</th><th>t_calc °C</th><th>Deviation °C</th><th>Absolute Deviation °C</th></tr><tr><td>u32</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>str</td><td>f64</td><td>str</td><td>i64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>i64</td><td>i64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>1</td><td>&quot;n-Butane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-0.5</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>-0.423735</td><td>0.0</td><td>0.0</td></tr><tr><td>2</td><td>&quot;2-Methylpropan…</td><td>&quot;II&quot;</td><td>&quot;CC(C)C&quot;</td><td>11.2</td><td>&quot;Δt&quot;</td><td>&quot;CC(C)C&quot;</td><td>9</td><td>0</td><td>4</td><td>&quot;n-Butane&quot;</td><td>-0.5</td><td>&quot;CCCC&quot;</td><td>10</td><td>1</td><td>4</td><td>-0.423735</td><td>-11.7</td><td>11.2</td><td>1</td><td>1</td><td>11.625</td><td>-12.048735</td><td>-0.425</td><td>0.425</td></tr><tr><td>3</td><td>&quot;n-Pentane&quot;</td><td>&quot;II&quot;</td><td>&quot;CCCCC&quot;</td><td>0.0</td><td>&quot;Δt&quot;</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>36.1</td><td>0.0</td><td>0</td><td>0</td><td>0.0</td><td>35.988965</td><td>0.0</td><td>0.0</td></tr><tr><td>4</td><td>&quot;2-Methylbutane…</td><td>&quot;II&quot;</td><td>&quot;CC(C)CC&quot;</td><td>8.2</td><td>&quot;Δt&quot;</td><td>&quot;CCC(C)C&quot;</td><td>18</td><td>2</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>27.9</td><td>8.2</td><td>2</td><td>0</td><td>7.84</td><td>28.148965</td><td>0.36</td><td>0.36</td></tr><tr><td>5</td><td>&quot;2,2-Dimethylpr…</td><td>&quot;II&quot;</td><td>&quot;CC(C)(C)C&quot;</td><td>26.6</td><td>&quot;Δt&quot;</td><td>&quot;CC(C)(C)C&quot;</td><td>16</td><td>0</td><td>5</td><td>&quot;n-Pentane&quot;</td><td>36.1</td><td>&quot;CCCCC&quot;</td><td>20</td><td>2</td><td>5</td><td>35.988965</td><td>9.5</td><td>26.6</td><td>4</td><td>2</td><td>26.68</td><td>9.308965</td><td>-0.08</td><td>0.08</td></tr></tbody></table></div>
 
 
 
@@ -905,7 +865,7 @@ Wiener interprets the path number (Wiener index) as a measure of compactness: "T
 
 ```python
 # Convert to pandas manually because automatic conversion fails in Google Colab for some reason
-octanes_moving_methyl_pd = octanes_moving_methyl.drop("mol").to_pandas()
+octanes_moving_methyl_pd = octanes_moving_methyl.to_pandas()
 
 # Plot the calculated boiling point against methyl position
 plt.ylabel(t_calc_label)
@@ -944,7 +904,6 @@ for row_num, isomer in enumerate(
 
 ```python
 # Prepare dataframe for plotting with mol_frame
-# octanes_moving_methyl_pandas = octanes_moving_methyl.to_pandas()
 octanes_moving_methyl_mf = mf.MolFrame(octanes_moving_methyl_pd)
 octanes_moving_methyl_mf = octanes_moving_methyl_mf.add_b64()
 ```
@@ -962,8 +921,23 @@ octanes_moving_methyl_mf.scatter("methyl position", "t_calc °C")
 
 
 
+
+
+
+
+
+
+
     * using Mol_b64
     * add img:               (    4 |   30)
+
+
+
+
+
+
+
+
 
 
 
@@ -979,4 +953,4 @@ If we wanted to prioritize speed over modular code, we could combine the functio
 
 ## Postscript
 
-2024-02-11: Thanks to thomasaarholt on the [Polars Discord](https://discord.com/channels/908022250106667068) for suggestions for improving the Polars code.
+2024-02: Thanks to thomasaarholt, deanm0000, and abstractqqq on the [Polars Discord](https://discord.com/channels/908022250106667068), and [jqurious on StackOverflow](https://stackoverflow.com/users/19355181/jqurious), for suggestions for improving the Polars code.
