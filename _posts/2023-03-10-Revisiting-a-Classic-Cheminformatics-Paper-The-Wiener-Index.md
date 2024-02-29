@@ -559,6 +559,8 @@ plt.plot(egloff_x, egloff_y, color="black", linewidth=0.1)
 
 The [mol_frame package](https://github.com/apahl/mol_frame) lets us show the molecules as pop-ups (tooltips) when we mouse over each data point. We will reproduce each plot as a mol_frame plot. The mol_frame package requires a pandas dataframe.
 
+*Unfortunately, the interactive plots are not working in the blog version of this notebook. Please visit the [Google Colab notebook](https://colab.research.google.com/drive/1OfaHxo08tRCVrDf0rIf1dBQbfBPYXVNX?usp=sharing) to access the interactive plot.*
+
 
 ```python
 linear_alkanes_mf = mf.MolFrame(linear_alkanes_pd)
