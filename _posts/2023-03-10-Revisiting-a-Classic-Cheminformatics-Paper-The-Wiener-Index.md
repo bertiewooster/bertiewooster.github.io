@@ -685,7 +685,7 @@ Wiener calculates the average absolute deviation of boiling point (calculated vs
 *   28 decanes: 1.30°C
 *   All 94 compounds: 0.97°C
 
-Using [Polars' `groupby`](https://pola-rs.github.io/polars-book/user-guide/dsl/groupby.html) method, we can select those sets of compounds, then find their average deviation.
+Using [Polars' `group_by`](https://docs.pola.rs/py-polars/html/reference/dataframe/api/polars.DataFrame.group_by.html) method, we can select those sets of compounds, then find their average deviation.
 
 Here are the average deviations grouped by table:
 
