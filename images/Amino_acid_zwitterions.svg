@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="378"
+   height="184"
+   id="svg3311"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="Amino_acid_zwitterions.svg">
+  <defs
+     id="defs3313" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="187.16749"
+     inkscape:cy="79.698017"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1024"
+     inkscape:window-height="692"
+     inkscape:window-x="0"
+     inkscape:window-y="26"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3316">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(143.28572,-340.36221)">
+    <path
+       style="fill:none;stroke:#666666;stroke-width:0.98942620000000003px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 45.71428,342.85691 0,179.0106"
+       id="path3587"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g4364"
+       transform="translate(0.999987,-1.246143)">
+      <text
+         sodipodi:linespacing="125%"
+         id="text4357"
+         y="363.73526"
+         x="-133.17896"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+         xml:space="preserve"><tspan
+           y="363.73526"
+           x="-133.17896"
+           id="tspan4359"
+           sodipodi:role="line">1</tspan></text>
+      <path
+         id="path4361"
+         d="m 4.5456858,30.961889 c 0,6.973648 -5.6532586,12.626907 -12.6269064,12.626907 -6.9736474,0 -12.6269064,-5.653259 -12.6269064,-12.626907 0,-6.973648 5.653259,-12.626906 12.6269064,-12.626906 6.9736478,0 12.6269064,5.653258 12.6269064,12.626906 z"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0"
+         transform="translate(-119.07758,325.77337)"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       transform="translate(190.2857,-1.246143)"
+       id="g4369">
+      <text
+         xml:space="preserve"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+         x="-133.17896"
+         y="363.73526"
+         id="text4371"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4373"
+           x="-133.17896"
+           y="363.73526">2</tspan></text>
+      <path
+         inkscape:connector-curvature="0"
+         transform="translate(-119.07758,325.77337)"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0"
+         d="m 4.5456858,30.961889 c 0,6.973648 -5.6532586,12.626907 -12.6269064,12.626907 -6.9736474,0 -12.6269064,-5.653259 -12.6269064,-12.626907 0,-6.973648 5.653259,-12.626906 12.6269064,-12.626906 6.9736478,0 12.6269064,5.653258 12.6269064,12.626906 z"
+         id="path4375" />
+    </g>
+    <g
+       transform="matrix(1.0017853,0,0,1.0017853,-412.60967,182.59159)"
+       id="g4396"
+       style="font-size:15px;stroke:#000000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica">
+      <path
+         d="m 359.51999,239 0,-22"
+         id="line4398"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="font-size:15px;stroke:#008000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+       id="g4401"
+       transform="matrix(1.0017853,0,0,1.0017853,-412.60967,225.31875)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4403"
+         d="m 359.51999,239 0,-22"
+         style="stroke:#008000" />
+    </g>
+    <g
+       id="g3111">
+      <g
+         id="g3100">
+        <text
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+           font-size="12pt"
+           x="-118.68869"
+           y="440.11411"
+           id="text4377"
+           sodipodi:linespacing="125%">H N</text>
+        <text
+           style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+           font-size="12pt"
+           x="-105.0834"
+           y="446.61954"
+           id="text4379"
+           sodipodi:linespacing="125%">2</text>
+      </g>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4383"
+         y="440.11411"
+         x="-59.44783"
+         font-size="12pt"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">C</text>
+      <text
+         xml:space="preserve"
+         style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Serif;-inkscape-font-specification:Liberation Serif Italic"
+         x="-66.568512"
+         y="427.25223"
+         id="text4387"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4389"
+           x="-66.568512"
+           y="427.25223"
+           style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Liberation Serif;-inkscape-font-specification:Liberation Serif Italic">α</tspan></text>
+      <g
+         style="font-size:15px;stroke:#0000ff;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+         id="g4391"
+         transform="matrix(0,1.0017853,-1.0017853,0,156.249,72.952263)">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="line4393"
+           d="m 359.51999,237.00356 0,-18.00712"
+           style="stroke:#0000ff" />
+      </g>
+      <g
+         transform="matrix(0,1.0017853,-1.0017853,0,194.249,72.952263)"
+         id="g4405"
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica">
+        <path
+           style="stroke:#ff0000"
+           d="m 359.51999,237.00356 0,-18.00712"
+           id="path4407"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+      </g>
+      <text
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+         font-size="12pt"
+         x="-23.575766"
+         y="440.11411"
+         id="text4409"
+         sodipodi:linespacing="125%">C</text>
+    </g>
+    <g
+       id="g4427"
+       transform="matrix(0.63426217,0.77311804,-0.77311804,0.63426217,326.92104,137.03631)">
+      <g
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+         id="g4419"
+         transform="matrix(-1.0017853,0,0,-1.0017853,368.07797,661.63205)">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path4421"
+           d="m 359.51999,237.00356 0,-18.00712"
+           style="stroke:#ff0000" />
+      </g>
+      <g
+         transform="matrix(-1.0017853,0,0,-1.0017853,371.08812,661.63205)"
+         id="g4423"
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica">
+        <path
+           style="stroke:#ff0000"
+           d="m 359.51999,237.00356 0,-18.00712"
+           id="path4425"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+      </g>
+    </g>
+    <g
+       transform="matrix(0.63426217,-0.77311804,-0.77311804,-0.63426217,326.92104,727.16017)"
+       id="g4433">
+      <g
+         transform="matrix(-1.0017853,0,0,-1.0017853,368.07797,661.63205)"
+         id="g4435"
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica">
+        <path
+           style="stroke:#ff0000"
+           d="m 359.51999,237.00356 0,-18.00712"
+           id="path4437"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+      </g>
+      <g
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+         id="g4439"
+         transform="matrix(-1.0017853,0,0,-1.0017853,371.08812,661.63205)" />
+    </g>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4409-7"
+       y="413.63507"
+       x="4.4972444"
+       font-size="12pt"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">O</text>
+    <text
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       font-size="12pt"
+       x="4.4972444"
+       y="461.63507"
+       id="text4461"
+       sodipodi:linespacing="125%">OH</text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4463"
+       y="396.63507"
+       x="-59.397831"
+       font-size="12pt"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">H</text>
+    <text
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#008000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       font-size="12pt"
+       x="-59.507832"
+       y="482.08939"
+       id="text4465"
+       sodipodi:linespacing="125%">R</text>
+    <g
+       style="font-size:15px;stroke:#000000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+       id="g4512"
+       transform="matrix(1.0017853,0,0,1.0017853,-222.60968,182.59159)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4514"
+         d="m 359.51999,239 0,-22" />
+    </g>
+    <g
+       transform="matrix(1.0017853,0,0,1.0017853,-222.60968,225.31875)"
+       id="g4516"
+       style="font-size:15px;stroke:#008000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica">
+      <path
+         style="stroke:#008000"
+         d="m 359.51999,239 0,-22"
+         id="path4518"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       transform="matrix(0.63426217,0.77311804,-0.77311804,0.63426217,516.92104,137.03631)"
+       id="g4526">
+      <g
+         transform="matrix(-1.0017853,0,0,-1.0017853,368.07797,661.63205)"
+         id="g4528"
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica">
+        <path
+           style="stroke:#ff0000"
+           d="m 359.51999,237.00356 0,-18.00712"
+           id="path4530"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+      </g>
+      <g
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+         id="g4532"
+         transform="matrix(-1.0017853,0,0,-1.0017853,371.08812,661.63205)" />
+    </g>
+    <g
+       id="g4536"
+       transform="matrix(0.63426217,-0.77311804,-0.77311804,-0.63426217,516.92104,727.16017)">
+      <g
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+         id="g4538"
+         transform="matrix(-1.0017853,0,0,-1.0017853,368.07797,661.63205)">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path4540"
+           d="m 359.51999,237.00356 0,-18.00712"
+           style="stroke:#ff0000" />
+      </g>
+      <g
+         transform="matrix(-1.0017853,0,0,-1.0017853,371.08812,661.63205)"
+         id="g4542"
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica" />
+    </g>
+    <text
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       font-size="12pt"
+       x="194.49725"
+       y="413.63504"
+       id="text4544"
+       sodipodi:linespacing="125%">O</text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4546"
+       y="461.63504"
+       x="194.49725"
+       font-size="12pt"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">O</text>
+    <text
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+       font-size="12pt"
+       x="130.60217"
+       y="396.63504"
+       id="text4548"
+       sodipodi:linespacing="125%">H</text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4550"
+       y="482.08936"
+       x="131.20645"
+       font-size="12pt"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#008000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">R</text>
+    <path
+       style="fill:none;stroke:#ff0000;stroke-width:0.95114535;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:3.80458143, 3.80458143;stroke-dashoffset:0"
+       d="m 199.01913,447.1265 c -8.80436,0 -15.94172,-7.00649 -15.94172,-15.64943 0,-8.64294 7.13736,-15.64943 15.94172,-15.64943"
+       id="path4552"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="csc" />
+    <g
+       id="g3063">
+      <g
+         transform="translate(3.424135,-0.89425)"
+         id="text4586"
+         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">
+        <path
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0"
+           id="path4771"
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+           d="m 186.3505,431.68616 5.108,0 0,1.02 -5.108,0 0,-1.02" />
+      </g>
+      <path
+         id="path4588"
+         d="m 198.01074,431.30191 c 0,3.13814 -2.54396,5.68211 -5.6821,5.68211 -3.13815,0 -5.68211,-2.54397 -5.68211,-5.68211 0,-3.13814 2.54396,-5.68211 5.68211,-5.68211 3.13814,0 5.6821,2.54397 5.6821,5.68211 z"
+         style="fill:none;stroke:#ff0000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;marker-start:none"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       id="g3124">
+      <text
+         sodipodi:linespacing="125%"
+         id="text4504"
+         y="427.2522"
+         x="123.43149"
+         style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Liberation Serif;-inkscape-font-specification:Liberation Serif Italic"
+         xml:space="preserve"><tspan
+           style="font-size:14px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Liberation Serif;-inkscape-font-specification:Liberation Serif Italic"
+           y="427.2522"
+           x="123.43149"
+           id="tspan4506"
+           sodipodi:role="line">α</tspan></text>
+      <g
+         transform="matrix(0,1.0017853,-1.0017853,0,346.249,72.200375)"
+         id="g4508"
+         style="font-size:15px;stroke:#0000ff;stroke-width:1;stroke-linecap:butt;font-family:Helvetica">
+        <path
+           style="stroke:#0000ff"
+           d="m 359.51999,237.00356 0,-18.00712"
+           id="path4510"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cc" />
+      </g>
+      <g
+         style="font-size:15px;stroke:#ff0000;stroke-width:1;stroke-linecap:butt;font-family:Helvetica"
+         id="g4520"
+         transform="matrix(0,1.0017853,-1.0017853,0,384.249,72.200375)">
+        <path
+           sodipodi:nodetypes="cc"
+           inkscape:connector-curvature="0"
+           id="path4522"
+           d="m 359.51999,237.00356 0,-18.00712"
+           style="stroke:#ff0000" />
+      </g>
+      <g
+         id="g3107">
+        <text
+           sodipodi:linespacing="125%"
+           id="text4500"
+           y="445.90521"
+           x="85.309448"
+           font-size="12pt"
+           style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">3</text>
+        <text
+           sodipodi:linespacing="125%"
+           id="text4498"
+           y="439.09824"
+           x="71.31131"
+           font-size="12pt"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">H N</text>
+      </g>
+      <text
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+         font-size="12pt"
+         x="130.55217"
+         y="439.10825"
+         id="text4502"
+         sodipodi:linespacing="125%">C</text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text4524"
+         y="439.10825"
+         x="166.42424"
+         font-size="12pt"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica">C</text>
+      <g
+         id="g3068">
+        <g
+           style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+           id="text3102">
+          <path
+             d="m 107.92744,418.11047 0,-3.252 0.612,0 0,3.252 3.192,0 0,0.624 -3.192,0 0,3.252 -0.612,0 0,-3.252 -3.192,0 0,-0.624 3.192,0"
+             style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0000ff;stroke-linecap:round;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+             id="path3061" />
+        </g>
+        <path
+           id="path4782"
+           d="m 113.91554,418.42246 c 0,3.13814 -2.54396,5.68211 -5.6821,5.68211 -3.13815,0 -5.68211,-2.54397 -5.68211,-5.68211 0,-3.13814 2.54396,-5.68211 5.68211,-5.68211 3.13814,0 5.6821,2.54397 5.6821,5.68211 z"
+           style="fill:none;stroke:#0000ff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;marker-start:none"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
+  </g>
+</svg>
