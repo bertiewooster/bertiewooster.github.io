@@ -871,3 +871,10 @@ plt.show()
 ## Conclusion
 
 Using the binomial distribution to calculate the number of occurrences for each isotopic molecular formula is much more efficient than creating a separate molecule for each position of each isotope. Because all we care about is the molecular mass, it is not important where in the molecule each isotope is, just how many of each isotope there are of each element. Combinations, which ignore the order of isotopic atoms, thus suffice and save computation compared to using permutations, which consider the order of isotopic atoms.
+
+## Postscript
+
+After this blog post was published, [Alexander Kislukhin](https://www.linkedin.com/in/alekis/) commented [on LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:7186242495389839360?commentUrn=urn%3Ali%3Acomment%3A%28activity%3A7186242495389839360%2C7186335362699403265%29&replyUrn=urn%3Ali%3Acomment%3A%28activity%3A7186242495389839360%2C7186366359843287040%29&dashCommentUrn=urn%3Ali%3Afsd_comment%3A%287186335362699403265%2Curn%3Ali%3Aactivity%3A7186242495389839360%29&dashReplyUrn=urn%3Ali%3Afsd_comment%3A%287186366359843287040%2Curn%3Ali%3Aactivity%3A7186242495389839360%29)
+> I've been using a combination of https://pypi.org/project/IsoSpecPy/ for its very fast calculations and https://pypi.org/project/molmass/ for its molecular formula interpreter
+
+so perhaps those packages could accomplish the above operations faster.

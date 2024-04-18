@@ -946,4 +946,6 @@ Using permutations worked fine for this triatomic molecule. However, that it is 
 
 *Acknowledgement: I thank my late father [Robert Monat](https://www.arnmortuary.com/obituary/Robert-Monat) for teaching me about combinations vs. permutations.*
 
-Postscript: After this was published, [Arnoud Buzing](https://www.linkedin.com/in/arnoudbuzing/) translated the core of this code to a [Wolfram Notebook](https://www.wolframcloud.com/obj/arnoudbuzing/Published/SulfurDichloride.nb) and showed that the results could be reproduced in the Wolfram Language.
+## Postscript
+
+After this blog post was published, [Arnoud Buzing](https://www.linkedin.com/in/arnoudbuzing/) translated the core of this code to a [Wolfram Notebook](https://www.wolframcloud.com/obj/arnoudbuzing/Published/SulfurDichloride.nb) and showed that the results could be reproduced in the Wolfram Language.
