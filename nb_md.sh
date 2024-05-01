@@ -15,7 +15,7 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-jupyter nbconvert _notebooks/2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.ipynb --to markdown --output 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index.md
+jupyter nbconvert _notebooks/2024-05-01-Tautomer-Sources-Comparison.ipynb --to markdown --output 2024-05-01-Tautomer-Sources-Comparison.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
