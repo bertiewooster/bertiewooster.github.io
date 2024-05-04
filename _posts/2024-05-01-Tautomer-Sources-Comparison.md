@@ -612,7 +612,7 @@ For the NIH CACTUS Tautomerizer and CACTVS, I don't have programmatic access, so
 
 ### NIH Tautomerizer
 
-The NIH Tautomerizer has a web interface, so I manually copied and pasted results from it. I used the settings:
+The [NIH Tautomerizer](https://cactus.nci.nih.gov/cgi-bin/tautomerize.tcl) has a web interface, so I manually copied and pasted results from it. I used the settings:
 - Steps: multi
 - Predicted tautomers by: All Rules
 
@@ -622,7 +622,6 @@ NIH Tautomerizer data
 </summary>
 
 ```python
-# https://cactus.nci.nih.gov/cgi-bin/tautomerize.tcl
 nih_sml_tauts = {
     # 73a
     "CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1": [
