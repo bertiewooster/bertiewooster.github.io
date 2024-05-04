@@ -616,20 +616,6 @@ The [NIH Tautomerizer](https://cactus.nci.nih.gov/cgi-bin/tautomerize.tcl) has a
 - Steps: multi
 - Predicted tautomers by: All Rules
 
-<details>
-<summary>
-NIH Tautomerizer data
-</summary>
-
-```python
-print("hello world")
-```
-
-```
-print("hello world")
-```
-</details>
-
 ```python
 nih_sml_tauts = {
     # 73a
