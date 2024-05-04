@@ -628,6 +628,7 @@ print("hello world")
 ```
 print("hello world")
 ```
+</details>
 
 ```python
 nih_sml_tauts = {
@@ -960,8 +961,6 @@ nih_sml_tauts = {
     ],
 }
 ```
-
-</details>
 
 Now we define a function to return a list of unique canonical SMILES from a list of SMILES.
 
