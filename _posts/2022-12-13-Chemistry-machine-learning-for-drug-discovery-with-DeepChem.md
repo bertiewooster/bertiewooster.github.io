@@ -1,8 +1,8 @@
 # Chemistry machine learning for drug discovery with DeepChem
 
-This example uses machine learning to predict the lipophilicty of compounds.
+This example uses machine learning to predict the lipophilicity of compounds.
 
-[Lipophilicty](https://en.wikipedia.org/wiki/Lipophilicity) measures how well a compound dissolves in non-polar media such as fats and lipids. So it's important for drugs that are delivered orally (for example, via a pill) because the active ingredient [needs to be absorbed into the lipids](https://emerypharma.com/blog/drug-lipophilicity-and-absorption-a-continuous-challenge-toward-the-goal-of-drug-discovery/) of biological membranes.
+[Lipophilicity](https://en.wikipedia.org/wiki/Lipophilicity) measures how well a compound dissolves in non-polar media such as fats and lipids. So it's important for drugs that are delivered orally (for example, via a pill) because the active ingredient [needs to be absorbed into the lipids](https://emerypharma.com/blog/drug-lipophilicity-and-absorption-a-continuous-challenge-toward-the-goal-of-drug-discovery/) of biological membranes.
 
 _[Open this notebook in Google Colab](https://colab.research.google.com/drive/1P7txNo9M6cln-iukWRrLkqFFrZvx7jI3?usp=sharing)_
 
@@ -31,9 +31,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 ```
 
-[DeepChem](https://deepchem.io/) is a free and open-source Python package for deep learning for chemistry and other sciences. DeepChem has a [lipophilicty data set](https://deepchem.readthedocs.io/en/latest/api_reference/moleculenet.html#lipo-datasets) contains measured [logD](https://www.cambridgemedchemconsulting.com/resources/physiochem/logD.html) values for 4200 compounds.
+[DeepChem](https://deepchem.io/) is a free and open-source Python package for deep learning for chemistry and other sciences. DeepChem has a [lipophilicity data set](https://deepchem.readthedocs.io/en/latest/api_reference/moleculenet.html#lipo-datasets) contains measured [logD](https://www.cambridgemedchemconsulting.com/resources/physiochem/logD.html) values for 4200 compounds.
 
-As usual for machine learning (ML), we split the data set into training and test data. We train the ML model on the train data, then apply it to the test data and check how well the model predicts the lipophilicty of compounds that the model hasn't processed before.
+As usual for machine learning (ML), we split the data set into training and test data. We train the ML model on the train data, then apply it to the test data and check how well the model predicts the lipophilicity of compounds that the model hasn't processed before.
 
 For this data set, we [split by scaffold](https://deepchem.readthedocs.io/en/latest/api_reference/splitters.html#scaffoldsplitter) the 4200 compounds based on the [Bemis-Murcko scaffold representation](https://pubs.acs.org/doi/10.1021/jm9602928). Such splitting groups molecules based on their scaffolds (core structure) to [prevent train and test from having very similar molecules](httphttps://github.com/deepchem/deepchem/blob/master/examples/tutorials/Working_With_Splitters.ipynb), which could lead to the model appearing to perform well on the test set, but then performing poorly on less-similar molecules in production.
 
@@ -321,11 +321,11 @@ df
 
 
 
-Now we can use a scatter plot to compare the predicted against measured values. We use the [seaborn statistical data visualization package](https://seaborn.pydata.org/) to plot the data. We show the line where the predicted and measured lipophilicty values are equal, in other words the line that all points would lie on if the model made perfect predictions.
+Now we can use a scatter plot to compare the predicted against measured values. We use the [seaborn statistical data visualization package](https://seaborn.pydata.org/) to plot the data. We show the line where the predicted and measured lipophilicity values are equal, in other words the line that all points would lie on if the model made perfect predictions.
 
 
 ```python
-seaborn.scatterplot(data=df, x = "measured", y = "predicted").set(title='Lipophilicty for test data:\noctanol/water distribution coefficient\n(logD at pH 7.4)\n');
+seaborn.scatterplot(data=df, x = "measured", y = "predicted").set(title='Lipophilicity for test data:\noctanol/water distribution coefficient\n(logD at pH 7.4)\n');
 equal_line_x = [-3, 2]
 equal_line_y = equal_line_x
 plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
@@ -333,7 +333,7 @@ plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
 
 
     
-![Predicted against measured lipophilicty for test data](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_24_0.png)
+![Predicted against measured lipophilicity for test data](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_24_0.png)
     
 
 
@@ -367,13 +367,13 @@ for molecule, lipo, test_lipo in zip(train_dataset.ids, lipos_train, train_datas
     lipo_list_train += [lipo[0]]
     expt_lipo_list_train += [test_lipo[0]]
 df_train = pd.DataFrame(list(zip(expt_lipo_list_train, lipo_list_train)), columns = ["measured", "predicted"])
-seaborn.scatterplot(data=df_train, x = "measured", y = "predicted", s=5, palette=["orange"]).set(title='Lipophilicty for train data:\noctanol/water distribution coefficient\n(logD at pH 7.4)\n');
+seaborn.scatterplot(data=df_train, x = "measured", y = "predicted", s=5, palette=["orange"]).set(title='Lipophilicity for train data:\noctanol/water distribution coefficient\n(logD at pH 7.4)\n');
 plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
 ```
 
 
     
-![Predicted against measured lipophilicty for train data](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_28_0.png)
+![Predicted against measured lipophilicity for train data](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_28_0.png)
     
 
 
@@ -587,7 +587,7 @@ plt.plot(equal_line_x, equal_line_y, color='k', linewidth=0.5);
 
 
     
-![Predicted against measured lipophilicty for test and train data](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_33_0.png)
+![Predicted against measured lipophilicity for test and train data](/images/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_files/2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem_33_0.png)
     
 
 

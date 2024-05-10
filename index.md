@@ -68,7 +68,7 @@ Given a collection of molecules as SMILES strings, find the maximum common subst
 ## [Chemistry machine learning for drug discovery with DeepChem]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
 *Uses Python, DeepChem, seaborn, Matplotlib, and pandas*
 
-[<img alt="Predicted against measured lipophilicty for test and train data" style="width:384px; height:262px" src="/images/lipophilicity-machine-learning-graph.png">]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
+[<img alt="Predicted against measured lipophilicity for test and train data" style="width:384px; height:262px" src="/images/lipophilicity-machine-learning-graph.png">]({% post_url 2022-12-13-Chemistry-machine-learning-for-drug-discovery-with-DeepChem %})
 
 Use the DeepChem deep learning package to predict compounds' lipophilicity--how well they are absorbed into the lipids of biological membranes, which is important for oral delivery of drugs.
 
