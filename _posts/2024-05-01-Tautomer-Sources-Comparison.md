@@ -409,7 +409,7 @@ Draw.MolsToGridImage(
 
 
     
-![Two unsanitized structures of 1,2-bromobenzene, differing by position of single and double bonds around the ring](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_49_0.png)
+![Two unsanitized structures of 1,2-bromobenzene, differing by position of single and double bonds around the ring](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_51_0.png)
     
 
 
@@ -449,7 +449,7 @@ Draw.MolsToGridImage(
 
 
     
-![Two sanitized structures of 1,2-bromobenzene, with the same positioning of single and double bonds around the ring](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_53_0.png)
+![Two sanitized structures of 1,2-bromobenzene, with the same positioning of single and double bonds around the ring](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_55_0.png)
     
 
 
@@ -1525,7 +1525,7 @@ plt.show()
 
 
     
-![Histogram of frequency against number of tautomers from RDKit baseline algorithm showing a frequency of more than 100 at x=0, then rapidly tailing off with increasing x, with the greatest x value being 801](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_121_0.png)
+![Histogram of frequency against number of tautomers from RDKit baseline algorithm showing a frequency of more than 100 at x=0, then rapidly tailing off with increasing x, with the greatest x value being 801](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_129_0.png)
     
 
 
@@ -1978,7 +1978,7 @@ plt.show()
 
 
     
-![Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other source, with the greatest frequency at x=0 and rapidly decreasing frequency as x decreases to -17 and increases to 17](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_152_0.png)
+![Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other source, with the greatest frequency at x=0 and rapidly decreasing frequency as x decreases to -17 and increases to 17](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_162_0.png)
     
 
 
@@ -2057,7 +2057,7 @@ plt.show()
 
 
     
-![Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other source (either RDKit GetV1TautomerEnumerator or experimental), with the greatest frequency at x=0 and rapidly decreasing frequency as x decreases to -17 and increases to 17](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_154_0.png)
+![Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other source (either RDKit GetV1TautomerEnumerator or experimental), with the greatest frequency at x=0 and rapidly decreasing frequency as x decreases to -17 and increases to 17](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_164_0.png)
     
 
 
@@ -2107,7 +2107,7 @@ plt.show()
 
 
     
-![Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus RDkit GetV1TautomerEnumerator, with the greatest frequency at x=0 and considerable frequencies to x=-200, but little frequency to x=200](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_156_0.png)
+![Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus RDkit GetV1TautomerEnumerator, with the greatest frequency at x=0 and considerable frequencies to x=-200, but little frequency to x=200](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_166_0.png)
     
 
 
@@ -2244,7 +2244,7 @@ plt.show()
 
 
     
-![Histogram of frequency against difference in number of representations from RDKit baseline algorithm SMILES minus InChI , with the greatest frequency of >1,000 at x=0, rapidly decreasing as x increases, and the greatest x value being about 475](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_168_0.png)
+![Histogram of frequency against difference in number of representations from RDKit baseline algorithm SMILES minus InChI , with the greatest frequency of >1,000 at x=0, rapidly decreasing as x increases, and the greatest x value being about 475](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_179_0.png)
     
 
 
@@ -2461,7 +2461,7 @@ Draw.MolsMatrixToGridImage(
 
 
     
-![Molecular grid image with the following rows of source of tautomers: Experimental (2 tautomers), RDKit baseline (360), RDKit V1 (353), NIH (32), and CACTVS (275). The structure have a consistent alignment.](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_180_0.png)
+![Molecular grid image with the following rows of source of tautomers: Experimental (2 tautomers), RDKit baseline (360), RDKit V1 (353), NIH (32), and CACTVS (275). The structures have a consistent alignment.](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_192_0.png)
     
 
 
@@ -2501,7 +2501,7 @@ mcs_mol
 
 
     
-![Maximum common substructure with three six-membered rings and seven oxygen atoms](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_182_1.png)
+![Maximum common substructure that allows matching of any bond type has three six-membered rings and seven oxygen atoms](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_194_1.png)
     
 
 
@@ -2522,7 +2522,7 @@ mcs_mol_strict
 
 
     
-![Maximum common substructure with only five atoms](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_184_0.png)
+![Maximum common substructure that does not allow matching of any bond type has only five atoms](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_196_0.png)
     
 
 
@@ -2544,7 +2544,7 @@ Draw.MolsMatrixToGridImage(
 
 
     
-![Molecular grid image with the same data as the previous molecular grid, except the structure do not have a consistent alignment and do not conform to molecular depiction standards.](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_186_0.png)
+![Molecular grid image with the same data as the previous molecular grid, except the structure do not have a consistent alignment and do not conform to molecular depiction standards](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_198_0.png)
     
 
 
