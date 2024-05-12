@@ -35,13 +35,14 @@ We use release 3 in Excel format, specifically [Tautomer_database_release_3a.xls
 
 For reference, here's a summary of all tautomer sources used in this post:
 
-| Source                  | Have data for all compounds | Nature         | Role       |
-|-------------------------|-----------------------------|----------------|------------|
-| [Expt](https://cactus.nci.nih.gov/download/tautomer/)                    | Yes                         | Experimental   | Comparison |
-| [GetV1TautomerEnumerator](https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.rdMolStandardize.html#rdkit.Chem.MolStandardize.rdMolStandardize.GetV1TautomerEnumerator) | Yes                         | Cheminformatic | Comparison |
-| [TautomerEnumerator](https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.rdMolStandardize.html#rdkit.Chem.MolStandardize.rdMolStandardize.TautomerEnumerator)      | Yes                         | Cheminformatic | Baseline   |
-| [cactus](https://cactus.nci.nih.gov/)                  | No                          | Cheminformatic | Comparison |
-| [CACTVS](https://www.cactvs.com/academic/)                  | No                          | Cheminformatic | Comparison |
+| Source                  | Have data for all compounds | Nature         | Algorithm source   | Interface      | Role       |
+|-------------------------|-----------------------------|----------------|--------------------|----------------|------------|
+| [Expt](https://cactus.nci.nih.gov/download/tautomer/)                    | Yes                         | Experimental   | Not applicable     | Not applicable | Comparison |
+| [GetV1TautomerEnumerator](https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.rdMolStandardize.html#rdkit.Chem.MolStandardize.rdMolStandardize.GetV1TautomerEnumerator) | Yes                         | Cheminformatic | RDKit              | Programmatic   | Comparison |
+| [TautomerEnumerator](https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.rdMolStandardize.html#rdkit.Chem.MolStandardize.rdMolStandardize.TautomerEnumerator)      | Yes                         | Cheminformatic | RDKit              | Programmatic   | Baseline   |
+| [cactus](https://cactus.nci.nih.gov/)                  | No                          | Cheminformatic | CACTVS (86 rules)  | Web page       | Comparison |
+| [CACTVS](https://www.cactvs.com/academic/)                  | No                          | Cheminformatic | CACTVS (120 rules) | Programmatic   | Comparison |
+
 
 ## Code foundation
 
