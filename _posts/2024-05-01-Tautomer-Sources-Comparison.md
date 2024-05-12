@@ -7,7 +7,9 @@
 [Image](https://commons.wikimedia.org/wiki/File:Amino_acid_zwitterions.svg) credit: [TimVickers](https://en.wikipedia.org/wiki/User:TimVickers) vector version by [YassineMrabet](https://commons.wikimedia.org/wiki/User:YassineMrabet)
 
 
-The tautomer generation algorithms discussed below are based on rules from Markus Sitzmann, Wolf-Dietrich Ihlenfeldt, and Marc C. Nicklaus, “Tautomerism in Large Databases”, _JCAMD_ 24:521 (2010) https://doi.org/10.1007/s10822-010-9346-4.
+The tautomer generation algorithms discussed below are based on rules from
+- Markus Sitzmann, Wolf-Dietrich Ihlenfeldt, and Marc C. Nicklaus, “Tautomerism in Large Databases”, _JCAMD_ 24:521 (2010) https://doi.org/10.1007/s10822-010-9346-4
+- Devendra K. Dhaked, Wolf-Dietrich Ihlenfeldt, Hitesh Patel, Victorien Delannée, and Marc C. Nicklaus, "", _J. Chem. Inf. Model._ 60:3 (2020) https://pubs.acs.org/doi/10.1021/acs.jcim.9b01080 ([preprint](https://chemrxiv.org/engage/chemrxiv/article-details/60c74624567dfe3014ec4582) also available)
 
 RDKit has two tautomer generation algorithms:
 
@@ -20,7 +22,7 @@ The [2022.03 release notes](https://www.rdkit.org/docs/BackwardsIncompatibleChan
 but maintainer Greg Landrum [wrote](https://github.com/rdkit/rdkit/discussions/6997#discussioncomment-7893160)
 > [the new TautomerEnumerator returning fewer examples than the previous rules V1 is] not something I've noticed. The code change adds a missed case to the enumeration rule set, so at first glance you'd expect it to always produce more tautomers, but I suppose that could still result in a smaller number of tautomers in the end because of how the transformations interact with each other.
 
- National Institutes of Health (NIH) [CADD Group Chemoinformatics Tools and User Services (CACTUS)](https://cactus.nci.nih.gov/) also has algorithms that can be run on a [Tautomerizer web page](https://cactus.nci.nih.gov/cgi-bin/tautomerize.tcl) or with the package [CACTVS](https://www.cactvs.com/academic/) from Xemistry GmbH. NIH's Marc Nicklaus notes that CACTVS has "many additional transforms vs. the ones we used in 2010 [for the paper cited above]. This now includes numerous ring-chain and valence tautomerism rules, for a total of...120 rules" (private communications). We compare these two NIH algorithms to oura baseline, the new RDKit algorithm. Because I couldn't install CACTVS on my computer due to CPU compatibility, I used the web site which has 86 rules, and Marc kindly ran CACTVS for a few structures using "exhaustive multi-step enumeration iteratively with all rules, until no more new tautomer is found (with a limit of 1,000 attempts)".
+ National Institutes of Health (NIH) [CADD Group Chemoinformatics Tools and User Services (cactus)](https://cactus.nci.nih.gov/) also has algorithms that can be run on a [Tautomerizer web page](https://cactus.nci.cactus.gov/cgi-bin/tautomerize.tcl) or with the package [CACTVS](https://www.cactvs.com/academic/) from [Xemistry GmbH](https://xemistry.com/). NIH's Marc Nicklaus notes that CACTVS has "many additional transforms vs. the ones we used in 2010 [for the paper cited above]. This now includes numerous ring-chain and valence tautomerism rules, for a total of...120 rules" (private communications; rules are from Devendra Kumar Dhaked and Marc Nicklaus, "Tautomeric Conflicts in Forty Small-Molecule Databases" (2024) https://doi.org/10.26434/chemrxiv-2024-jzpw2-v2). We compare these two NIH algorithms to our baseline, the new RDKit algorithm. Because I couldn't install CACTVS on my computer due to CPU compatibility, I used the web site which has 86 rules, and Marc kindly ran CACTVS for a few structures using "exhaustive multi-step enumeration iteratively with all rules, until no more new tautomer is found (with a limit of 1,000 attempts)".
 
 So one purpose of this blog post is to empirically answer the question of which algorithms produce more tautomers, and particularly whether the new RDKit algorithm produces more or fewer tautomers than the V1 algorithm.
 
@@ -30,6 +32,16 @@ To empirically address these questions, we need a set of molecules which have ta
 > 5,977 structures extracted from experimental literature representing 2,819 cases of tautomeric tuples (mostly tautomer pairs but also a few triples and higher-order tuples). Note that the number of structurally different tuples is only 1,776 (comprising 3,884 different structures) since some tuples are differentiated from each other only by experimental conditions such as solvent, spectroscopy method, etc.
 
 We use release 3 in Excel format, specifically [Tautomer_database_release_3a.xlsx](https://cactus.nci.nih.gov/download/tautomer/Tautomer_database_release_3a.xlsx).
+
+For reference, here's a summary of all tautomer sources used in this post:
+
+| Source                  | Have data for all compounds | Nature         | Role       |
+|-------------------------|-----------------------------|----------------|------------|
+| [Expt](https://cactus.nci.nih.gov/download/tautomer/)                    | Yes                         | Experimental   | Comparison |
+| [GetV1TautomerEnumerator](https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.rdMolStandardize.html#rdkit.Chem.MolStandardize.rdMolStandardize.GetV1TautomerEnumerator) | Yes                         | Cheminformatic | Comparison |
+| [TautomerEnumerator](https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.rdMolStandardize.html#rdkit.Chem.MolStandardize.rdMolStandardize.TautomerEnumerator)      | Yes                         | Cheminformatic | Baseline   |
+| [cactus](https://cactus.nci.nih.gov/)                  | No                          | Cheminformatic | Comparison |
+| [CACTVS](https://www.cactvs.com/academic/)                  | No                          | Cheminformatic | Comparison |
 
 ## Code foundation
 
@@ -138,7 +150,6 @@ In preparation for reading in the data, we specify the file and sheet names from
 
 
 ```python
-# Tautomer database from https://cactus.nci.nih.gov/download/tautomer/
 file_name = "../data/Tautomer_database_release_3a.xlsx"
 
 # If you want to use only the first row for quicker debugging, use this file instead
@@ -348,7 +359,7 @@ df_melted.head()
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (5, 3)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>sml</th><th>canon_sml</th></tr><tr><td>i64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>5</td><td>&quot;CC1([C@H]2C(C=…</td><td>&quot;CC1(C)[C@@H]2C…</td></tr><tr><td>15</td><td>&quot;OC1=C(C2=CC=CC…</td><td>&quot;Oc1ccc2ccccc2c…</td></tr><tr><td>25</td><td>&quot;C1(/C=CC=CC=C1…</td><td>&quot;c1ccc(/N=c2\cc…</td></tr><tr><td>27</td><td>&quot;C1(/C=CC=CC=C1…</td><td>&quot;c1ccc(Nc2ccccc…</td></tr><tr><td>74</td><td>&quot;CC1=CC(C2=CC=C…</td><td>&quot;CC1=CC(c2ccco2…</td></tr></tbody></table></div>
+<small>shape: (5, 3)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>sml</th><th>canon_sml</th></tr><tr><td>i64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>6</td><td>&quot;OC(C=CC=C1)=C1…</td><td>&quot;O=C(/C=C(\O)c1…</td></tr><tr><td>11</td><td>&quot;O=C1C=CC2=CC=C…</td><td>&quot;O=C1C=Cc2ccccc…</td></tr><tr><td>24</td><td>&quot;NC1=CC=CC=CC1=…</td><td>&quot;N=c1cccccc1N&quot;</td></tr><tr><td>27</td><td>&quot;C1(/C=CC=CC=C1…</td><td>&quot;c1ccc(Nc2ccccc…</td></tr><tr><td>29</td><td>&quot;NC1=CC=CC=CC1=…</td><td>&quot;Nc1cccccc1=O&quot;</td></tr></tbody></table></div>
 
 
 
@@ -459,6 +470,8 @@ canon_smls_aromatic_equivalent_sanitized[0] == canon_smls_aromatic_equivalent_sa
 
 So the slight differences in the number of different structures as determined by RDKit compared to the tool used by Nicklaus and team (presumably their CACTVS tool) are probably due to the algorithms used to determine the molecular graph (from the input SMILES, InChI, or other identifier) and then the canonical version of the identifier. Inspection by chemists of individual pairs would probably lead to better agreement of whether two similar structures are different, but the automatic adjudication required for large datasets is undoubtedly challenging to encode in an algorithm.
 
+*Summary:* We've ingested the experimental data, confirmed the raw number of structures, and noted that differences in cheminformatics algorithms lead to small differences in the number of different structures.
+
 ### InChI incorporating multiple tautomers 
 
 ["InChI is in principle designed to be tautomer-invariant"](https://cactus.nci.nih.gov/presentations/NIHInChI_2021-03/Day_1_Nicklaus_Tautomerism_2021-03-21A.pdf), meaning tautomers of a structure should be assigned the same InChI. Let's check how successful InChI is at that by performing the same operations we did on the SMILES columns (melting and removing duplicates), but using the InChI columns, and determining how many InChI are required to represent the structures.
@@ -491,7 +504,7 @@ df_melted_InChI
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3_464, 2)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>InChI</th></tr><tr><td>i64</td><td>str</td></tr></thead><tbody><tr><td>15</td><td>&quot;InChI=1S/C16H1…</td></tr><tr><td>22</td><td>&quot;InChI=1S/C12H9…</td></tr><tr><td>27</td><td>&quot;InChI=1S/C17H1…</td></tr><tr><td>35</td><td>&quot;InChI=1S/C7H6O…</td></tr><tr><td>37</td><td>&quot;InChI=1S/C17H1…</td></tr><tr><td>44</td><td>&quot;InChI=1S/C4H6N…</td></tr><tr><td>52</td><td>&quot;InChI=1S/C4H4N…</td></tr><tr><td>55</td><td>&quot;InChI=1S/C17H2…</td></tr><tr><td>59</td><td>&quot;InChI=1S/C7H6N…</td></tr><tr><td>65</td><td>&quot;InChI=1S/C19H2…</td></tr><tr><td>72</td><td>&quot;InChI=1S/C10H1…</td></tr><tr><td>75</td><td>&quot;InChI=1S/C13H1…</td></tr><tr><td>&hellip;</td><td>&hellip;</td></tr><tr><td>1140</td><td>&quot;InChI=1S/C20H1…</td></tr><tr><td>1141</td><td>&quot;InChI=1S/C18H1…</td></tr><tr><td>1154</td><td>&quot;InChI=1S/C5H8O…</td></tr><tr><td>1155</td><td>&quot;InChI=1S/C6H10…</td></tr><tr><td>1158</td><td>&quot;InChI=1S/C8H14…</td></tr><tr><td>1169</td><td>&quot;InChI=1S/C8H14…</td></tr><tr><td>1211</td><td>&quot;InChI=1S/C10H1…</td></tr><tr><td>1215</td><td>&quot;InChI=1S/C8H14…</td></tr><tr><td>774</td><td>&quot;InChI=1S/C9H8O…</td></tr><tr><td>927</td><td>&quot;InChI=1S/C12H1…</td></tr><tr><td>931</td><td>&quot;InChI=1S/C10H1…</td></tr><tr><td>1023</td><td>&quot;InChI=1S/C12H1…</td></tr></tbody></table></div>
+<small>shape: (3_464, 2)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>InChI</th></tr><tr><td>i64</td><td>str</td></tr></thead><tbody><tr><td>9</td><td>&quot;InChI=1S/C17H1…</td></tr><tr><td>21</td><td>&quot;InChI=1S/C12H9…</td></tr><tr><td>58</td><td>&quot;InChI=1S/CH2N4…</td></tr><tr><td>59</td><td>&quot;InChI=1S/C7H6N…</td></tr><tr><td>72</td><td>&quot;InChI=1S/C10H1…</td></tr><tr><td>79</td><td>&quot;InChI=1S/C19H1…</td></tr><tr><td>80</td><td>&quot;InChI=1S/C16H1…</td></tr><tr><td>93</td><td>&quot;InChI=1S/C12H1…</td></tr><tr><td>103</td><td>&quot;InChI=1S/C4H6N…</td></tr><tr><td>109</td><td>&quot;InChI=1S/C4H6N…</td></tr><tr><td>111</td><td>&quot;InChI=1S/C10H1…</td></tr><tr><td>139</td><td>&quot;InChI=1S/C11H9…</td></tr><tr><td>&hellip;</td><td>&hellip;</td></tr><tr><td>1139</td><td>&quot;InChI=1S/C16H1…</td></tr><tr><td>1146</td><td>&quot;InChI=1S/C16H1…</td></tr><tr><td>1154</td><td>&quot;InChI=1S/C5H8O…</td></tr><tr><td>1161</td><td>&quot;InChI=1S/C9H16…</td></tr><tr><td>1167</td><td>&quot;InChI=1S/C12H1…</td></tr><tr><td>1191</td><td>&quot;InChI=1S/C7H12…</td></tr><tr><td>1213</td><td>&quot;InChI=1S/C14H2…</td></tr><tr><td>1214</td><td>&quot;InChI=1S/C15H2…</td></tr><tr><td>1215</td><td>&quot;InChI=1S/C8H14…</td></tr><tr><td>930</td><td>&quot;InChI=1S/C9H11…</td></tr><tr><td>930</td><td>&quot;InChI=1S/C9H11…</td></tr><tr><td>1215</td><td>&quot;InChI=1S/C8H14…</td></tr></tbody></table></div>
 
 
 
@@ -535,6 +548,8 @@ f"{(unique_sml - unique_InChI) / unique_sml:.0%}"
 
 
 So on average 1.95 InChI can represent a set of tautomers, compared to 2.2 SMILES, or an 11% reduction. Should InChI achieve its goal of being tautomer invariant, it would require only one InChI for a set of tautomers, which would be 1776 here. So InChI is only modestly successful.
+
+*Summary:* InChI is only modestly successful at representing a set of tautomers with a single representation.
 
 ## Enumerating tautomers using algorithms
 
@@ -602,22 +617,26 @@ df_melted.head(3)
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>sml</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th></tr><tr><td>i64</td><td>str</td><td>str</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>5</td><td>&quot;CC1([C@H]2C(C=…</td><td>&quot;CC1(C)[C@@H]2C…</td><td>[&quot;CC1(C)[C@@H]2CC[C@]1(C)C(O)=C2C=O&quot;, &quot;CC1(C)[C@@H]2CC[C@]1(C)C(=O)C2C=O&quot;, &quot;CC1(C)[C@@H]2CC[C@]1(C)C(=O)C2=CO&quot;]</td><td>[&quot;CC1(C)[C@@H]2CC[C@]1(C)C(O)=C2C=O&quot;, &quot;CC1(C)[C@@H]2CC[C@]1(C)C(=O)C2C=O&quot;, &quot;CC1(C)[C@@H]2CC[C@]1(C)C(=O)C2=CO&quot;]</td></tr><tr><td>80</td><td>&quot;FC(F)(F)C(N1)=…</td><td>&quot;CC1=C(C(=O)OC(…</td><td>[&quot;CC1=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N=C(C(F)(F)F)N1&quot;, &quot;CC1=NC(C(F)(F)F)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, … &quot;CC1=NC(C(F)(F)F)=NC(c2ccccc2[N+](=O)[O-])C1=C(O)OC(C)C&quot;]</td><td>[&quot;CC1=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N=C(C(F)(F)F)N1&quot;, &quot;C=C1N=C(C(F)(F)F)NC(c2ccccc2[N+](=O)[O-])C1=C(O)OC(C)C&quot;, … &quot;C=C1NC(C(F)(F)F)=NC(c2ccccc2[N+](=O)[O-])C1=C(O)OC(C)C&quot;]</td></tr><tr><td>108</td><td>&quot;O=S1(NC=C(Br)C…</td><td>&quot;NC1=NS(=O)(=O)…</td><td>[&quot;N=C1NS(=O)(=O)N=CC1Br&quot;, &quot;NC1=NS(=O)(=O)NC=C1Br&quot;, … &quot;NC1=NS(=O)(=O)N=CC1Br&quot;]</td><td>[&quot;N=C1NS(=O)(=O)N=CC1Br&quot;, &quot;NC1=NS(=O)(=O)NC=C1Br&quot;, … &quot;NC1=NS(=O)(=O)N=CC1Br&quot;]</td></tr></tbody></table></div>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>sml</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th></tr><tr><td>i64</td><td>str</td><td>str</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>37</td><td>&quot;C1(/C=N/N2C=CC…</td><td>&quot;C1=C/C(=C/Nc2c…</td><td>[&quot;C1=CC(C=Nc2ccccc2)C(C=Nn2cccc2)=C1&quot;, &quot;C1=CC(=CNc2ccccc2)C(C=Nn2cccc2)=C1&quot;, … &quot;C1=CC(C=Nn2cccc2)C(C=Nc2ccccc2)=C1&quot;]</td><td>[&quot;C1=CC(C=Nc2ccccc2)C(C=Nn2cccc2)=C1&quot;, &quot;C1=CC(=CNc2ccccc2)C(C=Nn2cccc2)=C1&quot;, … &quot;C1=CC(C=Nn2cccc2)C(C=Nc2ccccc2)=C1&quot;]</td></tr><tr><td>66</td><td>&quot;O=C(C1=CC(C(C(…</td><td>&quot;COC(=O)C1=CC(c…</td><td>[&quot;COC(=O)C1=CC(c2cc3ccccc3[nH]2)C(=C(O)OC)N=N1&quot;, &quot;COC(=O)C1=CC(c2cc3ccccc3[nH]2)C(C(=O)OC)=NN1&quot;, &quot;COC(=O)C1=CC(c2cc3ccccc3[nH]2)C(C(=O)OC)N=N1&quot;]</td><td>[&quot;COC(=O)C1=NNC(=C(O)OC)C=C1c1cc2ccccc2[nH]1&quot;, &quot;COC(=O)C1=C(c2cc3ccccc3[nH]2)CC(C(=O)OC)N=N1&quot;, … &quot;COC(=O)C1C=C(c2cc3ccccc3[nH]2)C(=C(O)OC)N=N1&quot;]</td></tr><tr><td>87</td><td>&quot;C1(C2=CC=CC=C2…</td><td>&quot;c1ccc(C2=NCC(c…</td><td>[&quot;c1ccc(C2=NCC(c3ccccc3)=NC2)cc1&quot;]</td><td>[&quot;C1=NC(c2ccccc2)=CNC1c1ccccc1&quot;, &quot;C1=C(c2ccccc2)NCC(c2ccccc2)=N1&quot;, … &quot;C1=C(c2ccccc2)NC=C(c2ccccc2)N1&quot;]</td></tr></tbody></table></div>
 
 
+
+*Summary:* We applied RDKit's tautomer enumeration algorithms to all experimental structures. 
 
 ## Entering tautomers generated by external algorithms
 
-For the NIH CACTUS Tautomerizer and CACTVS, I don't have programmatic access, so tautomers for some Refs are given below.
+For the [NIH cactus Tautomerizer](https://cactus.nci.nih.gov/cgi-bin/tautomerize.tcl) and CACTVS, I don't have programmatic access, so tautomers for some Refs are given below, either directly or read from a file.
 
-### NIH Tautomerizer
+### NIH cactus Tautomerizer
 
-The [NIH Tautomerizer](https://cactus.nci.nih.gov/cgi-bin/tautomerize.tcl) has a web interface, so I manually copied and pasted results from it. I used the settings:
-- Steps: multi
-- Predicted tautomers by: All Rules
 
 ```python
-nih_sml_tauts = {
+# Manually list tautomers created by NIH Tautomerizer
+# https://cactus.nci.nih.gov/cgi-bin/tautomerize.tcl
+# Settings:
+#   steps: multi
+#   Predicted tautomers by: All Rules
+cactus_sml_tauts = {
     # 73a
     "CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1": [
         # 4 tautomer(s) generated using PT_06_00 - 1,3 heteroatom H shift
@@ -980,17 +999,17 @@ def canonicalize_smiles(smls_list: list[str]) -> list[str]:
     return canonical_smiles_unique
 ```
 
-Let's apply that to the NIH tautomers.
+Let's apply that to the cactus tautomers.
 
 
 ```python
-nih_sml_tauts_canon = {
-    key: canonicalize_smiles(value) for key, value in nih_sml_tauts.items()
+cactus_sml_tauts_canon = {
+    key: canonicalize_smiles(value) for key, value in cactus_sml_tauts.items()
 }
-nih_inputs = nih_sml_tauts_canon.keys()
-nih_tauts = nih_sml_tauts_canon.values()
-df_nih = pl.DataFrame({"canon_sml": nih_inputs, "tauts_NIH": nih_tauts})
-df_nih
+cactus_inputs = cactus_sml_tauts_canon.keys()
+cactus_tauts = cactus_sml_tauts_canon.values()
+df_cactus = pl.DataFrame({"canon_sml": cactus_inputs, "tauts_cactus": cactus_tauts})
+df_cactus
 ```
 
 
@@ -1003,25 +1022,25 @@ df_nih
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (18, 2)</small><table border="1" class="dataframe"><thead><tr><th>canon_sml</th><th>tauts_NIH</th></tr><tr><td>str</td><td>list[str]</td></tr></thead><tbody><tr><td>&quot;CSC1=NC(c2cccc…</td><td>[&quot;CSC1=NC(=C2C=CCC=C2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, &quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, … &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td></tr><tr><td>&quot;CSC1=NC(C)=C(C…</td><td>[&quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(=C(O)OC(C)C)C(C)=N1&quot;, … &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td></tr><tr><td>&quot;[2H]Oc1ccc(-c2…</td><td>[&quot;[2H]Oc1ccc(-c2oc3c([2H])c(=O)c(OC)c(O[2H])c-3c(O[2H])c2O[2H])cc1O[2H]&quot;, &quot;[2H]OC1=C(OC)C(=O)c2c(oc(-c3ccc(O[2H])c(O[2H])c3)c(O[2H])c2=O)C1([2H])[2H]&quot;, … &quot;[2H]OC1=CC=C(c2oc3c([2H])c(O[2H])c(OC)c(=O)c-3c(O[2H])c2O[2H])C([2H])C1=O&quot;]</td></tr><tr><td>&quot;[2H]Oc1ccc(-c2…</td><td>[&quot;[2H]Oc1c(OC)c(O[2H])c2c(=O)c(O[2H])c(C3=CC(=O)C([2H])(O[2H])C=C3)oc2c1[2H]&quot;, &quot;[2H]Oc1c(OC)c(O[2H])c2c(=O)c(O[2H])c(C3=CC([2H])(O[2H])C(=O)C=C3)oc2c1[2H]&quot;, … &quot;[2H]OC1=CC(c2oc3c([2H])c(O[2H])c(OC)c(O[2H])c3c(=O)c2O[2H])=CC([2H])C1=O&quot;]</td></tr><tr><td>&quot;O=c1c(O)c(-c2c…</td><td>[&quot;O=C1C(=O)C(C2=CC(O)C(=O)C=C2)Oc2cc(O)cc(O)c21&quot;, &quot;O=C1CC(c2oc3cc(O)cc(O)c3c(=O)c2O)=CC=C1O&quot;, … &quot;O=C1CC(O)=CC2=C1C(=O)C(=O)C(c1ccc(O)c(O)c1)O2&quot;]</td></tr><tr><td>&quot;O=c1cc(O)cc2oc…</td><td>[&quot;O=C1C=C2OC(c3ccc(O)c(O)c3)=C(O)C(O)=C2C(=O)C1&quot;, &quot;O=C1C=c2oc(-c3ccc(O)c(O)c3)c(O)c(=O)c2=C(O)C1&quot;, … &quot;O=C1C=C(O)Cc2oc(-c3ccc(O)c(O)c3)c(O)c(=O)c21&quot;]</td></tr><tr><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1[C@@H]([C@H](C)O)[C@@H]6[C@H](C)O)c23)c54&quot;, &quot;COC1=c2c3c(c(=O)c(OC)c4c3c3c(c(OC)c(O)c5c(=O)cc(OC)c2c53)[C@@H]([C@H](C)O)[C@@H]4[C@H](C)O)C(=O)C1&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c(c(O)c(OC)c(c42)[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O)C(=O)C=C1OC&quot;]</td></tr><tr><td>&quot;COc1c2c3c4c(c(…</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1[C@@H]([C@H](C)O)[C@@H]6[C@H](C)O)c23)c54&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c(c(O)c(OC)c(c42)[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O)C(=O)C=C1OC&quot;, … &quot;COC1=C2c3c4c(c(O)cc(OC)c4c4c(OC)cc(O)c5c(O)c(OC)c(c3c54)=C([C@H](C)O)[C@@H]2[C@H](C)O)C1=O&quot;]</td></tr><tr><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@H](C)OC(=O)C3=CCC(=O)C=C3)c3c2c1c1c2c(c(O)c(OC)c(C[C@@H](C)OC(=O)c4ccccc4)c32)C(=O)C=C1OC&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@@H](C)OC(=O)c3ccccc3)c3c4c5c(c1c32)C(OC)=CC(=O)C5C(=O)C(OC)=C4C[C@H](C)OC(=O)C1=CCC(=O)C=C1&quot;, … &quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(C[C@H](C)OC(=O)c4ccc(O)cc4)c(OC)c(=O)c4c(O)cc(OC)c(c5c(OC)cc(O)c(c1=O)c52)c43&quot;]</td></tr><tr><td>&quot;COc1c(C[C@@H](…</td><td>[&quot;COc1c(O)c2c(O)cc(OC)c3c4c(OC)cc(O)c5c(O)c(OC)c(=C[C@H](C)OC(=O)c6ccc(O)cc6)c(c(c1=C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@H](C)OC(=O)c3ccc(O)cc3)c3c2c1c1c(OC)cc(O)c2c1c3C(C[C@@H](C)OC(=O)c1ccccc1)=C(OC)C2=O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@@H](C)OC(=O)c3ccccc3)c3c4c5c(c1c32)C(OC)=CC(=O)C5C(=O)C(OC)=C4C[C@H](C)OC(=O)c1ccc(O)cc1&quot;]</td></tr><tr><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COC1=CC(=O)c2c(O)c(OC)c3c4c2c1c1c2c(c(O)c(OC)c(c24)=CC(C)(O)[C@H]3C(C)=O)C(=O)CC=1OC&quot;, &quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(=O)C4=C(O)C(OC)=C5CC(C)(O)[C@@H](C(C)=O)C(=C(OC)C2=O)C3=C5C41&quot;, … &quot;COC1=c2c3c(c(=O)c(OC)c4c3c3c(c(OC)c(O)c5c(=O)cc(OC)c2c53)[C@H](C(C)=O)C(C)(O)C4)C(=O)C1&quot;]</td></tr><tr><td>&quot;COc1c2c3c4c(c(…</td><td>[&quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c(OC)cc(O)c2c1c4C(=C(OC)C2=O)CC(C)(O)[C@H]3C(C)=O&quot;, &quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)C(=C(C)O)C(C)(O)C2&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3CC(C)(O)[C@@H](C(C)=O)C4=C(OC)C(=O)c5c(O)cc(OC)c6c1c2c3c4c56&quot;]</td></tr><tr><td>&quot;CCP1(CC)(c2ccc…</td><td>[&quot;CCP1(CC)(c2ccccc2)N=C2CC(C(c3ccccc3)(c3ccccc3)c3ccccc3)=CC(C(C)(C)C)=C2O1&quot;, &quot;CCP(CC)(=Nc1cc(C(c2ccccc2)(c2ccccc2)c2ccccc2)cc(C(C)(C)C)c1O)c1ccccc1&quot;, &quot;CCP1(CC)(c2ccccc2)N=C2C=C(C(c3ccccc3)(c3ccccc3)c3ccccc3)C=C(C(C)(C)C)C2O1&quot;]</td></tr><tr><td>&quot;CCP(CC)(=Nc1cc…</td><td>[&quot;CCP(CC)(=NC1=CC(C(c2ccccc2)(c2ccccc2)c2ccccc2)=CC(C(C)(C)C)C1=O)c1ccccc1&quot;, &quot;CCP(CC)(=NC1C=C(C(c2ccccc2)(c2ccccc2)c2ccccc2)C=C(C(C)(C)C)C1=O)c1ccccc1&quot;, … &quot;CC=P(CC)(NC1C=C(C(c2ccccc2)(c2ccccc2)c2ccccc2)C=C(C(C)(C)C)C1=O)c1ccccc1&quot;]</td></tr><tr><td>&quot;C=C(/C=[N+](\[…</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=[NH+][O-])OCC&quot;, &quot;C=C(OCC)C1N(O)C(C)(C)C(C)=[N+]1[O-]&quot;, … &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;]</td></tr><tr><td>&quot;C=C(OCC)C1N(O)…</td><td>[&quot;C=C(OCC)C1N(O)C(C)(C)C(=C)[NH+]1[O-]&quot;, &quot;C=C(C=[N+]([O-])C(C)(C)C(C)=NO)OCC&quot;, &quot;C=C(OCC)C1=[N+]([O-])C(C)C(C)(C)N1O&quot;]</td></tr><tr><td>&quot;Cc1cc(C=O)c(C)…</td><td>[&quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;, &quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td></tr><tr><td>&quot;C=c1c(C=O)cc(C…</td><td>[&quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;, &quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;, &quot;C=C1C(C=O)=CC(C)=CC1C=O&quot;]</td></tr></tbody></table></div>
+<small>shape: (18, 2)</small><table border="1" class="dataframe"><thead><tr><th>canon_sml</th><th>tauts_cactus</th></tr><tr><td>str</td><td>list[str]</td></tr></thead><tbody><tr><td>&quot;CSC1=NC(c2cccc…</td><td>[&quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, &quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, … &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td></tr><tr><td>&quot;CSC1=NC(C)=C(C…</td><td>[&quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, … &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(=C2C=CCC=C2[N+](=O)[O-])N1&quot;]</td></tr><tr><td>&quot;[2H]Oc1ccc(-c2…</td><td>[&quot;[2H]OC1=C(C2=CC([2H])(O[2H])C(=O)C=C2)OC2=C([2H])C(O[2H])=C(OC)C(=O)C2([2H])C1=O&quot;, &quot;[2H]OC1=C(C2=CC([2H])(O[2H])C(=O)C=C2)OC2=C([2H])C(=O)C([2H])(OC)C(=O)C2=C1O[2H]&quot;, … &quot;[2H]Oc1c(C2=CC([2H])(O[2H])C(=O)C=C2)oc2c([2H])c(O[2H])c(OC)c(=O)c-2c1O[2H]&quot;]</td></tr><tr><td>&quot;[2H]Oc1ccc(-c2…</td><td>[&quot;[2H]OC1=CC(C2=C(O[2H])C(=O)C3([2H])C(=O)C(OC)=C(O[2H])C([2H])=C3O2)=CC([2H])C1=O&quot;, &quot;[2H]OC1=C(OC)C(=O)C([2H])([2H])c2oc(-c3ccc(O[2H])c(O[2H])c3)c(O[2H])c(=O)c21&quot;, … &quot;[2H]Oc1c(OC)c(O[2H])c2c(=O)c(O[2H])c(C3=CC(=O)C([2H])(O[2H])C=C3)oc2c1[2H]&quot;]</td></tr><tr><td>&quot;O=c1c(O)c(-c2c…</td><td>[&quot;O=C1CC(c2oc3cc(O)cc(O)c3c(=O)c2O)=CC=C1O&quot;, &quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;, … &quot;O=C1C=C(O)c2c(oc(-c3ccc(O)c(O)c3)c(O)c2=O)C1&quot;]</td></tr><tr><td>&quot;O=c1cc(O)cc2oc…</td><td>[&quot;O=C1C=CC(c2oc3cc(O)cc(=O)c-3c(O)c2O)=CC1O&quot;, &quot;O=C1C=CC(=C2Oc3cc(O)cc(O)c3C(O)=C2O)C=C1O&quot;, … &quot;O=C1CC(c2oc3c(c(=O)c2O)C(=O)CC(O)=C3)=CC=C1O&quot;]</td></tr><tr><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(=O)C4=C(O)C(OC)=C5C(=C3C(=C(OC)C2=O)[C@@H]([C@H](C)O)[C@@H]5[C@H](C)O)C41&quot;, &quot;COC1=CC(=O)c2c(O)c(OC)c3c4c2c1c1c(OC)cc(O)c2c(O)c(OC)c(c4c21)=C([C@H](C)O)[C@@H]3[C@H](C)O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c5c6c(c1c42)C(OC)=CC(=O)C6C(=O)C(OC)=C5[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O&quot;]</td></tr><tr><td>&quot;COc1c2c3c4c(c(…</td><td>[&quot;COC1=CC(=O)C2=c3c1c1c(OC)cc(=O)c4c(=O)c(OC)c5c(c3C(C(OC)=C2O)[C@@H]([C@H](C)O)[C@@H]5[C@H](C)O)c1=4&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c(OC)cc(O)c2c1c4C(=C(OC)C2=O)[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c5c6c(c1c42)C(OC)=CC(=O)C6C(=O)C(OC)=C5[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O&quot;]</td></tr><tr><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@@H](C)OC(=O)c3ccccc3)c3c2c1c1c2c(c(O)c(OC)c(C[C@H](C)OC(=O)C4=CCC(=O)C=C4)c32)C(=O)C=C1OC&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c(C[C@@H](C)OC(=O)c6ccccc6)c(c(c1C[C@H](C)OC(=O)c1ccc(O)cc1)c23)c54&quot;, … &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c(C[C@H](C)OC(=O)C6=CCC(=O)C=C6)c(c(c1C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;]</td></tr><tr><td>&quot;COc1c(C[C@@H](…</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c(C[C@@H](C)OC(=O)c6ccccc6)c(c(c1C[C@H](C)OC(=O)c1ccc(O)cc1)c23)c54&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@@H](C)OC(=O)c3ccccc3)c3c2c1c1c(OC)cc(O)c2c1c3C(C[C@H](C)OC(=O)c1ccc(O)cc1)=C(OC)C2=O&quot;, … &quot;COC1=C(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(c(O)cc(OC)c3c3c(OC)cc(O)c4c(O)c(OC)c(=C[C@H](C)OC(=O)c5ccc(O)cc5)c2c43)C1=O&quot;]</td></tr><tr><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1[C@H](C(C)=O)C(C)(O)C6)c23)c54&quot;, &quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@H](C(C)=O)C(C)(O)C2&quot;, … &quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(=O)C4=C(O)C(OC)=C5CC(C)(O)[C@@H](C(C)=O)C(=C(OC)C2=O)C3=C5C41&quot;]</td></tr><tr><td>&quot;COc1c2c3c4c(c(…</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(O)=C4C(=O)C(OC)=C5CC(C)(O)[C@@H](C(C)=O)C(=C(OC)C2=O)C3=C5C41&quot;, … &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;]</td></tr><tr><td>&quot;CCP1(CC)(c2ccc…</td><td>[&quot;CCP1(CC)(c2ccccc2)N=C2C=C(C(c3ccccc3)(c3ccccc3)c3ccccc3)C=C(C(C)(C)C)C2O1&quot;, &quot;CCP1(CC)(c2ccccc2)N=C2CC(C(c3ccccc3)(c3ccccc3)c3ccccc3)=CC(C(C)(C)C)=C2O1&quot;, &quot;CCP(CC)(=Nc1cc(C(c2ccccc2)(c2ccccc2)c2ccccc2)cc(C(C)(C)C)c1O)c1ccccc1&quot;]</td></tr><tr><td>&quot;CCP(CC)(=Nc1cc…</td><td>[&quot;CCP(CC)(=NC1=CC(C(c2ccccc2)(c2ccccc2)c2ccccc2)=CC(C(C)(C)C)C1=O)c1ccccc1&quot;, &quot;CC=P(CC)(NC1C=C(C(c2ccccc2)(c2ccccc2)c2ccccc2)C=C(C(C)(C)C)C1=O)c1ccccc1&quot;, … &quot;CC=P(CC)(Nc1cc(C(c2ccccc2)(c2ccccc2)c2ccccc2)cc(C(C)(C)C)c1O)c1ccccc1&quot;]</td></tr><tr><td>&quot;C=C(/C=[N+](\[…</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;, &quot;C=C(OCC)C1N(O)C(C)(C)C(C)=[N+]1[O-]&quot;, … &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=[NH+][O-])OCC&quot;]</td></tr><tr><td>&quot;C=C(OCC)C1N(O)…</td><td>[&quot;C=C(OCC)C1N(O)C(C)(C)C(=C)[NH+]1[O-]&quot;, &quot;C=C(C=[N+]([O-])C(C)(C)C(C)=NO)OCC&quot;, &quot;C=C(OCC)C1=[N+]([O-])C(C)C(C)(C)N1O&quot;]</td></tr><tr><td>&quot;Cc1cc(C=O)c(C)…</td><td>[&quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;, &quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td></tr><tr><td>&quot;C=c1c(C=O)cc(C…</td><td>[&quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;, &quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;, &quot;C=C1C(C=O)=CC(C)=CC1C=O&quot;]</td></tr></tbody></table></div>
 
 
 
-Now we merge in the NIH tautomers by left-joining on canonical SMILES.
+Now we merge in the cactus tautomers by left-joining on canonical SMILES.
 
 
 ```python
-# Ensure no tautsNIH columns already exist--can cause additional column tautsNIH_right to be created
-df_melted = df_melted.drop(cs.starts_with("tauts_NIH"))
+# Ensure no tauts_cactus columns already exist--can cause additional column tauts_cactus_right to be created
+df_melted = df_melted.drop(cs.starts_with("tauts_cactus"))
 
-df_melted = df_melted.join(df_nih, on="canon_sml", how="left")
+df_melted = df_melted.join(df_cactus, on="canon_sml", how="left")
 ```
 
 To inspect the results and check which Refs are included, let's display one row for each Ref.
 
 
 ```python
-df_melted.filter(pl.col("tauts_NIH").is_not_null()).unique(subset="Ref").sort("Ref")
+df_melted.filter(pl.col("tauts_cactus").is_not_null()).unique(subset="Ref").sort("Ref")
 ```
 
 
@@ -1034,7 +1053,7 @@ df_melted.filter(pl.col("tauts_NIH").is_not_null()).unique(subset="Ref").sort("R
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (9, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>sml</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_NIH</th></tr><tr><td>i64</td><td>str</td><td>str</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>73</td><td>&quot;O=[N+](C1=C(C2…</td><td>&quot;CSC1=NC(C)=C(C…</td><td>[&quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(=C(O)OC(C)C)C(C)=N1&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, … &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;]</td><td>[&quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, &quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, … &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td><td>[&quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(=C(O)OC(C)C)C(C)=N1&quot;, … &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td></tr><tr><td>457</td><td>&quot;O=C2C1=C(O[2H]…</td><td>&quot;[2H]Oc1ccc(-c2…</td><td>[&quot;[2H]OC1=C(OC)C(=O[2H])C([2H])C2=C1C(=O)C(=O[2H])C(c1ccc(O[2H])c([OH][2H])c1)O2&quot;, &quot;[2H]O=C1c2c(oc(-c3ccc([OH][2H])c([OH][2H])c3)c([OH][2H])c2=O)C([2H])C(=O[2H])C1OC&quot;, … &quot;[2H]Oc1c(C2=CC=C([OH][2H])C(=O[2H])C2)oc2c([2H])c(O[2H])c(OC)c(=O[2H])c-2c1O&quot;]</td><td>[&quot;[2H]O=C1C(=O)C2=C(OC1=C1C=CC([OH][2H])C(=O[2H])C1)C([2H])C([OH][2H])=C(OC)C2=O[2H]&quot;, &quot;[2H]OC1C(=O)C2=C(OC1C1=CC(=O[2H])C(=O[2H])C=C1)C([2H])C(=O[2H])C(OC)C2=O[2H]&quot;, … &quot;[2H]Oc1c(C2=CC=C([OH][2H])C(=O[2H])C2)oc2c([2H])c(O[2H])c(OC)c(=O[2H])c-2c1O&quot;]</td><td>[&quot;[2H]Oc1c(OC)c(O[2H])c2c(=O)c(O[2H])c(C3=CC(=O)C([2H])(O[2H])C=C3)oc2c1[2H]&quot;, &quot;[2H]Oc1c(OC)c(O[2H])c2c(=O)c(O[2H])c(C3=CC([2H])(O[2H])C(=O)C=C3)oc2c1[2H]&quot;, … &quot;[2H]OC1=CC(c2oc3c([2H])c(O[2H])c(OC)c(O[2H])c3c(=O)c2O[2H])=CC([2H])C1=O&quot;]</td></tr><tr><td>467</td><td>&quot;O=C1C2=C(C=C(C…</td><td>&quot;O=c1c(O)c(-c2c…</td><td>[&quot;O=C1C=C2OC(=C3C=CC(O)C(O)=C3)C(=O)C(=O)C2C(=O)C1&quot;, &quot;O=C1C=CC(=C2OC3=CC(O)=CC(=O)C3C(O)C2=O)CC1=O&quot;, … &quot;O=C1C(=O)C2C(=O)C=C(O)C=C2OC1=C1C=C(O)C(O)=CC1&quot;]</td><td>[&quot;O=C1C=CC(=C2OC3=CC(O)=CC(=O)C3C(O)C2=O)CC1=O&quot;, &quot;O=C1C=CC(c2oc3cc(=O)cc(O)c-3c(O)c2O)=CC1O&quot;, … &quot;O=C1CC(=O)c2c(oc(C3C=CC(=O)C(O)=C3)c(O)c2=O)C1&quot;]</td><td>[&quot;O=C1C(=O)C(C2=CC(O)C(=O)C=C2)Oc2cc(O)cc(O)c21&quot;, &quot;O=C1CC(c2oc3cc(O)cc(O)c3c(=O)c2O)=CC=C1O&quot;, … &quot;O=C1CC(O)=CC2=C1C(=O)C(=O)C(c1ccc(O)c(O)c1)O2&quot;]</td></tr><tr><td>888</td><td>&quot;O=C1C(C(O)=C2)…</td><td>&quot;COc1c2c3c4c(c(…</td><td>[&quot;COC1=c2c3c4c(c([C@H](C)O)c([C@H](C)O)c5c4c4c(c(O)cc(OC)c24)C(=O)C5OC)=C(OC)C(=O)C3C(O)=C1&quot;, &quot;COC1=CC(=O)C2=c3c1c1c(OC)cc(O)c4c1c1c3=C(C(OC)C2=O)C([C@H](C)O)C([C@H](C)O)=C1C(OC)C4=O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c(c(O)c(OC)c(c42)=C([C@H](C)O)C3[C@H](C)O)C(=O)CC=1OC&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c4c4c(c1C(C(C)O)C(C(C)O)C=4C(OC)C5=O)c23&quot;, &quot;C=C(O)c1c(=C(C)O)c2c(OC)c(O)c3c4c(c5c6c(c(O)c(OC)c1c6c42)=C(O)CC5OC)C(OC)CC3=O&quot;, … &quot;C=C(O)c1c(=C(C)O)c2c3c4c(c5c6c(c(O)c(OC)c1c63)=C(O)CC5OC)C(OC)CC(=O)C=4C(=O)C2OC&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1[C@@H]([C@H](C)O)[C@@H]6[C@H](C)O)c23)c54&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c(c(O)c(OC)c(c42)[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O)C(=O)C=C1OC&quot;, … &quot;COC1=C2c3c4c(c(O)cc(OC)c4c4c(OC)cc(O)c5c(O)c(OC)c(c3c54)=C([C@H](C)O)[C@@H]2[C@H](C)O)C1=O&quot;]</td></tr><tr><td>890</td><td>&quot;O=C(C=C1OC)C2=…</td><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COC1=CC(=O)C2=C(O)C(OC)C(=C[C@@H](C)OC(=O)c3ccccc3)c3c4c5c(c1c32)C(OC)=CC(=O)C5=C(O)C(OC)C4=C[C@H](C)OC(=O)C1C=CC(=O)C=C1&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c(C[C@H](C)OC(O)=C6C=CC(=O)C=C6)c(c(c1C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;, … &quot;COC1=c2c3c(OC)cc(O)c4c3c(c3c(=C[C@@H](C)OC(=O)c5ccccc5)c(OC)c(O)c(c23)C(=O)C1)C(=C[C@H](C)OC(=O)C1=CCC(=O)C=C1)C(OC)C4=O&quot;]</td><td>[&quot;COC1=CC(=O)c2c(O)c(OC)c(=C[C@@H](C)OC(=O)c3ccccc3)c3c2c1c1c2c(c(O)c(OC)c(=C[C@H](C)OC(=O)c4ccc(O)cc4)c23)C(=O)CC1OC&quot;, &quot;COc1c(C[C@H](C)OC(=O)c2ccc(O)cc2)c2c3c(c(OC)cc(=O)c=3c1=O)c1c3c(c(O)c(OC)c(=C[C@@H](C)OC(=O)c4ccccc4)c32)C(O)=CC1OC&quot;, … &quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(c1=O)C(O)=CC(OC)c3c1c(OC)cc(=O)c3c(O)c(OC)c(=C[C@H](C)OC(O)=C4C=CC(=O)C=C4)c2c13&quot;]</td><td>[&quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@H](C)OC(=O)C3=CCC(=O)C=C3)c3c2c1c1c2c(c(O)c(OC)c(C[C@@H](C)OC(=O)c4ccccc4)c32)C(=O)C=C1OC&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@@H](C)OC(=O)c3ccccc3)c3c4c5c(c1c32)C(OC)=CC(=O)C5C(=O)C(OC)=C4C[C@H](C)OC(=O)C1=CCC(=O)C=C1&quot;, … &quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(C[C@H](C)OC(=O)c4ccc(O)cc4)c(OC)c(=O)c4c(O)cc(OC)c(c5c(OC)cc(O)c(c1=O)c52)c43&quot;]</td></tr><tr><td>891</td><td>&quot;OC1([C@@H](C(C…</td><td>&quot;COc1c(O)c2c(=O…</td><td>[&quot;COC1=CC(=O)C2=C(O)C(OC)C3=C(C(C)=O)C(C)(O)C=c4c(OC)c(O)c5c(O)cc(OC)c6c1c2c3c4c56&quot;, &quot;COC1=CC(=O)c2c(O)c(OC)c3c4c5c6c(c(O)cc(OC)c6c1c24)C(=O)C(OC)C5=CC(C)(O)C3=C(C)O&quot;, … &quot;COC1=CC(=O)C2C(O)=C(OC)C3=CC(C)(O)C(C(C)=O)c4c(OC)c(O)c5c6c(c1c2c3c46)C(OC)=CC5=O&quot;]</td><td>[&quot;C=C(O)C1=c2c(OC)c(O)c3c(=O)cc(OC)c4c5c6c(c(=O)c(OC)c(c6c2c43)CC1(C)O)C(O)=CC5OC&quot;, &quot;COC1=C2c3c4c(c5c(OC)cc(=O)c6c(=O)c(OC)c(c3c5=6)CC(C)(O)C2C(C)=O)C(OC)CC(=O)C=4C1=O&quot;, … &quot;C=C(O)C1=c2c(OC)c(O)c3c(=O)cc(OC)c4c5c6c(c(=O)c(OC)c(c6c2c43)CC1(C)O)C(=O)CC5OC&quot;]</td><td>[&quot;COC1=CC(=O)c2c(O)c(OC)c3c4c2c1c1c2c(c(O)c(OC)c(c24)=CC(C)(O)[C@H]3C(C)=O)C(=O)CC=1OC&quot;, &quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(=O)C4=C(O)C(OC)=C5CC(C)(O)[C@@H](C(C)=O)C(=C(OC)C2=O)C3=C5C41&quot;, … &quot;COC1=c2c3c(c(=O)c(OC)c4c3c3c(c(OC)c(O)c5c(=O)cc(OC)c2c53)[C@H](C(C)=O)C(C)(O)C4)C(=O)C1&quot;]</td></tr><tr><td>1512</td><td>&quot;CC(C)(C)C6=CC(…</td><td>&quot;CCP1(CC)(c2ccc…</td><td>[&quot;CCP1(CC)(c2ccccc2)Nc2cc(C(c3ccccc3)(c3ccccc3)c3ccccc3)cc(C(C)(C)C)c2O1&quot;]</td><td>[&quot;CCP1(CC)(c2ccccc2)Nc2cc(C(c3ccccc3)(c3ccccc3)c3ccccc3)cc(C(C)(C)C)c2O1&quot;]</td><td>[&quot;CCP1(CC)(c2ccccc2)N=C2CC(C(c3ccccc3)(c3ccccc3)c3ccccc3)=CC(C(C)(C)C)=C2O1&quot;, &quot;CCP(CC)(=Nc1cc(C(c2ccccc2)(c2ccccc2)c2ccccc2)cc(C(C)(C)C)c1O)c1ccccc1&quot;, &quot;CCP1(CC)(c2ccccc2)N=C2C=C(C(c3ccccc3)(c3ccccc3)c3ccccc3)C=C(C(C)(C)C)C2O1&quot;]</td></tr><tr><td>1688</td><td>&quot;O/N=C(C)/C(C)(…</td><td>&quot;C=C(/C=[N+](\[…</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;, &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=NO)OCC&quot;]</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(=C)NO)OCC&quot;, &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;, &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=NO)OCC&quot;]</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=[NH+][O-])OCC&quot;, &quot;C=C(OCC)C1N(O)C(C)(C)C(C)=[N+]1[O-]&quot;, … &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;]</td></tr><tr><td>1704</td><td>&quot;CC1=C(C=O)C=C(…</td><td>&quot;Cc1cc(C=O)c(C)…</td><td>[&quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;]</td><td>[&quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;]</td><td>[&quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;, &quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td></tr></tbody></table></div>
+<small>shape: (9, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>sml</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_cactus</th></tr><tr><td>i64</td><td>str</td><td>str</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>73</td><td>&quot;O=[N+](C1=C(C2…</td><td>&quot;CSC1=NC(C)=C(C…</td><td>[&quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, … &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(=C(O)OC(C)C)C(C)=N1&quot;]</td><td>[&quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, &quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, … &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td><td>[&quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, … &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(=C2C=CCC=C2[N+](=O)[O-])N1&quot;]</td></tr><tr><td>457</td><td>&quot;O=C2C1=C(O[2H]…</td><td>&quot;[2H]Oc1ccc(-c2…</td><td>[&quot;[2H]OC1=C(O)C2=C(O[2H])C(OC)C(=O[2H])C([2H])=C2OC1=C1C=CC(=O[2H])C(=O[2H])C1&quot;, &quot;[2H]O=C1CC(C2OC3=C([2H])C(=O[2H])C(OC)C(=O[2H])C3=C(O)C2=O[2H])=CC=C1[OH][2H]&quot;, … &quot;[2H]OC1=CC(C2OC3=C([2H])C(O[2H])=C(OC)C(=O[2H])C3=C(O)C2=O[2H])C=CC1=O[2H]&quot;]</td><td>[&quot;[2H]OC1=C(O)C2=C(O[2H])C(OC)C(=O[2H])C([2H])=C2OC1=C1C=CC(=O[2H])C(=O[2H])C1&quot;, &quot;[2H]OC1=CC(C2OC3=C(C(=O)C2=O[2H])C(=O[2H])C(OC)C([OH][2H])=C3[2H])=CCC1=O[2H]&quot;, … &quot;[2H]OC1=C(C2=CC(O[2H])C(=O[2H])C=C2)OC2=C([2H])C(=O[2H])C(OC)C(=O[2H])C2=C1O&quot;]</td><td>[&quot;[2H]OC1=CC(C2=C(O[2H])C(=O)C3([2H])C(=O)C(OC)=C(O[2H])C([2H])=C3O2)=CC([2H])C1=O&quot;, &quot;[2H]OC1=C(OC)C(=O)C([2H])([2H])c2oc(-c3ccc(O[2H])c(O[2H])c3)c(O[2H])c(=O)c21&quot;, … &quot;[2H]Oc1c(OC)c(O[2H])c2c(=O)c(O[2H])c(C3=CC(=O)C([2H])(O[2H])C=C3)oc2c1[2H]&quot;]</td></tr><tr><td>467</td><td>&quot;O=C1C2=C(C=C(C…</td><td>&quot;O=c1c(O)c(-c2c…</td><td>[&quot;O=C1C=CC(=C2Oc3cc(O)cc(O)c3C(=O)C2O)CC1=O&quot;, &quot;O=C1C=C(O)C2C(=O)C(O)=C(C3=CCC(=O)C(O)=C3)OC2=C1&quot;, … &quot;O=C1C=C(O)C2=C(C1)OC(=C1C=CC(O)C(=O)C1)C(=O)C2=O&quot;]</td><td>[&quot;O=C1C=CC(=C2Oc3cc(O)cc(O)c3C(=O)C2O)CC1=O&quot;, &quot;O=C1C=C(O)C2C(=O)C(O)=C(C3=CCC(=O)C(O)=C3)OC2=C1&quot;, … &quot;O=C1C=C2OC(C3=CC(=O)C(=O)CC3)C(=O)C(=O)C2C(=O)C1&quot;]</td><td>[&quot;O=C1CC(c2oc3cc(O)cc(O)c3c(=O)c2O)=CC=C1O&quot;, &quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;, … &quot;O=C1C=C(O)c2c(oc(-c3ccc(O)c(O)c3)c(O)c2=O)C1&quot;]</td></tr><tr><td>888</td><td>&quot;O=C1C(C(O)=C2)…</td><td>&quot;COc1c2c3c4c(c(…</td><td>[&quot;COC1=CC(=O)C2C(=O)C(OC)c3c([C@H](C)O)c([C@H](C)O)c4c5c6c(c1c2c35)=C(OC)CC(=O)C6C(=O)C=4OC&quot;, &quot;COC1=CC(=O)C2C(O)=C(OC)c3c([C@H](C)O)c([C@H](C)O)c4c5c6c(c1c2c35)=C(OC)CC(=O)C6C(=O)C=4OC&quot;, … &quot;COC1=CC(=O)C2=C(O)C(OC)c3c([C@H](C)O)c([C@H](C)O)c4c(OC)c(O)c5c6c(c1c2c3c46)=C(OC)CC5=O&quot;]</td><td>[&quot;C=C(O)c1c(C(C)O)c2c3c4c(c5c6c3c1=C(OC)C(=O)C6C(O)=CC5OC)C(OC)CC(=O)C4C(=O)C=2OC&quot;, &quot;COc1cc(O)c2c(O)c(OC)c3c(C(C)O)c(C(C)=O)c4c5c6c(c1c2c35)C(OC)C=C(O)C6C(=O)C4OC&quot;, … &quot;C=C(O)c1c2c3c4c(c5c6c3c(c1=C(C)O)C(OC)C(=O)C=6C(=O)CC5OC)C(OC)CC(=O)C4C(O)=C2OC&quot;]</td><td>[&quot;COC1=CC(=O)C2=c3c1c1c(OC)cc(=O)c4c(=O)c(OC)c5c(c3C(C(OC)=C2O)[C@@H]([C@H](C)O)[C@@H]5[C@H](C)O)c1=4&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c(OC)cc(O)c2c1c4C(=C(OC)C2=O)[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c5c6c(c1c42)C(OC)=CC(=O)C6C(=O)C(OC)=C5[C@@H]([C@H](C)O)[C@@H]3[C@H](C)O&quot;]</td></tr><tr><td>890</td><td>&quot;OC1=CC(OC)=C(C…</td><td>&quot;COc1c(C[C@@H](…</td><td>[&quot;COC1=CC(=O)C2C(=O)C(OC)C(=C[C@H](C)OC(=O)c3ccc(O)cc3)c3c2c1c1c2c3C(C[C@@H](C)OC(=O)c3ccccc3)=C(OC)C(=O)C=2C(=O)CC=1OC&quot;, &quot;COc1c(O)c2c(O)cc(OC)c3c4c(OC)cc(O)c5c(O)c(OC)c(=C[C@H](C)OC(=O)c6ccc(O)cc6)c(c(c1=C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)C(=C[C@@H](C)OC(=O)c3ccccc3)c3c2c1c1c2c(c(O)c(OC)c(=C[C@H](C)OC(=O)c4ccc(O)cc4)c32)C(=O)CC=1OC&quot;]</td><td>[&quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(c(OC)cc(=O)c=3c1=O)c1c3c(c(O)c(OC)c(=C[C@H](C)OC(=O)c4ccc(O)cc4)c32)C(=O)CC1OC&quot;, &quot;COC1=c2c3c(c(O)c(OC)c(=C[C@H](C)OC(=O)C4C=CC(=O)C=C4)c3c3c(=C[C@@H](C)OC(=O)c4ccccc4)c(OC)c(O)c4c(O)cc(OC)c2c43)C(=O)C1&quot;, … &quot;COC1=C(C[C@H](C)OC(O)=C2C=CC(=O)C=C2)c2c3c(c4c5c(c(O)c(OC)c(=C[C@@H](C)OC(=O)c6ccccc6)c25)C(=O)CC=4OC)=C(OC)CC(=O)C=3C1=O&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c(C[C@@H](C)OC(=O)c6ccccc6)c(c(c1C[C@H](C)OC(=O)c1ccc(O)cc1)c23)c54&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C(C[C@@H](C)OC(=O)c3ccccc3)c3c2c1c1c(OC)cc(O)c2c1c3C(C[C@H](C)OC(=O)c1ccc(O)cc1)=C(OC)C2=O&quot;, … &quot;COC1=C(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(c(O)cc(OC)c3c3c(OC)cc(O)c4c(O)c(OC)c(=C[C@H](C)OC(=O)c5ccc(O)cc5)c2c43)C1=O&quot;]</td></tr><tr><td>891</td><td>&quot;OC1([C@@H](C(C…</td><td>&quot;COc1c2c3c4c(c(…</td><td>[&quot;COC1=CC(=O)C2C(O)=C(OC)C3=CC(C)(O)C(C(C)=O)C4=C(OC)C(=O)c5c(O)cc(OC)c6c1c2c3c4c56&quot;, &quot;C=C(O)C1c2c(OC)c(=O)c3c(O)cc(OC)c4c5c(OC)cc(=O)c6c(O)c(OC)c(c(c2c34)c65)CC1(C)O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)C3=CC(C)(O)C(C(C)=O)C4=C(OC)C(=O)c5c(O)cc(OC)c6c1c2c3c4c56&quot;]</td><td>[&quot;COC1=CC(=O)C2C(O)=C(OC)C3=CC(C)(O)C(C(C)=O)C4=C(OC)C(=O)c5c(O)cc(OC)c6c1c2c3c4c56&quot;, &quot;C=C(O)C1c2c(OC)c(=O)c3c(O)cc(OC)c4c5c(OC)cc(=O)c6c(O)c(OC)c(c(c2c34)c65)CC1(C)O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)C3=CC(C)(O)C(C(C)=O)C4=C(OC)C(=O)c5c(O)cc(OC)c6c1c2c3c4c56&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(O)=C4C(=O)C(OC)=C5CC(C)(O)[C@@H](C(C)=O)C(=C(OC)C2=O)C3=C5C41&quot;, … &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;]</td></tr><tr><td>1512</td><td>&quot;CC(C)(C)C6=CC(…</td><td>&quot;CCP1(CC)(c2ccc…</td><td>[&quot;CCP1(CC)(c2ccccc2)Nc2cc(C(c3ccccc3)(c3ccccc3)c3ccccc3)cc(C(C)(C)C)c2O1&quot;]</td><td>[&quot;CCP1(CC)(c2ccccc2)Nc2cc(C(c3ccccc3)(c3ccccc3)c3ccccc3)cc(C(C)(C)C)c2O1&quot;]</td><td>[&quot;CCP1(CC)(c2ccccc2)N=C2C=C(C(c3ccccc3)(c3ccccc3)c3ccccc3)C=C(C(C)(C)C)C2O1&quot;, &quot;CCP1(CC)(c2ccccc2)N=C2CC(C(c3ccccc3)(c3ccccc3)c3ccccc3)=CC(C(C)(C)C)=C2O1&quot;, &quot;CCP(CC)(=Nc1cc(C(c2ccccc2)(c2ccccc2)c2ccccc2)cc(C(C)(C)C)c1O)c1ccccc1&quot;]</td></tr><tr><td>1688</td><td>&quot;O/N=C(C)/C(C)(…</td><td>&quot;C=C(/C=[N+](\[…</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;, &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=NO)OCC&quot;]</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;, &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=NO)OCC&quot;, &quot;C=C(/C=[N+](\[O-])C(C)(C)C(=C)NO)OCC&quot;]</td><td>[&quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)N=O)OCC&quot;, &quot;C=C(OCC)C1N(O)C(C)(C)C(C)=[N+]1[O-]&quot;, … &quot;C=C(/C=[N+](\[O-])C(C)(C)C(C)=[NH+][O-])OCC&quot;]</td></tr><tr><td>1704</td><td>&quot;C=C1C(=CC(=CC1…</td><td>&quot;C=c1c(C=O)cc(C…</td><td>[&quot;C=C1C(C=O)=CC(C)=CC1C=O&quot;, &quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td><td>[&quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td><td>[&quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;, &quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;, &quot;C=C1C(C=O)=CC(C)=CC1C=O&quot;]</td></tr></tbody></table></div>
 
 
 
@@ -1060,9 +1079,11 @@ df_melted_aggregated.filter(pl.col("Ref").is_in([73, 888, 1704])).sort("Ref")
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_NIH</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>73</td><td>[&quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;]</td><td>[&quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)C(C)=N1&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(=C(O)OC(C)C)C(C)=N1&quot;, … &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;]</td><td>[&quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)C(C)=N1&quot;, &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1=C(O)OC(C)C&quot;, … &quot;C=C1NC(SC)=NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td><td>[&quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)C(C)=N1&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(=C(O)OC(C)C)C(C)=N1&quot;, … &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;]</td></tr><tr><td>888</td><td>[&quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@@H]([C@H](C)O)[C@@H]2[C@H](C)O&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1[C@@H]([C@H](C)O)[C@@H]6[C@H](C)O)c23)c54&quot;]</td><td>[&quot;COC1=c2c3c4c(c([C@H](C)O)c([C@H](C)O)c5c4c4c(c(O)cc(OC)c24)C(=O)C5OC)=C(OC)C(=O)C3C(O)=C1&quot;, &quot;COC1=c2c3c4c(c([C@H](C)O)c([C@H](C)O)c5c4c4c2=C(OC)C=C(O)C4C(=O)C=5OC)=C(OC)C(=O)C3=C(O)C1&quot;, … &quot;COC1=c2c3c4c(c(O)c(OC)c5c([C@H](C)O)c([C@H](C)O)c6c(OC)c(O)c(c2c6c54)C(=O)C1)C(=O)CC=3OC&quot;]</td><td>[&quot;C=C(O)c1c(C(C)O)c2c3c4c(c5c6c(c(O)c(OC)c1c63)C(=O)C=C5OC)C(OC)CC(=O)C=4C(O)C2OC&quot;, &quot;COc1cc(=O)c2c(O)c(OC)c3c(C(C)O)c(C(C)O)c4c(OC)c(=O)c5c6c(c1c2c3c46)C(OC)CC=5O&quot;, … &quot;COC1=CC(=O)C2C(O)=C(OC)c3c(C(C)O)c(C(C)O)c4c5c6c(c1c2c35)C(OC)=CC(=O)C6C(=O)C4OC&quot;]</td><td>[&quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(=O)C4=C(O)C(OC)=C5C(=C3C(=C(OC)C2=O)[C@@H]([C@H](C)O)[C@@H]5[C@H](C)O)C41&quot;, &quot;COC1=CC(=O)C2=c3c1c1c(OC)cc(=O)c4c(=O)c(OC)c5c(c3C(C(OC)=C2O)[C@@H]([C@H](C)O)[C@@H]5[C@H](C)O)c1=4&quot;, … &quot;COC1=c2c3c(c(=O)c(OC)c4c3c3c(c(OC)c(O)c5c(=O)cc(OC)c2c53)[C@@H]([C@H](C)O)[C@@H]4[C@H](C)O)C(=O)C1&quot;]</td></tr><tr><td>1704</td><td>[&quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;, &quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td><td>[&quot;C=c1c(C=O)cc(C)cc1=CO&quot;, &quot;C=C1C(C=O)=CC(C)=CC1C=O&quot;, &quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;]</td><td>[&quot;C=c1c(C=O)cc(C)cc1=CO&quot;, &quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;]</td><td>[&quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;, &quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;, … &quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td></tr></tbody></table></div>
+<small>shape: (3, 5)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_cactus</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>73</td><td>[&quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;]</td><td>[&quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, … &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(=C(O)OC(C)C)C(C)=N1&quot;]</td><td>[&quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)C(C)=N1&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, … &quot;C=C1N=C(SC)NC(c2ccccc2[N+](=O)[O-])C1C(=O)OC(C)C&quot;]</td><td>[&quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(c2ccccc2[N+](=O)[O-])N1&quot;, &quot;CSC1=NC(c2ccccc2[N+](=O)[O-])C(C(=O)OC(C)C)=C(C)N1&quot;, … &quot;CSC1=NC(C)=C(C(=O)OC(C)C)C(=C2C=CC=CC2=[N+]([O-])O)N1&quot;]</td></tr><tr><td>888</td><td>[&quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@@H]([C@H](C)O)[C@@H]2[C@H](C)O&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1[C@@H]([C@H](C)O)[C@@H]6[C@H](C)O)c23)c54&quot;]</td><td>[&quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c4C(=C(OC)C(=O)C=2C(=O)CC=1OC)C([C@H](C)O)C3[C@H](C)O&quot;, &quot;COC1=c2c3c(c(=O)c(OC)c4c3c3c(c(OC)c(O)c5c(=O)cc(OC)c2c53)C([C@H](C)O)C4[C@H](C)O)C(=O)C1&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c5c6c(c1c42)C(OC)=CC(=O)C6C(=O)C(OC)C5=C([C@H](C)O)C3[C@H](C)O&quot;]</td><td>[&quot;COC1=c2c3c4c(c(C(C)O)c(C(C)O)c5c(OC)c(O)c6c(O)cc(OC)c2c6c54)=C(OC)C(=O)C3C(O)=C1&quot;, &quot;COC1=c2c(C(C)=O)c(C(C)O)c3c(OC)c(O)c4c5c(c6c(c2c35)C(C(=O)CC6OC)C1=O)C(OC)CC4=O&quot;, … &quot;COC1=c2c3c4c5c(c(=C(C)O)c(C(C)O)c6c(OC)c(O)c(c2c65)C(=O)C1)=C(OC)C(=O)C4C(=O)CC3OC&quot;]</td><td>[&quot;COC1=CC(=O)C2=C3C1=C1C(OC)=CC(=O)C4=C(O)C(OC)=C5C(=C3C(=C(OC)C2=O)[C@@H]([C@H](C)O)[C@@H]5[C@H](C)O)C41&quot;, &quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@@H]([C@H](C)O)[C@@H]2[C@H](C)O&quot;, … &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1[C@@H]([C@H](C)O)[C@@H]6[C@H](C)O)c23)c54&quot;]</td></tr><tr><td>1704</td><td>[&quot;C=c1c(C=O)cc(C)cc1=CO&quot;, &quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;]</td><td>[&quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;, &quot;C=C1C(C=O)=CC(C)=CC1C=O&quot;, &quot;C=c1c(C=O)cc(C)cc1=CO&quot;]</td><td>[&quot;C=c1c(C=O)cc(C)cc1=CO&quot;, &quot;Cc1cc(C=O)c(C)c(C=O)c1&quot;]</td><td>[&quot;C=C1C(C=O)=CC(C)=CC1C=O&quot;, &quot;C=c1c(C=O)cc(C)cc1=CO&quot;, … &quot;C=C1C(C=O)=CC(C)C=C1C=O&quot;]</td></tr></tbody></table></div>
 
 
+
+*Summary:* We added the cactus tautomers to our dataset.
 
 ### CACTVS
 
@@ -1174,18 +1195,20 @@ df_melted_aggregated.filter(pl.col("Ref").is_in([890, 891]))
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (2, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_NIH</th><th>tauts_CACTVS</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>891</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@H](C(C)=O)C(C)(O)C2&quot;]</td><td>[&quot;COC1=C(O)c2c(=O)cc(OC)c3c2c2c4c(c(OC)c(O)c5c(=O)cc(OC)c3c54)=C(C(C)=O)C(C)(O)CC12&quot;, &quot;C=C(O)C1C2=C(OC)C(=O)c3c(O)cc(OC)c4c5c6c(c(O)c(OC)c(c6c2c34)=CC1(C)O)C(=O)CC=5OC&quot;, … &quot;C=C(O)C1=c2c(OC)c(O)c3c4c(c5c6c(c24)C(=CC1(C)O)C(OC)=C(O)C6C(=O)C=C5OC)=C(OC)CC3=O&quot;]</td><td>[&quot;COc1c2c3c4c5c(c(=O)cc(OC)c5c5c(OC)cc(O)c(c1=O)c35)C(=O)C(OC)C=4CC(C)(O)C2=C(C)O&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1C(=C(C)O)C(C)(O)C6)c23)c54&quot;, … &quot;C=C(O)C1=c2c(OC)c(O)c3c(O)cc(OC)c4c5c6c(c2c34)C(=C(OC)C(=O)C=6C(=O)CC=5OC)CC1(C)O&quot;]</td><td>[&quot;COC1=CC(=O)c2c(O)c(OC)c3c4c2c1c1c(OC)cc(O)c2c(O)c(OC)c(c4c21)=CC(C)(O)[C@H]3C(C)=O&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c(c(O)c(OC)c(c42)CC(C)(O)[C@H]3C(C)=O)C(=O)C=C1OC&quot;, … &quot;COC1=CC(=O)c2c(O)c(OC)c3c4c2c1c1c2c(c(O)c(OC)c(c24)=CC(C)(O)[C@H]3C(C)=O)C(=O)CC=1OC&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COC6=C1C4=C2C(=C(C(C1)(C)O)C(C)=O)C(=C(C3=C(C=C(C(=C23)C5=C4C(=C(O)C=C5OC)C6=O)OC)O)O)OC&quot;, … &quot;COC4=C6C2=C1C(C(OC)C(=O)C5=C1C(=C3C(=CC(=O)C(=C23)C4=O)OC)C(=CC5=O)OC)C(=C(C)O)C(C)(O)C6&quot;]</td></tr><tr><td>890</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c(C[C@H](C)OC(=O)c6ccc(O)cc6)c(c(c1C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;, &quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(C[C@H](C)OC(=O)c4ccc(O)cc4)c(OC)c(=O)c4c(O)cc(OC)c(c5c(OC)cc(O)c(c1=O)c52)c43&quot;]</td><td>[&quot;COC1=CC(=O)C2C(O)=C(OC)C(=C[C@@H](C)OC(=O)c3ccccc3)c3c4c5c(c1c32)C(OC)=CC(=O)C5C(O)=C(OC)C4=C[C@H](C)OC(=O)C1C=CC(=O)C=C1&quot;, &quot;COC1=C(C[C@H](C)OC(=O)C2C=CC(=O)C=C2)c2c3c(c(O)cc(OC)c3c3c(OC)cc(O)c4c(O)c(OC)c(=C[C@@H](C)OC(=O)c5ccccc5)c2c43)C1=O&quot;, … &quot;COC1=CC(=O)C2=c3c1c1c4c(c3=C(C[C@@H](C)OC(=O)c3ccccc3)C(OC)C2=O)=C(C[C@H](C)OC(=O)C2=CCC(=O)C=C2)C(OC)C(=O)C=4C(=O)C=C1OC&quot;]</td><td>[&quot;COC1=c2c3c(c(=O)c(OC)c(C[C@@H](C)OC(=O)c4ccccc4)c3c3c(C[C@H](C)OC(=O)c4ccc(O)cc4)c(OC)c(=O)c4c(O)cc(OC)c2c43)C(=O)C1&quot;, &quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(c1=O)C(O)=CC(OC)c3c1c(OC)cc(=O)c3c(O)c(OC)c(=C[C@H](C)OC(=O)C4=CCC(=O)C=C4)c2c13&quot;, … &quot;COC1=CC(=O)C2=c3c1c1c(OC)cc(=O)c4c(=O)c(OC)c(C[C@H](C)OC(=O)c5ccc(O)cc5)c(c3C(C[C@@H](C)OC(=O)c3ccccc3)C(OC)=C2O)c1=4&quot;]</td><td>[&quot;COc1c(O)c2c(O)cc(OC)c3c4c(OC)cc(O)c5c(O)c(OC)c(=C[C@H](C)OC(=O)c6ccc(O)cc6)c(c(c1=C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;, &quot;COC1=c2c3c(c(=O)c(OC)c(C[C@H](C)OC(=O)c4ccc(O)cc4)c3c3c(C[C@@H](C)OC(=O)c4ccccc4)c(OC)c(O)c4c(=O)cc(OC)c2c43)C(=O)C1&quot;, … &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c(C[C@H](C)OC(O)=C6C=CC(=O)C=C6)c(c(c1C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;]</td><td>[&quot;COC2C(O)C4C(=O)CC(OC)C5C6C(OC)CC(=O)C7C(O)C(OC)C(C[C@H](C)OC(=O)C1CCC(O)CC1)C(C(C2C[C@@H](C)OC(=O)C3CCCCC3)C45)C67&quot;, &quot;COC2C(O)C4C(=O)CC(OC)C5C6C(OC)CC(=C7C(O)C(OC)C(C[C@H](C)OC(=O)C1CCC(O)CC1)C(C(C2C[C@@H](C)OC(=O)C3CCCCC3)C45)C67)O&quot;, … &quot;COC4=C(C3=C1C(=C(C(=C2C(C=C(C(=C12)C5=C3C(=C4O)C(=O)C=C5OC)OC)=O)O)OC)C[C@H](C)OC(=O)C6=CC=C(C=C6)O)C[C@@H](C)OC(=O)C7=CC=CC=C7&quot;]</td></tr></tbody></table></div>
+<small>shape: (2, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_cactus</th><th>tauts_CACTVS</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>891</td><td>[&quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@H](C(C)=O)C(C)(O)C2&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;]</td><td>[&quot;COc1c2c3c4c5c(c(=O)cc(OC)c5c5c(OC)cc(O)c(c1=O)c35)C(=O)C(OC)C=4CC(C)(O)C2C(C)=O&quot;, &quot;COC1=CC(=O)C2=c3c1c1c4c5c3C(=C(C(C)=O)C(C)(O)CC5C(OC)=C(O)C=4C(=O)C=C1OC)C(OC)C2=O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c4=C(CC(C)(O)C3C(C)=O)C(OC)C(=O)C=2C(=O)C=C1OC&quot;]</td><td>[&quot;COC1=CC(=O)C2=c3c1c1c4c5c3=C(CC(C)(O)C(=C(C)O)C=5C(OC)C(=O)C=4C(=O)C=C1OC)C(OC)C2=O&quot;, &quot;C=C(O)C1=C2c3c4c(c(OC)c(O)c5c(=O)cc(OC)c(c6c(OC)cc(=O)c(c36)=C(O)C2OC)c45)CC1(C)O&quot;, … &quot;C=C(O)C1=C2c3c4c(c5c(OC)cc(=O)c6c(=O)c(OC)c(c3c5=6)CC1(C)O)C(OC)CC(=O)C=4C(=O)C2OC&quot;]</td><td>[&quot;C=C(O)[C@H]1c2c(OC)c(=O)c3c(O)cc(OC)c4c5c(OC)cc(O)c6c(=O)c(OC)c(c(c2c34)c65)CC1(C)O&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3CC(C)(O)[C@@H](C(C)=O)c4c(OC)c(O)c5c6c(c1c2c3c46)C(OC)=CC5=O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c(OC)cc(O)c2c1c4C(=C(OC)C2=O)CC(C)(O)[C@H]3C(C)=O&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COC6=C1C4=C2C(=C(C(C1)(C)O)C(C)=O)C(=C(C3=C(C=C(C(=C23)C5=C4C(=C(O)C=C5OC)C6=O)OC)O)O)OC&quot;, … &quot;COC4=C6C2=C1C(C(OC)C(=O)C5=C1C(=C3C(=CC(=O)C(=C23)C4=O)OC)C(=CC5=O)OC)C(=C(C)O)C(C)(O)C6&quot;]</td></tr><tr><td>890</td><td>[&quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(C[C@H](C)OC(=O)c4ccc(O)cc4)c(OC)c(=O)c4c(O)cc(OC)c(c5c(OC)cc(O)c(c1=O)c52)c43&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c(C[C@H](C)OC(=O)c6ccc(O)cc6)c(c(c1C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;]</td><td>[&quot;COC1=CC(=O)C2C(O)=C(OC)C(=C[C@@H](C)OC(=O)c3ccccc3)c3c2c1c1c2c3C(C[C@H](C)OC(=O)C3=CCC(=O)C=C3)=C(OC)C(=O)C=2C(=O)CC=1OC&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)C(=C[C@H](C)OC(O)=C3C=CC(=O)C=C3)c3c2c1c1c2c3=C(C[C@@H](C)OC(=O)c3ccccc3)C(OC)C(=O)C=2C(=O)C=C1OC&quot;, … &quot;COC1=C(O)c2c(=O)cc(OC)c3c2c(c2c(=C[C@@H](C)OC(=O)c4ccccc4)c(OC)c(O)c4c(=O)cc(OC)c3c42)C1C[C@H](C)OC(=O)C1C=CC(=O)C=C1&quot;]</td><td>[&quot;COc1c(O)c2c(O)cc(OC)c3c4c(OC)cc(O)c5c(O)c(OC)c(=C[C@H](C)OC(O)=C6C=CC(=O)C=C6)c(c(c1=C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)C(=C[C@@H](C)OC(=O)c3ccccc3)c3c2c1c1c(OC)cc(O)c2c(O)c(OC)c(=C[C@H](C)OC(O)=C4C=CC(=O)C=C4)c3c21&quot;, … &quot;COC1=C(C[C@H](C)OC(O)=C2C=CC(=O)C=C2)c2c3c(c(O)cc(OC)c3c3c4c(c(O)c(OC)c(=C[C@@H](C)OC(=O)c5ccccc5)c24)C(=O)CC=3OC)C1=O&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c(C[C@H](C)OC(=O)c6ccc(O)cc6)c(c(c1C[C@@H](C)OC(=O)c1ccccc1)c23)c54&quot;, &quot;COc1c(C[C@@H](C)OC(=O)c2ccccc2)c2c3c(C[C@H](C)OC(O)=C4C=CC(=O)C=C4)c(OC)c(=O)c4c(O)cc(OC)c(c5c(OC)cc(O)c(c1=O)c52)c43&quot;, … &quot;COC1=C(C[C@H](C)OC(=O)c2ccc(O)cc2)c2c3c(c(O)cc(OC)c3c3c(OC)cc(O)c4c(O)c(OC)c(=C[C@@H](C)OC(=O)c5ccccc5)c2c43)C1=O&quot;]</td><td>[&quot;COC2C(O)C4C(=O)CC(OC)C5C6C(OC)CC(=O)C7C(O)C(OC)C(C[C@H](C)OC(=O)C1CCC(O)CC1)C(C(C2C[C@@H](C)OC(=O)C3CCCCC3)C45)C67&quot;, &quot;COC2C(O)C4C(=O)CC(OC)C5C6C(OC)CC(=C7C(O)C(OC)C(C[C@H](C)OC(=O)C1CCC(O)CC1)C(C(C2C[C@@H](C)OC(=O)C3CCCCC3)C45)C67)O&quot;, … &quot;COC4=C(C3=C1C(=C(C(=C2C(C=C(C(=C12)C5=C3C(=C4O)C(=O)C=C5OC)OC)=O)O)OC)C[C@H](C)OC(=O)C6=CC=C(C=C6)O)C[C@@H](C)OC(=O)C7=CC=CC=C7&quot;]</td></tr></tbody></table></div>
 
 
+
+*Summary:* We added the CACTVS tautomers to our dataset.
 
 ### Data cleanup
 
-Because we have tautomers for NIH and CACTVS for only certain Refs, we need to remove None entries in lists so that, for example, `[None None]` won't be counted as two tautomers; it will be replaced with `[]` which will be counted as zero tautomers, indicating that we didn't obtain tautomers for that Ref.
+Because we have tautomers for cactus and CACTVS for only certain Refs, we need to remove None entries in lists so that, for example, `[None None]` won't be counted as two tautomers; it will be replaced with `[]` which will be counted as zero tautomers, indicating that we didn't obtain tautomers for that Ref.
 
 
 ```python
-# Remove None (null) values in tauts_NIH and tauts_CACTVS lists
-for source in ["NIH", "CACTVS"]:
+# Remove None (null) values in tauts_cactus and tauts_CACTVS lists
+for source in ["cactus", "CACTVS"]:
     tauts_source = df_melted_aggregated[f"tauts_{source}"].to_list()
     tauts_source_no_nulls = []
     for tauts_list in tauts_source:
@@ -1201,7 +1224,7 @@ for source in ["NIH", "CACTVS"]:
     )
 ```
 
-We can tell that worked because we have some `[]` entries in tauts_CACTVS and tauts_NIH.
+We can tell that worked because we have some `[]` entries in tauts_CACTVS and tauts_cactus.
 
 
 ```python
@@ -1218,7 +1241,7 @@ df_melted_aggregated.head(3)
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (3, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_NIH</th><th>tauts_CACTVS</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>304</td><td>[&quot;CN(C)c1ccc(C2NC[C@H]3CCCC[C@@H]3O2)cc1&quot;, &quot;CN(C)c1ccc(C=NC[C@H]2CCCC[C@@H]2O)cc1&quot;]</td><td>[&quot;CN(C)c1ccc(C=NC[C@H]2CCCC[C@@H]2O)cc1&quot;, &quot;CN(C)c1ccc(C2NC[C@H]3CCCC[C@@H]3O2)cc1&quot;]</td><td>[&quot;CN(C)c1ccc(C2NC[C@H]3CCCC[C@@H]3O2)cc1&quot;, &quot;CN(C)c1ccc(C=NC[C@H]2CCCC[C@@H]2O)cc1&quot;]</td><td>[]</td><td>[]</td></tr><tr><td>155</td><td>[&quot;C1=Cc2cnc3ccccc3c2C1&quot;, &quot;C1=Cc2c(cnc3ccccc23)C1&quot;]</td><td>[&quot;C1=Cc2c(cnc3ccccc23)C1&quot;, &quot;C1=Cc2cnc3ccccc3c2C1&quot;]</td><td>[&quot;C1=Cc2c(cnc3ccccc23)C1&quot;, &quot;C1=Cc2cnc3ccccc3c2C1&quot;]</td><td>[]</td><td>[]</td></tr><tr><td>1072</td><td>[&quot;Cc1ccc(O)nc1&quot;, &quot;Cc1ccc(=O)[nH]c1&quot;]</td><td>[&quot;CC1=CCC(=O)N=C1&quot;, &quot;Cc1ccc(O)nc1&quot;, &quot;Cc1ccc(=O)[nH]c1&quot;]</td><td>[&quot;Cc1ccc(=O)[nH]c1&quot;, &quot;Cc1ccc(O)nc1&quot;]</td><td>[]</td><td>[]</td></tr></tbody></table></div>
+<small>shape: (3, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_cactus</th><th>tauts_CACTVS</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>667</td><td>[&quot;O=C(/C=C(\S)c1ccccc1)c1ccccc1&quot;, &quot;O/C(=C\C(=S)c1ccccc1)c1ccccc1&quot;]</td><td>[&quot;OC(=CC(=S)c1ccccc1)c1ccccc1&quot;, &quot;O=C(CC(=S)c1ccccc1)c1ccccc1&quot;, &quot;O=C(C=C(S)c1ccccc1)c1ccccc1&quot;]</td><td>[&quot;O=C(CC(=S)c1ccccc1)c1ccccc1&quot;, &quot;O=C(C=C(S)c1ccccc1)c1ccccc1&quot;, &quot;OC(=CC(=S)c1ccccc1)c1ccccc1&quot;]</td><td>[]</td><td>[]</td></tr><tr><td>664</td><td>[&quot;O=C(Cc1ccccn1)c1ccc(N2CCCC2)cc1&quot;, &quot;O/C(=C\c1ccccn1)c1ccc(N2CCCC2)cc1&quot;]</td><td>[&quot;O=C(Cc1ccccn1)c1ccc(N2CCCC2)cc1&quot;, &quot;OC(=Cc1ccccn1)c1ccc(N2CCCC2)cc1&quot;, &quot;O=C(C=C1C=CC=CN1)c1ccc(N2CCCC2)cc1&quot;]</td><td>[&quot;OC(=Cc1ccccn1)c1ccc(N2CCCC2)cc1&quot;, &quot;O=C(C=C1C=CCC=N1)c1ccc(N2CCCC2)cc1&quot;, … &quot;O=C(C=C1C=CC=CN1)c1ccc(N2CCCC2)cc1&quot;]</td><td>[]</td><td>[]</td></tr><tr><td>429</td><td>[&quot;Nc1ncnc2[nH]cnc12&quot;, &quot;Nc1nc[nH]c2ncnc1-2&quot;]</td><td>[&quot;N=c1[nH]cnc2nc[nH]c12&quot;, &quot;N=c1[nH]cnc2[nH]cnc12&quot;, … &quot;N=c1nc[nH]c2nc[nH]c12&quot;]</td><td>[&quot;Nc1nc[nH]c2ncnc1-2&quot;, &quot;N=c1[nH]cnc2nc[nH]c12&quot;, … &quot;N=c1[nH]cnc2[nH]cnc12&quot;]</td><td>[]</td><td>[]</td></tr></tbody></table></div>
 
 
 
@@ -1287,9 +1310,11 @@ df_melted_aggregated.filter(pl.col("Ref").is_in([891, 892])).sort(pl.col("Ref"))
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (2, 3)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>tauts_TautomerEnumerator</th><th>tauts_TautomerEnumerator_InChI</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>891</td><td>[&quot;COC1=C(O)c2c(=O)cc(OC)c3c2c2c4c(c(OC)c(O)c5c(=O)cc(OC)c3c54)=C(C(C)=O)C(C)(O)CC12&quot;, &quot;C=C(O)C1C2=C(OC)C(=O)c3c(O)cc(OC)c4c5c6c(c(O)c(OC)c(c6c2c34)=CC1(C)O)C(=O)CC=5OC&quot;, … &quot;C=C(O)C1=c2c(OC)c(O)c3c4c(c5c6c(c24)C(=CC1(C)O)C(OC)=C(O)C6C(=O)C=C5OC)=C(OC)CC3=O&quot;]</td><td>[&quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-8,29,31-32,36H,9H2,1-6H3&quot;, &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-8,25,28,33,36H,9H2,1-6H3&quot;, … &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-9,25,28-29,32,36H,1-6H3&quot;]</td></tr><tr><td>892</td><td>[&quot;O=C1C=CC(O)=C2C(=O)C=CC(O)=C12&quot;, &quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;, … &quot;O=C1C=CC(=O)C2=C1C(=O)CCC2=O&quot;]</td><td>[&quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-4,9,12H&quot;, &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-3,13H,4H2&quot;, … &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-4,11-12H&quot;]</td></tr></tbody></table></div>
+<small>shape: (2, 3)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>tauts_TautomerEnumerator</th><th>tauts_TautomerEnumerator_InChI</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>891</td><td>[&quot;COc1c2c3c4c5c(c(=O)cc(OC)c5c5c(OC)cc(O)c(c1=O)c35)C(=O)C(OC)C=4CC(C)(O)C2C(C)=O&quot;, &quot;COC1=CC(=O)C2=c3c1c1c4c5c3C(=C(C(C)=O)C(C)(O)CC5C(OC)=C(O)C=4C(=O)C=C1OC)C(OC)C2=O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c4=C(CC(C)(O)C3C(C)=O)C(OC)C(=O)C=2C(=O)C=C1OC&quot;]</td><td>[&quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7,31-32,36H,8-9H2,1-6H3&quot;, &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-9,25,29,31-32,34,36H,1H2,2-6H3&quot;, … &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h9,25,28,36H,7-8H2,1-6H3&quot;]</td></tr><tr><td>892</td><td>[&quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;, &quot;O=C1C=CC(=O)C2=C1C(=O)CCC2=O&quot;, … &quot;O=C1C=CC(=O)C2C(=O)C=CC(O)=C12&quot;]</td><td>[&quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-2H,3-4H2&quot;, &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-4,9,12H&quot;, … &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-3,13H,4H2&quot;]</td></tr></tbody></table></div>
 
 
+
+*Summary:* We created a unique set of InChI corresponding to each set of SMILES for the baseline RDKit TautomerEnumerator algorithm.
 
 ## Comparing algorithms
 
@@ -1321,7 +1346,7 @@ df_melted_aggregated.filter(pl.col("Ref").is_in([891, 892]))
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (2, 14)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_NIH</th><th>tauts_CACTVS</th><th>tauts_TautomerEnumerator_InChI</th><th>tauts_Expt</th><th>n_TautomerEnumerator</th><th>n_GetV1TautomerEnumerator</th><th>n_NIH</th><th>n_CACTVS</th><th>n_TautomerEnumerator_InChI</th><th>n_Expt</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td></tr></thead><tbody><tr><td>891</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@H](C(C)=O)C(C)(O)C2&quot;]</td><td>[&quot;COC1=C(O)c2c(=O)cc(OC)c3c2c2c4c(c(OC)c(O)c5c(=O)cc(OC)c3c54)=C(C(C)=O)C(C)(O)CC12&quot;, &quot;C=C(O)C1C2=C(OC)C(=O)c3c(O)cc(OC)c4c5c6c(c(O)c(OC)c(c6c2c34)=CC1(C)O)C(=O)CC=5OC&quot;, … &quot;C=C(O)C1=c2c(OC)c(O)c3c4c(c5c6c(c24)C(=CC1(C)O)C(OC)=C(O)C6C(=O)C=C5OC)=C(OC)CC3=O&quot;]</td><td>[&quot;COc1c2c3c4c5c(c(=O)cc(OC)c5c5c(OC)cc(O)c(c1=O)c35)C(=O)C(OC)C=4CC(C)(O)C2=C(C)O&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(O)c5c(=O)c(OC)c6c(c(c1C(=C(C)O)C(C)(O)C6)c23)c54&quot;, … &quot;C=C(O)C1=c2c(OC)c(O)c3c(O)cc(OC)c4c5c6c(c2c34)C(=C(OC)C(=O)C=6C(=O)CC=5OC)CC1(C)O&quot;]</td><td>[&quot;COC1=CC(=O)c2c(O)c(OC)c3c4c2c1c1c(OC)cc(O)c2c(O)c(OC)c(c4c21)=CC(C)(O)[C@H]3C(C)=O&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c(c(O)c(OC)c(c42)CC(C)(O)[C@H]3C(C)=O)C(=O)C=C1OC&quot;, … &quot;COC1=CC(=O)c2c(O)c(OC)c3c4c2c1c1c2c(c(O)c(OC)c(c24)=CC(C)(O)[C@H]3C(C)=O)C(=O)CC=1OC&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COC6=C1C4=C2C(=C(C(C1)(C)O)C(C)=O)C(=C(C3=C(C=C(C(=C23)C5=C4C(=C(O)C=C5OC)C6=O)OC)O)O)OC&quot;, … &quot;COC4=C6C2=C1C(C(OC)C(=O)C5=C1C(=C3C(=CC(=O)C(=C23)C4=O)OC)C(=CC5=O)OC)C(=C(C)O)C(C)(O)C6&quot;]</td><td>[&quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-8,29,31-32,36H,9H2,1-6H3&quot;, &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-8,25,28,33,36H,9H2,1-6H3&quot;, … &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-9,25,28-29,32,36H,1-6H3&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@H](C(C)=O)C(C)(O)C2&quot;]</td><td>337</td><td>340</td><td>26</td><td>324</td><td>337</td><td>2</td></tr><tr><td>892</td><td>[&quot;O=C1C=CC(O)=C2C(=O)C=CC(O)=C12&quot;, &quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;]</td><td>[&quot;O=C1C=CC(O)=C2C(=O)C=CC(O)=C12&quot;, &quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;, … &quot;O=C1C=CC(=O)C2=C1C(=O)CCC2=O&quot;]</td><td>[&quot;O=C1C=CC(=O)C2C(=O)C=CC(O)=C12&quot;, &quot;O=C1C=CC(=O)C2C(=O)C=CC(=O)C12&quot;, … &quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;]</td><td>[]</td><td>[]</td><td>[&quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-4,9,12H&quot;, &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-3,13H,4H2&quot;, … &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-4,11-12H&quot;]</td><td>[&quot;O=C1C=CC(O)=C2C(=O)C=CC(O)=C12&quot;, &quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;]</td><td>6</td><td>7</td><td>0</td><td>0</td><td>6</td><td>2</td></tr></tbody></table></div>
+<small>shape: (2, 14)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_cactus</th><th>tauts_CACTVS</th><th>tauts_TautomerEnumerator_InChI</th><th>tauts_Expt</th><th>n_TautomerEnumerator</th><th>n_GetV1TautomerEnumerator</th><th>n_cactus</th><th>n_CACTVS</th><th>n_TautomerEnumerator_InChI</th><th>n_Expt</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td></tr></thead><tbody><tr><td>891</td><td>[&quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@H](C(C)=O)C(C)(O)C2&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;]</td><td>[&quot;COc1c2c3c4c5c(c(=O)cc(OC)c5c5c(OC)cc(O)c(c1=O)c35)C(=O)C(OC)C=4CC(C)(O)C2C(C)=O&quot;, &quot;COC1=CC(=O)C2=c3c1c1c4c5c3C(=C(C(C)=O)C(C)(O)CC5C(OC)=C(O)C=4C(=O)C=C1OC)C(OC)C2=O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c2c4=C(CC(C)(O)C3C(C)=O)C(OC)C(=O)C=2C(=O)C=C1OC&quot;]</td><td>[&quot;COC1=CC(=O)C2=c3c1c1c4c5c3=C(CC(C)(O)C(=C(C)O)C=5C(OC)C(=O)C=4C(=O)C=C1OC)C(OC)C2=O&quot;, &quot;C=C(O)C1=C2c3c4c(c(OC)c(O)c5c(=O)cc(OC)c(c6c(OC)cc(=O)c(c36)=C(O)C2OC)c45)CC1(C)O&quot;, … &quot;C=C(O)C1=C2c3c4c(c5c(OC)cc(=O)c6c(=O)c(OC)c(c3c5=6)CC1(C)O)C(OC)CC(=O)C=4C(=O)C2OC&quot;]</td><td>[&quot;C=C(O)[C@H]1c2c(OC)c(=O)c3c(O)cc(OC)c4c5c(OC)cc(O)c6c(=O)c(OC)c(c(c2c34)c65)CC1(C)O&quot;, &quot;COC1=CC(=O)C2C(=O)C(OC)=C3CC(C)(O)[C@@H](C(C)=O)c4c(OC)c(O)c5c6c(c1c2c3c46)C(OC)=CC5=O&quot;, … &quot;COC1=CC(=O)C2C(=O)C(OC)=C3c4c2c1c1c(OC)cc(O)c2c1c4C(=C(OC)C2=O)CC(C)(O)[C@H]3C(C)=O&quot;]</td><td>[&quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;, &quot;COC6=C1C4=C2C(=C(C(C1)(C)O)C(C)=O)C(=C(C3=C(C=C(C(=C23)C5=C4C(=C(O)C=C5OC)C6=O)OC)O)O)OC&quot;, … &quot;COC4=C6C2=C1C(C(OC)C(=O)C5=C1C(=C3C(=CC(=O)C(=C23)C4=O)OC)C(=CC5=O)OC)C(=C(C)O)C(C)(O)C6&quot;]</td><td>[&quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7,31-32,36H,8-9H2,1-6H3&quot;, &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h7-9,25,29,31-32,34,36H,1H2,2-6H3&quot;, … &quot;InChI=1S/C30H26O10/c1-10(31)25-24-22-16-11(9-30(25,2)36)28(39-5)26(34)17-12(32)7-14(37-3)19(21(16)17)20-15(38-4)8-13(33)18(23(20)22)27(35)29(24)40-6/h9,25,28,36H,7-8H2,1-6H3&quot;]</td><td>[&quot;COc1c2c3c4c(c(OC)c(=O)c5c(O)cc(OC)c(c6c(OC)cc(O)c(c1=O)c63)c54)[C@H](C(C)=O)C(C)(O)C2&quot;, &quot;COc1c(O)c2c(=O)cc(OC)c3c4c(OC)cc(=O)c5c(O)c(OC)c6c(c(c1CC(C)(O)[C@H]6C(C)=O)c23)c54&quot;]</td><td>337</td><td>340</td><td>26</td><td>324</td><td>337</td><td>2</td></tr><tr><td>892</td><td>[&quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;, &quot;O=C1C=CC(O)=C2C(=O)C=CC(O)=C12&quot;]</td><td>[&quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;, &quot;O=C1C=CC(=O)C2=C1C(=O)CCC2=O&quot;, … &quot;O=C1C=CC(=O)C2C(=O)C=CC(O)=C12&quot;]</td><td>[&quot;O=C1C=CC(=O)C2=C1C(=O)CCC2=O&quot;, &quot;O=C1C=CC(=O)C2C(=O)C=CC(O)=C12&quot;, … &quot;O=C1C=CC(=O)C2=C1C(=O)C=CC2O&quot;]</td><td>[]</td><td>[]</td><td>[&quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-2H,3-4H2&quot;, &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-4,9,12H&quot;, … &quot;InChI=1S/C10H6O4/c11-5-1-2-6(12)10-8(14)4-3-7(13)9(5)10/h1-3,13H,4H2&quot;]</td><td>[&quot;O=C1C=CC(=O)c2c(O)ccc(O)c21&quot;, &quot;O=C1C=CC(O)=C2C(=O)C=CC(O)=C12&quot;]</td><td>6</td><td>7</td><td>0</td><td>0</td><td>6</td><td>2</td></tr></tbody></table></div>
 
 
 
@@ -1381,7 +1406,7 @@ tauts_compare_cols
 
 
     ['tauts_GetV1TautomerEnumerator',
-     'tauts_NIH',
+     'tauts_cactus',
      'tauts_CACTVS',
      'tauts_TautomerEnumerator_InChI',
      'tauts_Expt']
@@ -1427,7 +1452,7 @@ df_melted_aggregated.head(1)
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (1, 24)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_NIH</th><th>tauts_CACTVS</th><th>tauts_TautomerEnumerator_InChI</th><th>tauts_Expt</th><th>n_TautomerEnumerator</th><th>n_GetV1TautomerEnumerator</th><th>n_NIH</th><th>n_CACTVS</th><th>n_TautomerEnumerator_InChI</th><th>n_Expt</th><th>same_GetV1TautomerEnumerator</th><th>nDiff_GetV1TautomerEnumerator</th><th>same_NIH</th><th>nDiff_NIH</th><th>same_CACTVS</th><th>nDiff_CACTVS</th><th>same_TautomerEnumerator_InChI</th><th>nDiff_TautomerEnumerator_InChI</th><th>same_Expt</th><th>nDiff_Expt</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td></tr></thead><tbody><tr><td>304</td><td>[&quot;CN(C)c1ccc(C2NC[C@H]3CCCC[C@@H]3O2)cc1&quot;, &quot;CN(C)c1ccc(C=NC[C@H]2CCCC[C@@H]2O)cc1&quot;]</td><td>[&quot;CN(C)c1ccc(C=NC[C@H]2CCCC[C@@H]2O)cc1&quot;, &quot;CN(C)c1ccc(C2NC[C@H]3CCCC[C@@H]3O2)cc1&quot;]</td><td>[&quot;CN(C)c1ccc(C2NC[C@H]3CCCC[C@@H]3O2)cc1&quot;, &quot;CN(C)c1ccc(C=NC[C@H]2CCCC[C@@H]2O)cc1&quot;]</td><td>[]</td><td>[]</td><td>[&quot;InChI=1S/C16H24N2O/c1-18(2)14-9-7-12(8-10-14)16-17-11-13-5-3-4-6-15(13)19-16/h7-10,13,15-17H,3-6,11H2,1-2H3/t13-,15+,16?/m1/s1&quot;, &quot;InChI=1S/C16H24N2O/c1-18(2)15-9-7-13(8-10-15)11-17-12-14-5-3-4-6-16(14)19/h7-11,14,16,19H,3-6,12H2,1-2H3/t14-,16+/m1/s1&quot;]</td><td>[&quot;CN(C)c1ccc(C2NC[C@H]3CCCC[C@@H]3O2)cc1&quot;, &quot;CN(C)c1ccc(C=NC[C@H]2CCCC[C@@H]2O)cc1&quot;]</td><td>2</td><td>2</td><td>0</td><td>0</td><td>2</td><td>2</td><td>true</td><td>0</td><td>false</td><td>null</td><td>false</td><td>null</td><td>false</td><td>0</td><td>true</td><td>0</td></tr></tbody></table></div>
+<small>shape: (1, 24)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_cactus</th><th>tauts_CACTVS</th><th>tauts_TautomerEnumerator_InChI</th><th>tauts_Expt</th><th>n_TautomerEnumerator</th><th>n_GetV1TautomerEnumerator</th><th>n_cactus</th><th>n_CACTVS</th><th>n_TautomerEnumerator_InChI</th><th>n_Expt</th><th>same_GetV1TautomerEnumerator</th><th>nDiff_GetV1TautomerEnumerator</th><th>same_cactus</th><th>nDiff_cactus</th><th>same_CACTVS</th><th>nDiff_CACTVS</th><th>same_TautomerEnumerator_InChI</th><th>nDiff_TautomerEnumerator_InChI</th><th>same_Expt</th><th>nDiff_Expt</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td></tr></thead><tbody><tr><td>667</td><td>[&quot;O=C(/C=C(\S)c1ccccc1)c1ccccc1&quot;, &quot;O/C(=C\C(=S)c1ccccc1)c1ccccc1&quot;]</td><td>[&quot;OC(=CC(=S)c1ccccc1)c1ccccc1&quot;, &quot;O=C(CC(=S)c1ccccc1)c1ccccc1&quot;, &quot;O=C(C=C(S)c1ccccc1)c1ccccc1&quot;]</td><td>[&quot;O=C(CC(=S)c1ccccc1)c1ccccc1&quot;, &quot;O=C(C=C(S)c1ccccc1)c1ccccc1&quot;, &quot;OC(=CC(=S)c1ccccc1)c1ccccc1&quot;]</td><td>[]</td><td>[]</td><td>[&quot;InChI=1S/C15H12OS/c16-14(12-7-3-1-4-8-12)11-15(17)13-9-5-2-6-10-13/h1-11,16H&quot;, &quot;InChI=1S/C15H12OS/c16-14(12-7-3-1-4-8-12)11-15(17)13-9-5-2-6-10-13/h1-11,17H&quot;, &quot;InChI=1S/C15H12OS/c16-14(12-7-3-1-4-8-12)11-15(17)13-9-5-2-6-10-13/h1-10H,11H2&quot;]</td><td>[&quot;O=C(/C=C(\S)c1ccccc1)c1ccccc1&quot;, &quot;O/C(=C\C(=S)c1ccccc1)c1ccccc1&quot;]</td><td>3</td><td>3</td><td>0</td><td>0</td><td>3</td><td>2</td><td>true</td><td>0</td><td>false</td><td>null</td><td>false</td><td>null</td><td>false</td><td>0</td><td>false</td><td>1</td></tr></tbody></table></div>
 
 
 
@@ -1560,7 +1585,7 @@ df_same
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (1, 4)</small><table border="1" class="dataframe"><thead><tr><th>count_same_GetV1TautomerEnumerator</th><th>count_same_NIH</th><th>count_same_CACTVS</th><th>count_same_Expt</th></tr><tr><td>u32</td><td>u32</td><td>u32</td><td>u32</td></tr></thead><tbody><tr><td>1207</td><td>0</td><td>0</td><td>453</td></tr></tbody></table></div>
+<small>shape: (1, 4)</small><table border="1" class="dataframe"><thead><tr><th>count_same_GetV1TautomerEnumerator</th><th>count_same_cactus</th><th>count_same_CACTVS</th><th>count_same_Expt</th></tr><tr><td>u32</td><td>u32</td><td>u32</td><td>u32</td></tr></thead><tbody><tr><td>1207</td><td>0</td><td>0</td><td>453</td></tr></tbody></table></div>
 
 
 
@@ -1581,13 +1606,13 @@ df_same.select((pl.all() / Ref_count * 100).round(1).name.prefix("%")).sum()
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (1, 4)</small><table border="1" class="dataframe"><thead><tr><th>%count_same_GetV1TautomerEnumerator</th><th>%count_same_NIH</th><th>%count_same_CACTVS</th><th>%count_same_Expt</th></tr><tr><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>68.0</td><td>0.0</td><td>0.0</td><td>25.5</td></tr></tbody></table></div>
+<small>shape: (1, 4)</small><table border="1" class="dataframe"><thead><tr><th>%count_same_GetV1TautomerEnumerator</th><th>%count_same_cactus</th><th>%count_same_CACTVS</th><th>%count_same_Expt</th></tr><tr><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>68.0</td><td>0.0</td><td>0.0</td><td>25.5</td></tr></tbody></table></div>
 
 
 
 Let's compare the various sources to our baseline, RDKit's default tautomerizer:
 - GetV1TautomerEnumerator: The fact that ~68% of the sets of tautomers are the same comports with Greg Landrum's note that "the code adds a missed case to the enumeration rule set"--adding one rule seems like a minor change.
-- NIH and CACTVS: The fact that these sources have no Refs where the set of tautomers are the same is not surprising because we enumerated tautomers for a limited number of Refs for NIH and CACTVS.
+- cactus and CACTVS: The fact that these sources have no Refs where the set of tautomers are the same is not surprising because we enumerated tautomers for a limited number of Refs for cactus and CACTVS.
 - Expt: The fact that ~25.5% of the sets of tautomers are the same seems to reflect that the baseline tautomerizer didn't find tautomers beyond those observed experimentally. If we filter down to these matching sets, we find that there are only a few tautomers in each case:
 
 
@@ -1619,7 +1644,7 @@ df_same_Expt.head()
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (5, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>same_Expt</th><th>n_Expt</th><th>n_TautomerEnumerator</th><th>tauts_TautomerEnumerator</th><th>tauts_Expt</th></tr><tr><td>i64</td><td>bool</td><td>u32</td><td>u32</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>2</td><td>true</td><td>2</td><td>2</td><td>[&quot;c1c[nH]nn1&quot;, &quot;c1cn[nH]n1&quot;]</td><td>[&quot;c1cn[nH]n1&quot;, &quot;c1c[nH]nn1&quot;]</td></tr><tr><td>3</td><td>true</td><td>2</td><td>2</td><td>[&quot;Cc1cc[nH]n1&quot;, &quot;Cc1ccn[nH]1&quot;]</td><td>[&quot;Cc1cc[nH]n1&quot;, &quot;Cc1ccn[nH]1&quot;]</td></tr><tr><td>24</td><td>true</td><td>1</td><td>1</td><td>[&quot;N=c1cccccc1N&quot;]</td><td>[&quot;N=c1cccccc1N&quot;]</td></tr><tr><td>40</td><td>true</td><td>3</td><td>3</td><td>[&quot;O=c1cc(-c2ccccc2)[nH]n1-c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;, &quot;O=C1CC(c2ccccc2)=NN1c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;, &quot;O=[N+]([O-])c1ccc(-n2nc(-c3ccccc3)cc2O)c([N+](=O)[O-])c1&quot;]</td><td>[&quot;O=c1cc(-c2ccccc2)[nH]n1-c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;, &quot;O=[N+]([O-])c1ccc(-n2nc(-c3ccccc3)cc2O)c([N+](=O)[O-])c1&quot;, &quot;O=C1CC(c2ccccc2)=NN1c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;]</td></tr><tr><td>41</td><td>true</td><td>3</td><td>3</td><td>[&quot;Cc1cc(=O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])[nH]1&quot;, &quot;Cc1cc(O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])n1&quot;, &quot;CC1=NN(c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])C(=O)C1&quot;]</td><td>[&quot;CC1=NN(c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])C(=O)C1&quot;, &quot;Cc1cc(=O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])[nH]1&quot;, &quot;Cc1cc(O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])n1&quot;]</td></tr></tbody></table></div>
+<small>shape: (5, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>same_Expt</th><th>n_Expt</th><th>n_TautomerEnumerator</th><th>tauts_TautomerEnumerator</th><th>tauts_Expt</th></tr><tr><td>i64</td><td>bool</td><td>u32</td><td>u32</td><td>list[str]</td><td>list[str]</td></tr></thead><tbody><tr><td>2</td><td>true</td><td>2</td><td>2</td><td>[&quot;c1cn[nH]n1&quot;, &quot;c1c[nH]nn1&quot;]</td><td>[&quot;c1c[nH]nn1&quot;, &quot;c1cn[nH]n1&quot;]</td></tr><tr><td>3</td><td>true</td><td>2</td><td>2</td><td>[&quot;Cc1ccn[nH]1&quot;, &quot;Cc1cc[nH]n1&quot;]</td><td>[&quot;Cc1ccn[nH]1&quot;, &quot;Cc1cc[nH]n1&quot;]</td></tr><tr><td>24</td><td>true</td><td>1</td><td>1</td><td>[&quot;N=c1cccccc1N&quot;]</td><td>[&quot;N=c1cccccc1N&quot;]</td></tr><tr><td>40</td><td>true</td><td>3</td><td>3</td><td>[&quot;O=c1cc(-c2ccccc2)[nH]n1-c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;, &quot;O=C1CC(c2ccccc2)=NN1c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;, &quot;O=[N+]([O-])c1ccc(-n2nc(-c3ccccc3)cc2O)c([N+](=O)[O-])c1&quot;]</td><td>[&quot;O=C1CC(c2ccccc2)=NN1c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;, &quot;O=[N+]([O-])c1ccc(-n2nc(-c3ccccc3)cc2O)c([N+](=O)[O-])c1&quot;, &quot;O=c1cc(-c2ccccc2)[nH]n1-c1ccc([N+](=O)[O-])cc1[N+](=O)[O-]&quot;]</td></tr><tr><td>41</td><td>true</td><td>3</td><td>3</td><td>[&quot;CC1=NN(c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])C(=O)C1&quot;, &quot;Cc1cc(=O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])[nH]1&quot;, &quot;Cc1cc(O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])n1&quot;]</td><td>[&quot;Cc1cc(=O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])[nH]1&quot;, &quot;Cc1cc(O)n(-c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])n1&quot;, &quot;CC1=NN(c2ccc([N+](=O)[O-])cc2[N+](=O)[O-])C(=O)C1&quot;]</td></tr></tbody></table></div>
 
 
 
@@ -1637,6 +1662,8 @@ df_same_Expt.select(pl.col("n_Expt")).max().item()
 
 
 
+*Summary:* RDKit's new tautomer enumerator produces sets of tautomers that are the same as its V1 about 68% of the time, and about 25% of the time the same as the experimental data. More than 85% of the Refs have two experimentally-observed tautomers.
+
 ### Statistical comparison
 
 We define a dictionary of sources and their type:
@@ -1651,7 +1678,7 @@ We define a dictionary of sources and their type:
 sources = {
     "TautomerEnumerator": "baseline",
     "GetV1TautomerEnumerator": "all",
-    "NIH": "manual",
+    "cactus": "manual",
     "CACTVS": "manual",
     "Expt": "all",
 }
@@ -1760,14 +1787,14 @@ for source in sources_compare.keys():
 
     Source                    Mean
     GetV1TautomerEnumerator   -4.66
-    NIH                       212.00
+    cactus                    212.00
     CACTVS                    55.80
     Expt                      9.78
 
 
-These statistics are skewed by selection bias: I chose several Refs with hundreds of tautomers to gather manual data on from NIH and CACTVS, so the difference in the number of tautomers for those Refs can be quite large. Whereas the experimental results are available for all Refs, and in many cases there are only a few tautomers for those Refs, so averaged over all Refs the mean difference in the number of tautomers for the experimental results is relatively small.
+These statistics are skewed by selection bias: I chose several Refs with hundreds of tautomers to gather manual data from cactus and CACTVS, so the difference in the number of tautomers for those Refs can be quite large. Whereas the experimental results are available for all Refs, and in many cases there are only a few tautomers for those Refs, so averaged over all Refs the mean difference in the number of tautomers for the experimental results is relatively small.
 
-Let's make a fairer comparison fpr the manual sources by narrowing the Refs to the narrowest set, namely for CACTVS--all the other sets (NIH, Expt, and RDKit GetV1TautomerEnumerator) are supersets of that narrow set, which contains five Refs.
+Let's make a fairer comparison for the manual sources by narrowing the Refs to the narrowest set, namely for CACTVS--all the other sets (cactus, Expt, and RDKit GetV1TautomerEnumerator) are supersets of that narrow set, which contains five Refs.
 
 
 ```python
@@ -1778,9 +1805,9 @@ df_narrow_set = (
             "Ref",
             "n_TautomerEnumerator",
             "n_CACTVS",
-            "n_NIH",
+            "n_cactus",
             "nDiff_CACTVS",
-            "nDiff_NIH",
+            "nDiff_cactus",
         ]
     )
     .sort("Ref")
@@ -1798,7 +1825,7 @@ df_narrow_set
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (5, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>n_TautomerEnumerator</th><th>n_CACTVS</th><th>n_NIH</th><th>nDiff_CACTVS</th><th>nDiff_NIH</th></tr><tr><td>i64</td><td>u32</td><td>u32</td><td>u32</td><td>i64</td><td>i64</td></tr></thead><tbody><tr><td>467</td><td>360</td><td>275</td><td>32</td><td>85</td><td>328</td></tr><tr><td>890</td><td>454</td><td>258</td><td>31</td><td>196</td><td>423</td></tr><tr><td>891</td><td>337</td><td>324</td><td>26</td><td>13</td><td>311</td></tr><tr><td>1512</td><td>3</td><td>16</td><td>8</td><td>-13</td><td>-5</td></tr><tr><td>1704</td><td>3</td><td>5</td><td>4</td><td>-2</td><td>-1</td></tr></tbody></table></div>
+<small>shape: (5, 6)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>n_TautomerEnumerator</th><th>n_CACTVS</th><th>n_cactus</th><th>nDiff_CACTVS</th><th>nDiff_cactus</th></tr><tr><td>i64</td><td>u32</td><td>u32</td><td>u32</td><td>i64</td><td>i64</td></tr></thead><tbody><tr><td>467</td><td>360</td><td>275</td><td>32</td><td>85</td><td>328</td></tr><tr><td>890</td><td>454</td><td>258</td><td>31</td><td>196</td><td>423</td></tr><tr><td>891</td><td>337</td><td>324</td><td>26</td><td>13</td><td>311</td></tr><tr><td>1512</td><td>3</td><td>16</td><td>8</td><td>-13</td><td>-5</td></tr><tr><td>1704</td><td>3</td><td>5</td><td>4</td><td>-2</td><td>-1</td></tr></tbody></table></div>
 
 
 
@@ -1837,7 +1864,7 @@ df_narrow_set_sum
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (1, 2)</small><table border="1" class="dataframe"><thead><tr><th>sum_nDiff_CACTVS</th><th>sum_nDiff_NIH</th></tr><tr><td>i64</td><td>i64</td></tr></thead><tbody><tr><td>279</td><td>1056</td></tr></tbody></table></div>
+<small>shape: (1, 2)</small><table border="1" class="dataframe"><thead><tr><th>sum_nDiff_CACTVS</th><th>sum_nDiff_cactus</th></tr><tr><td>i64</td><td>i64</td></tr></thead><tbody><tr><td>279</td><td>1056</td></tr></tbody></table></div>
 
 
 
@@ -1856,13 +1883,25 @@ df_narrow_set_sum.select((pl.all() / n_narrow_set).round(1).name.prefix("per_ref
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (1, 2)</small><table border="1" class="dataframe"><thead><tr><th>per_ref_sum_nDiff_CACTVS</th><th>per_ref_sum_nDiff_NIH</th></tr><tr><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>55.8</td><td>211.2</td></tr></tbody></table></div>
+<small>shape: (1, 2)</small><table border="1" class="dataframe"><thead><tr><th>per_ref_sum_nDiff_CACTVS</th><th>per_ref_sum_nDiff_cactus</th></tr><tr><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>55.8</td><td>211.2</td></tr></tbody></table></div>
 
 
 
 So in this comparison tailored to the manually-generated sources, the manual sources' differences in number of tautomers identified compared to RDKit's baseline algorithm are, from least to greatest deficit:
 - CACTVS algorithm, which finds about 56 fewer tautomers per reference
-- NIH algorithm, which finds about 211 fewer tautomers per reference
+- cactus algorithm, which finds about 211 fewer tautomers per reference
+
+*Summary:* Comparing the various tautomer sources, let's go from most to fewest number of tautomers found:
+
+- *RDKit's GetV1TautomerEnumerator produces the most, about 5 more per Ref than RDKit's updated algorithm
+- *RDKit's updated algorithm is our baseline
+- +CACTVS's algorithm finds about 56 fewer tautomers per Ref
+- +cactus's algorithm finds about 211 fewer tautomers per Ref
+- *Experimental results find about 229 fewer tautomers per Ref
+
+*Comparison of all Refs because data source includes all refs
+
++Comparison of 5 Refs because data source does not include all refs because it had to be run manually for each Ref
 
 ### Graphical comparison
 
@@ -2022,7 +2061,7 @@ plt.show()
     
 
 
-Here's the histogram for manual sources: NIH and CACTVS.
+Here's the histogram for manual sources: cactus and CACTVS.
 
 
 ```python
@@ -2071,6 +2110,11 @@ plt.show()
 ![Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus RDkit GetV1TautomerEnumerator, with the greatest frequency at x=0 and considerable frequencies to x=-200, but little frequency to x=200](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_156_0.png)
     
 
+
+*Summary:* For sources for which we have data for all Refs, the most common difference in number of tautomers is zero. Compared to the baseline RDKit TautomerEnumerator,
+- Expt has almost exclusively positive differences, meaning there are fewer experimentally-observed tautomers than algorithmically enumerated.
+- GetV1TautomerEnumerator has more negative differences, meaning it tends to generate more tautomers than the new RDKit algorithm. While most differences are small (-5 to 5), there are dozens of cases where the difference is larger, almost all of them negative.
+For sources for which we have data for a small number of Refs, the difference in number of tautomers is less clustered. For cactus the difference is commonly multiple hundreds (positive), while for CACTVS the greatest difference is less than 200.
 
 ### InChI coverage of multiple SMILES
 
@@ -2174,7 +2218,7 @@ print(f"{nDiff_EnumeratorInChI} / {n_Enumerator} = {delta:.0%}")
 
 So InChI needs on average 10.5 representations per reference, a reduction of 1.4 (12%) from SMILES. If InChI were totally successful at representing all tautomers with one InChI, it would need only one InChI per reference, so clearly there are improvements to be made to reach that goal.
 
-Let's plat that the reduction of the number of representations using InChI in a histogram.
+Let's plot that the reduction of the number of representations using InChI in a histogram.
 
 
 ```python
@@ -2203,6 +2247,8 @@ plt.show()
 ![Histogram of frequency against difference in number of representations from RDKit baseline algorithm SMILES minus InChI , with the greatest frequency of >1,000 at x=0, rapidly decreasing as x increases, and the greatest x value being about 475](/images/2024-05-01-Tautomer-Sources-Comparison_files/2024-05-01-Tautomer-Sources-Comparison_168_0.png)
     
 
+
+*Summary:* For almost 73% of the Refs, InChI cannot reduce the number of representations compared to SMILES. Overall, InChI reduces the number of representations by about 12%.
 
 ## Visualizing tautomeric structures
 
@@ -2290,11 +2336,11 @@ df_melted_aggregated_example
   white-space: pre-wrap;
 }
 </style>
-<small>shape: (1, 24)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_NIH</th><th>tauts_CACTVS</th><th>tauts_TautomerEnumerator_InChI</th><th>tauts_Expt</th><th>n_TautomerEnumerator</th><th>n_GetV1TautomerEnumerator</th><th>n_NIH</th><th>n_CACTVS</th><th>n_TautomerEnumerator_InChI</th><th>n_Expt</th><th>same_GetV1TautomerEnumerator</th><th>nDiff_GetV1TautomerEnumerator</th><th>same_NIH</th><th>nDiff_NIH</th><th>same_CACTVS</th><th>nDiff_CACTVS</th><th>same_TautomerEnumerator_InChI</th><th>nDiff_TautomerEnumerator_InChI</th><th>same_Expt</th><th>nDiff_Expt</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td></tr></thead><tbody><tr><td>467</td><td>[&quot;O=c1c(O)c(-c2ccc(O)c(O)c2)oc2cc(O)cc(O)c12&quot;, &quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;]</td><td>[&quot;O=C1C=C(O)C=c2oc(=C3C=CC(O)C(O)=C3)c(=O)c(O)c21&quot;, &quot;O=C1CC=C(c2oc3cc(O)cc(O)c3c(=O)c2O)CC1=O&quot;, … &quot;O=C1C=C(O)C2=C(O)C(=O)C(c3ccc(O)c(O)c3)OC2=C1&quot;]</td><td>[&quot;O=C1CC(=O)C2=C(C1)OC(=C1C=CC(=O)C(=O)C1)C(O)=C2O&quot;, &quot;O=C1C=C2OC(C3=CC(=O)C(=O)C=C3)=C(O)C(O)C2C(=O)C1&quot;, … &quot;O=C1C=CC(=C2OC3=C(C(=O)CC(O)=C3)C(O)C2=O)C=C1O&quot;]</td><td>[&quot;O=C1CC(O)=Cc2oc(-c3ccc(O)c(O)c3)c(O)c(=O)c21&quot;, &quot;O=C1C(=O)C(c2ccc(O)c(O)c2)Oc2cc(O)cc(O)c21&quot;, … &quot;O=C1C(=O)C(C2=CC(=O)C(O)C=C2)Oc2cc(O)cc(O)c21&quot;]</td><td>[&quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;, &quot;OC2=C1C(C(=C(OC1=CC(=C2)O)C3=CC(=C(C=C3)O)O)O)=O&quot;, … &quot;OC2=C(O)C(=C1C=CC(=O)C(=O)C1)OC3=C2C(C=C(C3)O)=O&quot;]</td><td>[&quot;InChI=1S/C15H10O7/c16-7-4-10(19)12-11(5-7)22-15(14(21)13(12)20)6-1-2-8(17)9(18)3-6/h1-3,5,13,18-20H,4H2&quot;, &quot;InChI=1S/C15H10O7/c16-7-4-10(19)12-11(5-7)22-15(14(21)13(12)20)6-1-2-8(17)9(18)3-6/h1-6,15-16,18-19H&quot;, … &quot;InChI=1S/C15H10O7/c16-7-4-10(19)12-11(5-7)22-15(14(21)13(12)20)6-1-2-8(17)9(18)3-6/h1-3,13,15,20H,4-5H2&quot;]</td><td>[&quot;O=c1c(O)c(-c2ccc(O)c(O)c2)oc2cc(O)cc(O)c12&quot;, &quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;]</td><td>360</td><td>353</td><td>32</td><td>275</td><td>360</td><td>2</td><td>false</td><td>7</td><td>false</td><td>328</td><td>false</td><td>85</td><td>false</td><td>0</td><td>false</td><td>358</td></tr></tbody></table></div>
+<small>shape: (1, 24)</small><table border="1" class="dataframe"><thead><tr><th>Ref</th><th>canon_sml</th><th>tauts_TautomerEnumerator</th><th>tauts_GetV1TautomerEnumerator</th><th>tauts_cactus</th><th>tauts_CACTVS</th><th>tauts_TautomerEnumerator_InChI</th><th>tauts_Expt</th><th>n_TautomerEnumerator</th><th>n_GetV1TautomerEnumerator</th><th>n_cactus</th><th>n_CACTVS</th><th>n_TautomerEnumerator_InChI</th><th>n_Expt</th><th>same_GetV1TautomerEnumerator</th><th>nDiff_GetV1TautomerEnumerator</th><th>same_cactus</th><th>nDiff_cactus</th><th>same_CACTVS</th><th>nDiff_CACTVS</th><th>same_TautomerEnumerator_InChI</th><th>nDiff_TautomerEnumerator_InChI</th><th>same_Expt</th><th>nDiff_Expt</th></tr><tr><td>i64</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>list[str]</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>u32</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td><td>bool</td><td>i64</td></tr></thead><tbody><tr><td>467</td><td>[&quot;O=c1c(O)c(-c2ccc(O)c(O)c2)oc2cc(O)cc(O)c12&quot;, &quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;]</td><td>[&quot;O=C1C=C(O)c2c(O)c(=O)c(=C3CCC(=O)C(=O)C3)oc2=C1&quot;, &quot;O=C1CC=C(C2OC3=CC(O)=CC(=O)C3C(=O)C2=O)C=C1O&quot;, … &quot;O=C1C=C(O)C2=C(O)C(=O)C(C3C=CC(=O)C(=O)C3)OC2=C1&quot;]</td><td>[&quot;O=C1CC(O)=C2C(=O)C(=O)C(C3=CC(=O)C(=O)C=C3)OC2C1&quot;, &quot;O=C1C(=O)c2c(O)cc(O)cc2OC1=C1C=CC(O)C(O)=C1&quot;, … &quot;O=C1CC(=O)C2=C(O)C(=O)C(=C3C=CC(=O)C(=O)C3)OC2C1&quot;]</td><td>[&quot;O=C1C=C2OC(c3ccc(O)c(O)c3)=C(O)C(O)=C2C(=O)C1&quot;, &quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;, … &quot;O=c1cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c-2c(O)c1&quot;]</td><td>[&quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;, &quot;OC2=C1C(C(=C(OC1=CC(=C2)O)C3=CC(=C(C=C3)O)O)O)=O&quot;, … &quot;OC2=C(O)C(=C1C=CC(=O)C(=O)C1)OC3=C2C(C=C(C3)O)=O&quot;]</td><td>[&quot;InChI=1S/C15H10O7/c16-7-4-10(19)12-11(5-7)22-15(14(21)13(12)20)6-1-2-8(17)9(18)3-6/h1,3,5,12,15,18H,2,4H2&quot;, &quot;InChI=1S/C15H10O7/c16-7-4-10(19)12-11(5-7)22-15(14(21)13(12)20)6-1-2-8(17)9(18)3-6/h4,19H,1-3,5H2&quot;, … &quot;InChI=1S/C15H10O7/c16-7-4-10(19)12-11(5-7)22-15(14(21)13(12)20)6-1-2-8(17)9(18)3-6/h3,15H,1-2,4-5H2&quot;]</td><td>[&quot;O=c1c(O)c(-c2ccc(O)c(O)c2)oc2cc(O)cc(O)c12&quot;, &quot;O=c1cc(O)cc2oc(-c3ccc(O)c(O)c3)c(O)c(O)c1-2&quot;]</td><td>360</td><td>353</td><td>32</td><td>275</td><td>360</td><td>2</td><td>false</td><td>7</td><td>false</td><td>328</td><td>false</td><td>85</td><td>false</td><td>0</td><td>false</td><td>358</td></tr></tbody></table></div>
 
 
 
-For the various data sources, ew extract SMILES, align each source sequentially, and create RDKit molecules for drawing.
+For the various data sources, we extract SMILES, align each source sequentially, and create RDKit molecules for drawing.
 
 
 ```python
@@ -2309,17 +2355,17 @@ smls_v1 = (
     .to_list()
 )
 smls_v1_aligned = align_iterables(smls_baseline_aligned, smls_v1)
-smls_nih = df_melted_aggregated_example.select("tauts_NIH").item().to_list()
-smls_nih_aligned = align_iterables(smls_v1_aligned, smls_nih)
+smls_cactus = df_melted_aggregated_example.select("tauts_cactus").item().to_list()
+smls_cactus_aligned = align_iterables(smls_v1_aligned, smls_cactus)
 smls_cactvs = df_melted_aggregated_example.select("tauts_CACTVS").item().to_list()
-smls_cactvs_aligned = align_iterables(smls_nih_aligned, smls_cactvs)
+smls_cactvs_aligned = align_iterables(smls_cactus_aligned, smls_cactvs)
 
 tauts_expt = [mol_from_sml(sml) for sml in smls_expt]
 tauts_baseline_aligned = [
     mol_from_sml(sml) if sml else None for sml in smls_baseline_aligned
 ]
 tauts_v1_aligned = [mol_from_sml(sml) if sml else None for sml in smls_v1_aligned]
-tauts_nih_aligned = [mol_from_sml(sml) if sml else None for sml in smls_nih_aligned]
+tauts_cactus_aligned = [mol_from_sml(sml) if sml else None for sml in smls_cactus_aligned]
 tauts_cactvs_aligned = [
     mol_from_sml(sml) if sml else None for sml in smls_cactvs_aligned
 ]
@@ -2368,11 +2414,11 @@ row_labels = [
     f"RDKit v1 code: {len(smls_v1)} tautomers",
 ]
 
-# If NIH tautomers generated, add row for them
-if not all([sml is None for sml in smls_nih]):
-    smls_matrix.append(smls_nih_aligned)
-    tauts_matrix.append(tauts_nih_aligned[:max_cols])
-    row_labels.append(f"NIH code: {len(smls_nih)} tautomers")
+# If cactus tautomers generated, add row for them
+if not all([sml is None for sml in smls_cactus]):
+    smls_matrix.append(smls_cactus_aligned)
+    tauts_matrix.append(tauts_cactus_aligned[:max_cols])
+    row_labels.append(f"cactus code: {len(smls_cactus)} tautomers")
 
 # If CACTVS tautomers generated, add row for them
 if not all([sml is None for sml in smls_cactvs]):
@@ -2503,6 +2549,8 @@ Draw.MolsMatrixToGridImage(
 
 
 
+*Summary:* Putting each source in a row, and aligning columns by common structures, helps visualize the tautomers from each source for a given Ref. Allowing matching of any bond type greatly aids in visually comparing tautomers from each source.
+
 ## Conclusions
 
 ### Tautomer enumeration algorithms
@@ -2512,7 +2560,7 @@ Comparing the various tautomer sources, let's go from most to fewest number of t
 - *RDKit's GetV1TautomerEnumerator produces the most, about 5 more per Ref than RDKit's updated algorithm
 - *RDKit's updated algorithm is our baseline
 - +CACTVS's algorithm finds about 56 fewer tautomers per Ref
-- +NIH's algorithm finds about 211 fewer tautomers per Ref
+- +cactus's algorithm finds about 211 fewer tautomers per Ref
 - *Experimental results find about 229 fewer tautomers per Ref
 
 *Comparison of all Refs because data source includes all refs
@@ -2523,7 +2571,7 @@ Of course, finding more tautomers is not necessarily better. If a tautomer is no
 
 The [RDKit 2022.03 release notes](https://www.rdkit.org/docs/BackwardsIncompatibleChanges.html#tautomer-enumeration-improvements) suggest that the updated algorithm deliberately does not produce certain tautomers (which do not match the more-specific rules). Considering [Greg Landrum's comment](https://github.com/rdkit/rdkit/discussions/6997#discussioncomment-7893160) that the "code change adds a missed case to the enumeration rule set", it seems that the number of additional tautomers found by the additional rule is outweighed by the narrowing of rules.
 
-It is interesting that the CACTVS algorithm, which has additional transforms, produces fewer tautomers; though that's for a narrow set of Refs, so it may not hold for a larger dataset. It makes sense that the NIH site produces fewer tautomers than CACTVS because the NIH algorithm by Nicklaus et al. is similar yet has fewer rules.
+It is interesting that the CACTVS algorithm, which has additional transforms, produces fewer tautomers; though that's for a narrow set of Refs, so it may not hold for a larger dataset. It makes sense that the cactus site produces fewer tautomers than CACTVS because the cactus algorithm by Nicklaus et al. is similar yet has fewer rules.
 
 ### InChI's ability to encompass multiple tautomers with one InChI
 
@@ -2536,4 +2584,4 @@ So overall the current InChI implementation has modest success in covering all t
 
 ## Acknowledgments
 
-Many thanks to Marc Nicklaus for running CACTVS tautomer enumerations, giving background on the web tool, and informative discussions. Also thanks to my co-workers at Aionics for discussions about tautomers (this post was done on my own and does not necessarily represent my employer's views).
+Many thanks to Marc Nicklaus for running CACTVS tautomer enumerations, giving background on the web tool, informative discussions, and reviewing a draft of this post. Also thanks to my co-workers at [Aionics](https://aionics.io/) for discussions about tautomers. (This post was done on my own and does not necessarily represent my employer's views).
