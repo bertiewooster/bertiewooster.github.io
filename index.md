@@ -3,6 +3,12 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [Tautomer Generation Algorithms and InChI Representations]({% post_url 2024-05-01-Tautomer-Sources-Comparison %})
+
+[<img alt="Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other sources" style="width:571px; height:454px" src="/images/Tautomer-Sources-Comparison difference in number of tautomers.png">]({% post_url 2024-05-01-Tautomer-Sources-Comparison %})
+
+Which cheminformatics algorithms produce the most tautomers? And how successful is InChI at representing with a single representation all tautomers of a given structure?
+
 ## Molecular Isotopic Distributions: [Permutations]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %}) and [Combinations]({% post_url 2024-01-20-Molecular-isotopes-2-combinations %})
 
 [<img alt="Abundance against mass for SCl2 molecular isotopes" style="width:567px; height:467px" src="/images/Cl2S-molecular-isotopic-distribution.png">]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %})
