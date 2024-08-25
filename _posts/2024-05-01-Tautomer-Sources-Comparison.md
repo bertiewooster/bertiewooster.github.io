@@ -1204,7 +1204,7 @@ df_melted_aggregated.filter(pl.col("Ref").is_in([890, 891]))
 
 ### Data cleanup
 
-Because we have tautomers for cactus and CACTVS for only certain Refs, we need to remove None entries in lists so that, for example, `[None None]` won't be counted as two tautomers; it will be replaced with `[]` which will be counted as zero tautomers, indicating that we didn't obtain tautomers for that Ref.
+Because we have tautomers for cactus and CACTVS for only certain Refs, we need to remove None entries in lists so that, for example, `[None, None]` won't be counted as two tautomers; it will be replaced with `[]` which will be counted as zero tautomers, indicating that we didn't obtain tautomers for that Ref.
 
 
 ```python
@@ -1688,7 +1688,7 @@ sources_compare = {
 }
 ```
 
-Now we set up data structures to hold data from the dataframe's nDiff_ columns--the difference in the number of tautomers for the baseline source minus for another source.
+Now we set up data structures to hold data from the dataframe's `nDiff_` columns--the difference in the number of tautomers for the baseline source minus for another source.
 
 
 ```python
@@ -2264,26 +2264,26 @@ def align_iterables(
     iterable2: list | tuple,
     filler="",
 ) -> Iterable:
-    """Align the second iterable under the first (in columns), using the filler for items in list1 not in list2,
+    """Align the second iterable under the first (in columns), using the filler for items in iterable1 not in iterable2,
     for example:
 
     input:
-    list1: a,  c,  b
-    list2: a,  f,  c,  e,  d
+    iterable1: a,  c,  b
+    iterable2: a,  f,  c,  e,  d
 
     output:
-    list2: a,  c, "",  f,  e,  d
+    iterable2: a,  c, "",  f,  e,  d
 
     Note that no other ordering is applied to either input iterable,
     and items in the second which are not in the first will be kept in their input order.
     If you want them to be ordered in some way, for example alphabetically, order them before calling this function.
 
-    :param list1: Template list
-    :param list2: List to be aligned under the template list
-    :param filler: The filler entry to use to provide an "empty" column to align list2 under list1; default is empty string but can be a number or anything else
-    :returns: Aligned list2 such that its entries will line up under the same values in list1, or be placed to the right if they are not in list1
+    :param iterable1: Template iterable
+    :param iterable2: Iterable to be aligned under the template iterable
+    :param filler: The filler entry to use to provide an "empty" column to align iterable2 under iterable1; default is empty string but can be a number or anything else
+    :returns: Aligned iterable2 such that its entries will line up under the same values in iterable1, or be placed to the right if they are not in iterable1
     """
-    # If either list has no elements, return the initial iterable2
+    # If either iterable has no elements, return the initial iterable2
     if any([len(iterable1) == 0, len(iterable2) == 0]):
         return iterable2
 
