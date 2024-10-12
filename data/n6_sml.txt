@@ -1,0 +1,1 @@
+CC(C)[Si](C#Cc1c2ccccc2c(C#Cc2c3ccccc3c(C#Cc3c4ccccc4c(C#Cc4c5ccccc5c(C#Cc5c6ccccc6c(C#Cc6c7ccccc7c(C#C[Si](C(C)C)(C(C)C)C(C)C)c7ccccc67)c6ccccc56)c5ccccc45)c4ccccc34)c3ccccc23)c2ccccc12)(C(C)C)C(C)C
