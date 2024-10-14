@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Note: Before running this script,
-#  1) If you created the notebook locally, format with Black by ensuring no cell is selected, then pressing Option+Shift+F on Mac (Alt+Shift+F on Windows)
+#  1) If you created the notebook locally
+#     a) format with Ruff by ensuring no cell is selected, then pressing Option+Shift+F on Mac (Alt+Shift+F on Windows)
+#     b) You can make it into a Google Colab by
 #  2) If you downloaded the notebook from Google Colab, replace file name underscores with hyphens
 #  3) If you want to embed an image in the notebook rather than importing it from an external file,
 #     a) Set up Markdown cell with <img src="" />
