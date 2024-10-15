@@ -4,6 +4,8 @@
 #  1) If you created the notebook locally
 #     a) format with Ruff by ensuring no cell is selected, then pressing Option+Shift+F on Mac (Alt+Shift+F on Windows)
 #     b) You can make it into a Google Colab by
+#        i) creating a new Google Colab on bertiewoostersharing@gmail.com account
+#        ii) choosing File > Upload notebook
 #  2) If you downloaded the notebook from Google Colab, replace file name underscores with hyphens
 #  3) If you want to embed an image in the notebook rather than importing it from an external file,
 #     a) Set up Markdown cell with <img src="" />
@@ -17,7 +19,7 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-jupyter nbconvert _notebooks/2024-05-01-Tautomer-Sources-Comparison.ipynb --to markdown --output 2024-05-01-Tautomer-Sources-Comparison.md
+jupyter nbconvert _notebooks/2024-10-15-Color-from-Conjugation.ipynb --to markdown --output 2024-10-15-Color-from-Conjugation.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
