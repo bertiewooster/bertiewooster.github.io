@@ -10,8 +10,8 @@
   </header>
 
   <article>
-    <!-- Automatically wrap code blocks with the copy button -->
-    {{ content | replace:'<pre><code', '<div class="code-block-container"><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button><pre><code' | replace:'</code></pre>', '</code></pre></div>' }}
+    <!-- Render the post content -->
+    {{ content }}
   </article>
 
   <footer>
@@ -19,22 +19,77 @@
     {% include social.html %}
   </footer>
 
-  <!-- Include the JavaScript for the copy button -->
+  <!-- JavaScript to dynamically add "Copy" buttons -->
   <script>
-    function copyToClipboard(button) {
-      const codeBlock = button.nextElementSibling.querySelector('code');
-      const textarea = document.createElement('textarea');
-      textarea.value = codeBlock.textContent;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-      button.textContent = 'Copied!';
-      setTimeout(() => {
-        button.textContent = 'Copy';
-      }, 2000);
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+      // Select all <pre><code> blocks
+      const codeBlocks = document.querySelectorAll("pre code");
+
+      codeBlocks.forEach(codeBlock => {
+        // Create a button element
+        const button = document.createElement("button");
+        button.className = "copy-btn";
+        button.textContent = "Copy";
+
+        // Insert the button before the <pre> element
+        const pre = codeBlock.parentElement;
+        pre.parentElement.insertBefore(button, pre);
+
+        // Add click event to the button to copy code
+        button.addEventListener("click", function() {
+          const textarea = document.createElement("textarea");
+          textarea.value = codeBlock.textContent;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+
+          // Provide feedback to the user
+          button.textContent = "Copied!";
+          setTimeout(() => {
+            button.textContent = "Copy";
+          }, 2000);
+        });
+      });
+    });
   </script>
+
+  <!-- Include the necessary CSS for the button -->
+  <style>
+    .code-block-container {
+      position: relative;
+    }
+
+    .copy-btn {
+      position: relative;
+      top: 10px;
+      right: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .copy-btn:hover {
+      background-color: #0056b3;
+    }
+
+    pre {
+      position: relative;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+      overflow: auto;
+    }
+
+    code {
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+  </style>
 
 </body>
 </html>
