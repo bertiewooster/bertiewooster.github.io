@@ -258,7 +258,7 @@ display(SVG(C6H8_img))
 
 
     
-![svg](2024-10-15-Color-from-Conjugation_files/2024-10-15-Color-from-Conjugation_28_0.svg)
+![Branched compound 3-methylidenepenta-1,4-diene with the bonds numbered: 0, 1, 3, 4 along the molecule's spine, and 2 for the branch between bonds 1 and 3](/images/2024-10-15-Color-from-Conjugation_files/2024-10-15-Color-from-Conjugation_28_0.svg)
     
 
 
