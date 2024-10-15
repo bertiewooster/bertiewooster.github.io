@@ -60,20 +60,14 @@
 
 .codecell table { width: auto; }
 
-.code-block-container {
-        position: relative;
-      }
-      
-      .copy-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
+.copy-btn {
         background-color: #007bff;
         color: white;
         border: none;
         padding: 5px 10px;
         cursor: pointer;
         border-radius: 5px;
+        margin-bottom: 5px;
       }
       
       .copy-btn:hover {
@@ -81,22 +75,13 @@
       }
       
       pre {
-        position: relative;
         padding: 15px;
         background-color: #f5f5f5;
         border-radius: 5px;
-        overflow: auto;
       }
       
       code {
         font-family: monospace;
         font-size: 0.9em;
       }
-
-      .post-container {
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 800px; /* Adjust this width based on your design */
-        padding: 20px;    /* Add some padding around your post content */
-      }
-      
+            
