@@ -1,6 +1,4 @@
-# Why some organic molecules have a color
-
-## Correlating optical absorption wavelength with conjugated bond chain length
+# Why some organic molecules have a color: Correlating optical absorption wavelength with conjugated bond chain length
 
 Molecules have a color if their electronic energy levels are close enough to absorb visible rather than ultraviolet light. For organic molecules, that's often because of an extensive chain of conjugated bonds. Can we use cheminformatics to find evidence that increasing conjugated bond chain length decreases absorption wavelength, which makes a molecule colored?
 
