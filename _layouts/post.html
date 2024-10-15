@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include head.html %}
+</head>
+<body>
+
+  <header>
+    <!-- Any navigation, site title, etc., can go here -->
+  </header>
+
+  <article>
+    <!-- Automatically wrap code blocks with the copy button -->
+    {{ content | replace:'<pre><code', '<div class="code-block-container"><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button><pre><code' | replace:'</code></pre>', '</code></pre></div>' }}
+  </article>
+
+  <footer>
+    <!-- Include social links -->
+    {% include social.html %}
+  </footer>
+
+  <!-- Include the JavaScript for the copy button -->
+  <script>
+    function copyToClipboard(button) {
+      const codeBlock = button.nextElementSibling.querySelector('code');
+      const textarea = document.createElement('textarea');
+      textarea.value = codeBlock.textContent;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      button.textContent = 'Copied!';
+      setTimeout(() => {
+        button.textContent = 'Copy';
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>
