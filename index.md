@@ -3,6 +3,11 @@ Scientific software developer in the Washington, D.C. area.
 
 # Portfolio of my projects
 
+## [Why Some Organic Molecules Have a Color]({% post_url 2024-10-15-Color-from-Conjugation %})
+[<img alt="Absorption and emission maxima of n=1-6 oligomers with an anthracene repeat unit" style="width:492px; height:366px" src="/images/oligomers_absorption_emission_maxima.png">]({% post_url 2024-10-15-Color-from-Conjugation %})
+
+It's usually because of a long chain of conjugated bonds. I search 20K data points to find a series of molecules where extending the conjugated chain increases the absorption wavelength.
+
 ## [Tautomer Generation Algorithms and InChI Representations]({% post_url 2024-05-01-Tautomer-Sources-Comparison %})
 
 [<img alt="Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other sources" style="width:571px; height:454px" src="/images/Tautomer-Sources-Comparison difference in number of tautomers.png">]({% post_url 2024-05-01-Tautomer-Sources-Comparison %})
