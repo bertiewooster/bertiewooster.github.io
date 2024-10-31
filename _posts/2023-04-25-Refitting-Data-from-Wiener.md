@@ -16,7 +16,7 @@ Wiener fit that model to the data to find values $k$ = 98 and b = 5.5:
 
 $\Delta t = \frac{98}{n^{2}}\Delta\omega + 5.5\Delta p$ (eqn 4)
 
-*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1TEedx8QaWmVXkfpD3aFgR3E8qSVawIHN)*
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1TEedx8QaWmVXkfpD3aFgR3E8qSVawIHN?usp=sharing) so you can run it without installing anything on your computer*
 
 ## Approach Used in This Blog Post
 
