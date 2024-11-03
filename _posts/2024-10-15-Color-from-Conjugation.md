@@ -883,7 +883,7 @@ display(image)
 
 
     
-![Anthracene-containing repeat unit. Off the left of the central ring are a carbon-carbon single bond and then a carbon-carbon triple bond; and off the righ of the central ring is carbon-carbon single bond.](/images/2024-10-15-Color-from-Conjugation_files/2024-10-15-Color-from-Conjugation_82_0.png)
+![Anthracene-containing repeat unit. Off the left of the central ring are a carbon-carbon single bond and then a carbon-carbon triple bond; and off the right of the central ring is carbon-carbon single bond.](/images/2024-10-15-Color-from-Conjugation_files/2024-10-15-Color-from-Conjugation_82_0.png)
     
 
 
