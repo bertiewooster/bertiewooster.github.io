@@ -1,12 +1,13 @@
 <a rel="me" href="https://fosstodon.org/@jemonat"></a>
 Scientific software developer in the Washington, D.C. area.
 
-# My work
+# Portfolio
 
-- [Portfolio](#portfolio)
-- [Open-source contributions](#open-source)
+- [Cheminformatics blog posts](#cheminformatics-blog-posts)
+- [Web apps](#web-apps)
+- [Open-source contributions](#open-source-contributions)
 
-## <a name="portfolio">Portfolio of my projects<a>
+## Cheminformatics blog posts
 
 ### [Why Some Organic Molecules Have a Color]({% post_url 2024-10-15-Color-from-Conjugation %})
 [<img alt="Absorption and emission maxima of n=1-6 oligomers with an anthracene repeat unit" style="width:492px; height:366px" src="/images/oligomers_absorption_emission_maxima.png">]({% post_url 2024-10-15-Color-from-Conjugation %})
@@ -102,6 +103,8 @@ Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.o
 
 Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system){:target='_blank'} strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification){:target='_blank'} string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
 
+## Web apps
+
 ### [Materials and Cheminformatics Sampler](https://sampler-flask.herokuapp.com/)
 *Uses Python, NumPy, SymPy, ChemPy, Flask, JavaScript, and Bootstrap*
 
@@ -117,12 +120,12 @@ Optionally, identify the components (dimensions) in the constraints file using c
 
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
-## <a name="open-source">My open-source contributions<a>
+## Open-source contributions
 
 ### The RDKit cheminformatics package
-- Conceived, proposed, and coded [MolsMatrixToGridImage](https://github.com/rdkit/rdkit/pull/6080) feature to use a two-dimensional (nested) data structure as input to create molecular grid images. Feature was merged into the main codebase by the project maintainer and released in the 2023.09.1 release. It was the subject of an [article on the site Macs In Chemistry](https://macinchem.org/2023/12/06/rdkit-molsmatrixtogridimagerdkit/)
+- Conceived, proposed, and coded [MolsMatrixToGridImage](https://github.com/rdkit/rdkit/pull/6080) feature to use a two-dimensional (nested) data structure as input to create molecular grid images. Feature was merged into the main codebase by the project maintainer and released in the 2023.09.1 release. It was the subject of an [article on the site Macs In Chemistry](https://macinchem.org/2023/12/06/rdkit-molsmatrixtogridimagerdkit/), which included:
 
-> If you need to display molecules and associated data in a grid then Jeremy Monat’s MolsMatrixToGridImage is exactly what you need. To underline just how useful this is and to highlight how it simplifies code he has written a very [nice blog post](https://bertiewooster.github.io/2023/12/02/MolsMatrixToGridImage-simplifies-code.html).
+  > If you need to display molecules and associated data in a grid then Jeremy Monat’s MolsMatrixToGridImage is exactly what you need. To underline just how useful this is and to highlight how it simplifies code he has written a very [nice blog post](https://bertiewooster.github.io/2023/12/02/MolsMatrixToGridImage-simplifies-code.html).
 
 - [Improved documentation](https://github.com/rdkit/rdkit/pulls?q=is%3Amerged+is%3Apr+author%3Abertiewooster+) by illustrating drawing capability in tutorial and adding SMILES (chemical notation) for R groups
 
