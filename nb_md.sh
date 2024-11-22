@@ -19,7 +19,7 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-jupyter nbconvert _notebooks/Cheminformatics-Blogging-How-To.ipynb --to markdown --output Cheminformatics-Blogging-How-To.md
+jupyter nbconvert _notebooks/2024-11-21-Cheminformatics-Blogging-How-To.ipynb --to markdown --output 2024-11-21-Cheminformatics-Blogging-How-To.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
