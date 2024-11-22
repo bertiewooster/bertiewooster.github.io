@@ -90,3 +90,13 @@ There comes a time when the post is done (enough) and ready to publish. After pu
 Readers may point out improvements you could make, or the data sources could be updated. Ideally, these can help you accomplish the same results with code that's shorter or more straightforward.
 
 **Example:** After I mentioned the discrepancy in a few molecular structures to the maintainers of the optical properties dataset, they updated it. I pulled in the new dataset, which let me simplify the notebook by removing the manual correction of structures.
+
+## Why blog
+
+Finally, it's useful to think about why you want to blog.
+
+Cheminformatics blogging is an opportunity to explore, learn, teach, and connect with others in the field. It's good experience to recognize when you've achieved a cheminformatics objective and are ready to package it up by documenting it with a narrative.
+
+Blogging can build your portfolio, either before you get into the field or after, particularly if the code you write in you your day job isn't open source. Your blog can be valuable for getting into the field (a post helped me transition into cheminformatics) or establishing your area of interest and expertise.
+
+As a practical benefit to you, your blog can be your personal reference library: I find myself referring to my own blog posts frequently to remember how to do something in cheminformatics because I better remember things that I did myself!
