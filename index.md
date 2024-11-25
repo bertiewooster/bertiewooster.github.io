@@ -9,6 +9,9 @@ Scientific software developer in the Washington, D.C. area.
 
 ## Cheminformatics blog posts
 
+### [How to Write Cheminformatics Blog Posts]({% post_url 2024-11-21-Cheminformatics-Blogging-How-To %})
+As the YouTubers would say, “A lot of you have been asking me about how to write #cheminformatics blog posts.” Well, not a lot, but at least a couple! Here's my process.
+
 ### [Why Some Organic Molecules Have a Color]({% post_url 2024-10-15-Color-from-Conjugation %})
 [<img alt="Absorption and emission maxima of n=1-6 oligomers with an anthracene repeat unit" style="width:492px; height:366px" src="/images/oligomers_absorption_emission_maxima.png">]({% post_url 2024-10-15-Color-from-Conjugation %})
 
