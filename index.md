@@ -111,13 +111,13 @@ Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simpli
 ### [Materials and Cheminformatics Sampler](https://sampler-flask.herokuapp.com/)
 *Uses Python, NumPy, SymPy, ChemPy, Flask, JavaScript, and Bootstrap*
 
-[<img style="width:400px; height:229px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
+[<img alt="Sampler input file of booster rocket formulation" style="width:400px; height:229px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
 
 Find a given number of points which satisfy constraints given in a constraints file for an n-dimensional space defined on the unit hypercube, then write them to an output file.
 
 Optionally, identify the components (dimensions) in the constraints file using chemical formulas, and Sampler will use ChemPy to calculate their molar masses, then output the component weight fraction.
 
-[<img style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
+[<img alt="Periodic Table Navigator with difference in electron configuration highlighted for adjacent elements Vanadium and Chromium" style="float: right; width:130px; height:85px;" src="images/ptable-terms-highlighted.png">](https://ptablenav.herokuapp.com/)
 ### [Periodic Table Navigator](https://ptablenav.herokuapp.com/)
 *Uses Ruby, Sinatra, PostgreSQL, and JavaScript*
 
@@ -130,7 +130,7 @@ Understand how the elements are related to each other. Emphasizes electronic con
 
   > If you need to display molecules and associated data in a grid then Jeremy Monat’s MolsMatrixToGridImage is exactly what you need. To underline just how useful this is and to highlight how it simplifies code he has written a very [nice blog post](https://bertiewooster.github.io/2023/12/02/MolsMatrixToGridImage-simplifies-code.html).
 
-- [Improved documentation](https://github.com/rdkit/rdkit/pulls?q=is%3Amerged+is%3Apr+author%3Abertiewooster+) by illustrating drawing capability in tutorial and adding SMILES (chemical notation) for R groups
+- [Improved documentation](https://github.com/rdkit/rdkit/pulls?q=is%3Amerged+is%3Apr+author%3Abertiewooster+) by enhancing API documentation, adding to the guide for contributors, adding an example of how to include a bond index, illustrating molecular drawing capability in tutorial, adding SMILES (chemical notation) for R groups, and more
 
 ### SymPy computer algebra system in pure Python
 - Technical writer for funded 2022 Season of Docs project: Creating documentation for how to [solve equations](https://docs.sympy.org/dev/guides/solving/index.html)
