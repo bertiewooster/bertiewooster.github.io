@@ -1,10 +1,10 @@
 # Drawing molecules with EPAM's Indigo cheminformatics library
 
-Exploring other cheminformatics toolkits besides the RDKit, I wanted to try [EPAM Indigo Toolkit](https://lifescience.opensource.epam.com/indigo/index.html). The [Indigo Toolkit is free and open-source](https://github.com/epam/Indigo) with Apache License 2.0, so it can be used in proprietary software.
-
-I was unable to find simple examples of drawing molecules in a Python Jupyter Notebook, so here's how to do that. This post also demonstrates how to save molecular images to a file.
+Exploring other cheminformatics toolkits besides the RDKit, I wanted to try [EPAM Indigo Toolkit](https://lifescience.opensource.epam.com/indigo/index.html). The [Indigo Toolkit is free and open-source](https://github.com/epam/Indigo) with Apache License 2.0, so it can be used in proprietary software. I was unable to find simple examples of drawing molecules in a Python Jupyter Notebook, so here's how to do that. This post also demonstrates how to save molecular images to a file.
 
 In general the official [documentation for Indigo](https://lifescience.opensource.epam.com/indigo/index.html#documentation) is much less than for the RDKit, as are the examples posted by users online. As a form of documentation, below I specify Indigo argument names, and am more pedantic about including code blocks and outputs.
+
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1gHFV7Ev7HhOQGuMt0c4w_PkxrI5PC9HM?usp=sharing) so you can run it without installing anything on your computer*
 
 ## Import and initialize Indigo modules
 
@@ -253,7 +253,7 @@ renderer.renderGridToFile(
 )
 ```
 
-Here's the image in the PNG file:
+Here's the image in the SVG file:
 
 ![Molecular structures of six cyclohexanes](/images/indigo/structures.svg)
 
