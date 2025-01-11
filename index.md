@@ -9,6 +9,11 @@ Scientific software developer in the Washington, D.C. area.
 
 ## Cheminformatics blog posts
 
+### [Drawing Molecules With Indigo]({% post_url 2025-01-11-Drawing-Molecules-With-Indigo %})
+[<img alt="Molecular structures of six cyclohexanes" style="width:1716px; height:723px" src="/images/indigo/structures.png">]({% post_url 2025-01-11-Drawing-Molecules-With-Indigo %})
+
+Here's how to draw molecules with EPAM Indigo Toolkit, a free and open-source cheminformatics package.
+
 ### [How to Write Cheminformatics Blog Posts]({% post_url 2024-11-21-Cheminformatics-Blogging-How-To %})
 As the YouTubers would say, “A lot of you have been asking me about how to write cheminformatics blog posts.” Well, not a lot, but at least a couple! Here's my process.
 
