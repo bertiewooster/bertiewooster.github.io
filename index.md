@@ -10,7 +10,7 @@ Scientific software developer in the Washington, D.C. area.
 ## Cheminformatics blog posts
 
 ### [Drawing Molecules With Indigo]({% post_url 2025-01-11-Drawing-Molecules-With-Indigo %})
-[<img alt="Molecular structures of six cyclohexanes" style="width:1716px; height:723px" src="/images/indigo/structures.png">]({% post_url 2025-01-11-Drawing-Molecules-With-Indigo %})
+[<img alt="Molecular structures of six cyclohexanes" style="width:858px; height:362px" src="/images/indigo/structures.png">]({% post_url 2025-01-11-Drawing-Molecules-With-Indigo %})
 
 Here's how to draw molecules with EPAM Indigo Toolkit, a free and open-source cheminformatics package.
 
