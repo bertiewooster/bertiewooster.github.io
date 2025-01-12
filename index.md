@@ -79,7 +79,7 @@ Given target molecules and reactions to synthesize them, determine whether the s
 ### [RDKit Utility to Create a Mass Spectrometry Fragmentation Tree]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
 *Uses Python and RDKit*
 
-[<img alt="Annotated mass spectrometry fragmentation tree using the function mass_spec_frag_tree in this blog post" style="width:518px; height:393px" src="/images/mass_spec_frag_tree_CAIr_annotated.png">]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
+[<img alt="Annotated mass spectrometry fragmentation tree using the function mass_spec_frag_tree in this blog post" style="width:342px; height:259px" src="/images/mass_spec_frag_tree_CAIr_annotated.png">]({% post_url 2023-01-02-Mass-Spectrometry-Fragmentation-Tree %})
 
 Given a mass spec fragmentation hierarchy, with species as SMILES strings, display the fragmentation tree in a grid, labeling each species with its name and either mass or mass to charge ratio `m/z`.
 
