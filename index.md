@@ -24,33 +24,33 @@ It's usually because of a long chain of conjugated bonds. I search 20K data poin
 
 ### [Tautomer Generation Algorithms and InChI Representations]({% post_url 2024-05-01-Tautomer-Sources-Comparison %})
 
-[<img alt="Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other sources" style="width:571px; height:454px" src="/images/Tautomer-Sources-Comparison difference in number of tautomers.png">]({% post_url 2024-05-01-Tautomer-Sources-Comparison %})
+[<img alt="Histogram of frequency against difference in number of tautomers from RDKit baseline algorithm minus other sources" style="width:295px; height:220px" src="/images/Tautomer-Sources-Comparison difference in number of tautomers.png">]({% post_url 2024-05-01-Tautomer-Sources-Comparison %})
 
 Which cheminformatics algorithms produce the most tautomers? And how successful is InChI at representing with a single representation all tautomers of a given structure?
 
 ### Molecular Isotopic Distributions: [Permutations]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %}) and [Combinations]({% post_url 2024-01-20-Molecular-isotopes-2-combinations %})
 
-[<img alt="Abundance against mass for SCl2 molecular isotopes" style="width:567px; height:467px" src="/images/Cl2S-molecular-isotopic-distribution.png">]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %})
+[<img alt="Abundance against mass for SCl2 molecular isotopes" style="width:340px; height:280px" src="/images/Cl2S-molecular-isotopic-distribution.png">]({% post_url 2023-12-26-Molecular-isotopes-1-permutations %})
 
 These posts use two different methods to calculate molecular isotopic mass distributions.
 
 ### [RDKit Contribution MolsMatrixToGridImage()]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
 
-[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:600px; height:600px" src="/images/reaction-accessible.png">]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
+[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:300px; height:300px" src="/images/reaction-accessible.png">]({% post_url 2023-12-02-MolsMatrixToGridImage-simplifies-code %})
 
 I contributed MolsMatrixToGridImage to the RDKit 2023.09.1 release to draw row-and-column grids of molecules.
 
 ### [Display Molecular Formulas]({% post_url 2023-10-28-Display-Molecular-Formulas %})
 *Uses Python, RDKit, seaborn, and matplotlib*
 
-[<img alt="Two series of molecules with carbon chains 3, 2, and 1 atoms long. Top: Dialdehydes, with the one-carbon molecule, CO2, not shown. Bottom: Diols." style="width:600px; height:400px" src="/images/molgrid_formatted_molecular_formulas.png">]({% post_url 2023-10-28-Display-Molecular-Formulas %})
+[<img alt="Two series of molecules with carbon chains 3, 2, and 1 atoms long. Top: Dialdehydes, with the one-carbon molecule, CO2, not shown. Bottom: Diols." style="width:300px; height:200px" src="/images/molgrid_formatted_molecular_formulas.png">]({% post_url 2023-10-28-Display-Molecular-Formulas %})
 
 How to display molecular formulas such as C<sub>3</sub>H<sub>4</sub>O<sub>2</sub> in molecular grids, tables, and graphs. Also works for other HTML-, Markdown-, or LaTeX-formatted text. 
 
 ### [Molecular Formula Generation]({% post_url 2023-10-20-Molecular-Formula-Generation %})
 *Uses Python and RDKit*
 
-[<img alt="Photosynthesis chemical equation: 6CO2 + 6H2O → C6H12O6 + 6O2" style="width:800px; height:62px" src="/images/photosynthesis_chemical_equation.png">]({% post_url 2023-10-20-Molecular-Formula-Generation %})
+[<img alt="Photosynthesis chemical equation: 6CO2 + 6H2O → C6H12O6 + 6O2" style="width:282px; height:22px" src="/images/photosynthesis_chemical_equation.png">]({% post_url 2023-10-20-Molecular-Formula-Generation %})
 
 In cheminformatics, the typical way of representing a molecule is with a SMILES string such as `CCO` for ethanol. However, there are still cases where the molecular formula such as C<sub>2</sub>H<sub>6</sub>O is useful.
 
@@ -58,7 +58,7 @@ In cheminformatics, the typical way of representing a molecule is with a SMILES 
 ### [Refitting Data From Wiener’s Classic Cheminformatics Paper]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
 *Uses Python, SciPy, Polars, NumPy, seaborn, matplotlib, and mol_frame*
 
-[<img alt="Graph of calculated against observed boiling point for alkanes" style="width:894px; height:647px" src="/images/refitting_egloff.png">]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
+[<img alt="Graph of calculated against observed boiling point for alkanes" style="width:295 214px; height:647px" src="/images/refitting_egloff.png">]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
 
 How well did cheminformatics pioneers Egloff and Wiener fit their models to boiling points of alkanes in the 1940s? This blog post revisits their fits using digital tools.
 
@@ -86,7 +86,7 @@ Given a mass spec fragmentation hierarchy, with species as SMILES strings, displ
 ### [RDKit Utility to Find the Maximum Common Substructure, and Groups Off It, Between a Set of Molecules]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
 *Uses Python and RDKit*
 
-[<img alt="Annotated grid of maximum common substructure and core; molecules and groups off maximum common substructure" style="width:600px; height:551px" src="/images/pyridinols-MCS-groups-annotated.png">]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
+[<img alt="Annotated grid of maximum common substructure and core; molecules and groups off maximum common substructure" style="width:300px; height:276px" src="/images/pyridinols-MCS-groups-annotated.png">]({% post_url 2022-12-25-RDKit-Find-Groups-Off-Common-Core %})
 
 Given a collection of molecules as SMILES strings, find the maximum common substructure (MCS) match between them, and the groups off that common core for each molecule, displaying the results using a grid.
 
@@ -100,14 +100,14 @@ Use the DeepChem deep learning package to predict compounds' lipophilicity--how 
 ### [RDKit Utility to Visualize Retrosynthetic Analysis Hierarchically]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %})
 *Uses Python and RDKit*
 
-[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:513px; height:418px" src="/images/tree_marked_up.png">]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %})
+[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:366px; height:299px" src="/images/tree_marked_up.png">]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %})
 
 Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee){:target='_blank'} to decompose it into a set of fragments that could be combined to make the parent molecule using common reactions. Display the fragmentation hierarchically.
 
 ### [RDKit Utility to Find and Highlight the Maximum Common Substructure Amongst Molecules]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 *Uses Python and RDKit*
 
-[<img alt="Maximum substructure match, and the two molecules which are labeled by their functional groups" style="width:600px; height:200px" src="/images/RDKit-MCS-example.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
+[<img alt="Maximum substructure match, and the two molecules which are labeled by their functional groups" style="width:300px; height:100px" src="/images/RDKit-MCS-example.png">]({% post_url 2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules %})
 
 Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system){:target='_blank'} strings, find the maximum common substructure (MCS) match between them as a [SMARTS](https://en.wikipedia.org/wiki/SMILES_arbitrary_target_specification){:target='_blank'} string, display the match pattern as a molecule, and highlight the match pattern in each molecule using a grid.
 
@@ -116,7 +116,7 @@ Given a collection of molecules as [SMILES](https://en.wikipedia.org/wiki/Simpli
 ### [Materials and Cheminformatics Sampler](https://sampler-flask.herokuapp.com/)
 *Uses Python, NumPy, SymPy, ChemPy, Flask, JavaScript, and Bootstrap*
 
-[<img alt="Sampler input file of booster rocket formulation" style="width:400px; height:229px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
+[<img alt="Sampler input file of booster rocket formulation" style="width:326px; height:187px;" src="images/sampler-constraints.png">](https://sampler-flask.herokuapp.com/)
 
 Find a given number of points which satisfy constraints given in a constraints file for an n-dimensional space defined on the unit hypercube, then write them to an output file.
 
