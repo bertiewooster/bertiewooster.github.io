@@ -18,7 +18,7 @@ Here's how to draw molecules with EPAM Indigo Toolkit, a free and open-source ch
 As the YouTubers would say, “A lot of you have been asking me about how to write cheminformatics blog posts.” Well, not a lot, but at least a couple! Here's my process.
 
 ### [Why Some Organic Molecules Have a Color]({% post_url 2024-10-15-Color-from-Conjugation %})
-[<img alt="Absorption and emission maxima of n=1-6 oligomers with an anthracene repeat unit" style="width:492px; height:366px" src="/images/oligomers_absorption_emission_maxima.png">]({% post_url 2024-10-15-Color-from-Conjugation %})
+[<img alt="Absorption and emission maxima of n=1-6 oligomers with an anthracene repeat unit" style="width:295px; height:220px" src="/images/oligomers_absorption_emission_maxima.png">]({% post_url 2024-10-15-Color-from-Conjugation %})
 
 It's usually because of a long chain of conjugated bonds. I search 20K data points to find a series of molecules where extending the conjugated chain increases the absorption wavelength.
 
@@ -58,21 +58,21 @@ In cheminformatics, the typical way of representing a molecule is with a SMILES 
 ### [Refitting Data From Wiener’s Classic Cheminformatics Paper]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
 *Uses Python, SciPy, Polars, NumPy, seaborn, matplotlib, and mol_frame*
 
-[<img alt="Graph of calculated against observed boiling point for alkanes" style="width:295 214px; height:647px" src="/images/refitting_egloff.png">]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
+[<img alt="Residual from fit of boiling point for alkanes against their chain length" style="width:295px; height:214px" src="/images/refitting_egloff.png">]({% post_url 2023-04-25-Refitting-Data-from-Wiener %})
 
 How well did cheminformatics pioneers Egloff and Wiener fit their models to boiling points of alkanes in the 1940s? This blog post revisits their fits using digital tools.
 
 ### [Revisiting a Classic Cheminformatics Paper: The Wiener Index]({% post_url 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index %})
 *Uses Python, RDKit, Polars, matplotlib, seaborn, py2opsin, and mol_frame*
 
-[<img alt="Graph of calculated against observed boiling point for alkanes" style="width:818px; height:549px" src="/images/Wiener-boiling-point-calc-against-observed.png">]({% post_url 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index %})
+[<img alt="Graph of calculated against observed boiling point for alkanes" style="width:327px; height:220px" src="/images/Wiener-boiling-point-calc-against-observed.png">]({% post_url 2023-03-10-Revisiting-a-Classic-Cheminformatics-Paper-The-Wiener-Index %})
 
 This post revisits Harry Wiener's article "Structural Determination of Paraffin Boiling Points", extracts data for molecules from it, recalculates cheminformatics parameters and boiling points, and plots the data.
 
 ### [RDKit Utility to Check Whether Starting Materials for Synthesizing Your Target Molecules Are Commercially Available]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
 *Uses Python, RDKit, PubChem's API, asyncio, and Semaphore*
 
-[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:600px; height:600px" src="/images/reaction-accessible.png">]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
+[<img alt="Three reactions, each in a row. First column: Target molecule and whether it's accessible based on commercial availability of reactants. Subsequent columns: Each reactant and whether it's commercial available." style="width:300px; height:300px" src="/images/reaction-accessible.png">]({% post_url 2023-02-07-Are-the-Starting-Materials-for-Synthesizing-Your-Target-Molecules-Commercially-Available %})
 
 Given target molecules and reactions to synthesize them, determine whether the starting materials are commercially available using PubChem's API, and thus whether the target is synthetically accessible.
 
