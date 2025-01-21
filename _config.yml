@@ -28,6 +28,10 @@ plugins:
   - jekyll-octicons
   - jekyll-github-metadata
 
+# Include all posts in the Atom feed
+jekyll_feed:
+  limit: false
+
 titles_from_headings:
   enabled:     true
   strip_title: true
