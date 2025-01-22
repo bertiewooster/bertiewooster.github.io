@@ -30,7 +30,7 @@ plugins:
 
 # Include all posts in the Atom feed
 jekyll_feed:
-  limit: false
+  limit: 9999
 
 titles_from_headings:
   enabled:     true
