@@ -121,12 +121,6 @@ drive.mount("/content/drive")
 !black "/content/drive/MyDrive/Colab Notebooks/Wiener curve fitting.ipynb"
 ```
 
-    [1mreformatted /content/drive/MyDrive/Colab Notebooks/Wiener curve fitting.ipynb[0m
-    
-    [1mAll done! ✨ 🍰 ✨[0m
-    [34m[1m1 file [0m[1mreformatted[0m.
-
-
 
 ```python
 # Set up plot axis labels
