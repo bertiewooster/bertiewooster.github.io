@@ -89,10 +89,6 @@ os.environ["HV_DOC_HTML"] = "true"
 !black "/content/drive/MyDrive/Colab Notebooks/RevisitingWiener.ipynb"
 ```
 
-    [1mAll done! ✨ 🍰 ✨[0m
-    [34m1 file [0mleft unchanged.
-
-
 
 ```python
 import math
