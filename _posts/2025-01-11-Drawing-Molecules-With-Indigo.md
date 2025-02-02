@@ -1,3 +1,13 @@
+---
+layout: post
+title:  "Drawing molecules with EPAM's Indigo cheminformatics library"
+date:   2025-01-11
+modified_date: 2025-01-11
+doi: 10.59350/dz8k3-krv11
+tags: justdoi:10.59350/zzdt4-z5h85 doi:10.59350/3kjqf-b5g02
+image: /images/indigo/structures_2x2.png
+---
+
 # Drawing molecules with EPAM's Indigo cheminformatics library
 
 Exploring other cheminformatics toolkits besides the RDKit, I wanted to try [EPAM Indigo Toolkit](https://lifescience.opensource.epam.com/indigo/index.html). The [Indigo Toolkit is free and open-source](https://github.com/epam/Indigo) with Apache License 2.0, so it can be used in proprietary software. I was unable to find simple examples of drawing molecules in a Python Jupyter Notebook, so here's how to do that. This post also demonstrates how to save molecular images to a file.
