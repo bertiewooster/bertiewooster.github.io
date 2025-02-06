@@ -135,6 +135,7 @@ Understand how the elements are related to each other. Emphasizes electronic con
 
   > If you need to display molecules and associated data in a grid then Jeremy Monat’s MolsMatrixToGridImage is exactly what you need. To underline just how useful this is and to highlight how it simplifies code he has written a very [nice blog post](https://bertiewooster.github.io/2023/12/02/MolsMatrixToGridImage-simplifies-code.html).
 
+- Improved speed of function [Gen2DFingerprint](https://www.rdkit.org/docs/source/rdkit.Chem.Pharm2D.Generate.html#rdkit.Chem.Pharm2D.Generate.Gen2DFingerprint) by ~75x by [implementing a more efficient combinatorial function](https://github.com/rdkit/rdkit/pull/8214)
 - [Improved documentation](https://github.com/rdkit/rdkit/pulls?q=is%3Amerged+is%3Apr+author%3Abertiewooster+) by enhancing API documentation, adding to the guide for contributors, adding an example of how to include a bond index, illustrating molecular drawing capability in tutorial, adding SMILES (chemical notation) for R groups, and more
 
 ### SymPy computer algebra system in pure Python
