@@ -1,3 +1,12 @@
+---
+layout: post
+title:  "How to Write Cheminformatics Blog Posts"
+date:   2024-11-21
+modified_date: 2024-11-21
+tags: 
+  - chemical-sciences
+  - blogging
+---
 # How to Write Cheminformatics Blog Posts
 
 As the YouTubers would say, “A lot of you have been asking me about how to write cheminformatics blog posts.” Well, not a lot, but at least a couple! I realized that there’s a pattern to how I write cheminformatics blog posts (16 so far), so I’m sharing that here.
