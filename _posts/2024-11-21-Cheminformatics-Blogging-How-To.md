@@ -15,7 +15,7 @@ My blog posts are intended to be tutorials that explore a topic, usually with ex
 
 This post is about the creative process more than the technical details and is pitched toward people with a chemistry background.
 
-Throughout this post, I’ll use as an example my last blog post, [Why some organic molecules have a color: Correlating optical absorption wavelength with conjugated bond chain length]]({% post_url 2024-10-15-Color-from-Conjugation %}).
+Throughout this post, I’ll use as an example my last blog post, [Why some organic molecules have a color: Correlating optical absorption wavelength with conjugated bond chain length]({% post_url 2024-10-15-Color-from-Conjugation %}).
 
 ## Find a jumping-off point
 
