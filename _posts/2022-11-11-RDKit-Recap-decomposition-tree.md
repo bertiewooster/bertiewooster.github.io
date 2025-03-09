@@ -151,7 +151,7 @@ class NonBinTree:
         if n_nodes > 0:
             nodes_grid = [[]]
 
-            # Iterate through the chile nodes
+            # Iterate through the child nodes
             for node_counter, node in enumerate(self.nodes):
                 # Recursively call this function to get the grid for children
                 node_grid = node.get_grid()
