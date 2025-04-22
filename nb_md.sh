@@ -19,7 +19,7 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-jupyter nbconvert _notebooks/2025-01-11-Drawing-Molecules-With-Indigo.ipynb --to markdown --output 2025-01-11-Drawing-Molecules-With-Indigo.md
+jupyter nbconvert _notebooks/2025-04-22-Skeletal-Editing.ipynb --to markdown --output 2025-04-22-Skeletal-Editing.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
