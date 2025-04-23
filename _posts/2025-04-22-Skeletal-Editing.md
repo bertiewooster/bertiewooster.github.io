@@ -2,6 +2,8 @@
 
 This notebook is the result of a collaboration between myself, [Dr. Jeremy E. Monat](https://www.linkedin.com/in/jemonat/), and [Dr. Phyo Phyo Zin](https://www.linkedin.com/in/phyophyokyawzin/). This is a hands-on tutorial that guides readers through implementing skeletal editing transformations using Python and RDKit, and Phyo Phyo focuses on the high-level principles and applications in the blog post [How to Use Skeletal Editing in Drug Discovery: Key Benefits & Applications](https://drzinph.com/skeletal-editing-in-drug-discovery-applications-and-challenges/). Together, our goal is to provide both a conceptual understanding and practical approach to this emerging field.
 
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1K9gY3eQFklVgtJmfpqJR_ykOEmnKHzMA?usp=sharing) so you can run it without installing anything on your computer*
+
 ## Code foundation
 
 First we install the RDKit.
