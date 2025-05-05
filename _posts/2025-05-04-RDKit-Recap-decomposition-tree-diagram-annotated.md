@@ -1,6 +1,6 @@
 # Retrosynthetically Decompose a Molecule In a Tree Structure Using Recap in RDKit--Update to Annotate Diagram Programmatically
 
-This is an update of a blog post to programmatically annotate the retrosynthetic tree. Previously, I exported the drawing from the RDKit and manually annotated the it with another program. After reading [Greg Landrum's RKDit blog post Drawing on drawings](https://greglandrum.github.io/rdkit-blog/posts/2025-03-07-drawing-on-drawings.html), I wanted to automate annotating the tree.
+This is an update of a [Recap retrosynthetic tree blog post]({% post_url 2022-11-11-RDKit-Recap-decomposition-tree %}) to programmatically annotate the diagram. Previously, I exported the drawing from the RDKit and manually annotated the it with another program. After reading [Greg Landrum's RKDit blog post Drawing on drawings](https://greglandrum.github.io/rdkit-blog/posts/2025-03-07-drawing-on-drawings.html), I wanted to automate annotating the tree.
 
 [Retrosynthetic analysis](https://en.wikipedia.org/wiki/Retrosynthetic_analysis) involves decomposing a target molecule into a set of fragments that could be combined to make the parent molecule using common reactions. The [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee) by X. Lewell, D. Judd, S. Watson, and M. Hann accomplishes that. [Recap is implemented in the RDKit](https://www.rdkit.org/docs/GettingStartedInPython.html#recap-implementation) cheminformatics Python package.
 
