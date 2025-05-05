@@ -171,6 +171,16 @@ def get_children(
 ```
 
 
+Here comes the new part, annotating the tree. It has two parts:
+
+1. The `Increasing fragmentation` text and arrow on the left edge from the top to the bottom of the tree. This is simple to draw because it applies to the tree as a whole, so we just need to calculate where to draw the text and arrow once.
+2. Draw an arrow from each parent to child (fragment). This requires more logic to detect each parent-child pair.
+    1. RDKit's DrawArrow specifies the arrowhead size as a fraction of the line's length. I want all the arrowheads to be the same size, so I set the fraction to be inversely proportional to the line length using the `arrow_length` logic.
+    2. I decided to drop the "Fragments" labels under the arrows because the "Increasing fragmentation" label explains what the vertical axis means.
+
+To draw on the drawing, we use DrawMolecules rather than [`MolsMatrixToGridImage`](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) or [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage) as in the [original blog post](https://bertiewooster.github.io/2022/11/11/RDKit-Recap-decomposition-tree.html).
+
+
 ```python
 def annotate_recap_tree(
     molsMatrix: list[list[Chem.Mol]],
@@ -244,40 +254,47 @@ def annotate_recap_tree(
             if not col_index:
                 # Skip the first column, which is the whole-chart label "Increasing Fragmentation"
                 continue
+
             # The next sibling index is the index of the next fragment in the same row
             #   that is not blank (empty string)
-
             next_sibling_index = min(
                 index for index in this_row_filled_indexes if index > col_index
             )
+
             # If no molecule at this row_index, col_index, skip drawing an arrow
             if not sml:
                 continue
+
             # If no molecule directly below this row_index, col_index, skip drawing an arrow
             if not fragment_grid[row_index + 1][col_index]:
                 continue
+
+            # Set the starting point of all arrows for this parent
+            #   to be below the center of the current fragment
             p1 = Geometry.Point2D(
                 panelx * (col_index + 1 / 2), row_index * panely + panely * 1
             )
-            num_children = 0
             for child_col_index in range(col_index, next_sibling_index):
                 # If no molecule directly below this row_index, child_col_index, skip drawing an arrow
                 if not fragment_grid[row_index + 1][child_col_index]:
                     continue
+                # Set the end point of this arrow to be above the center of the child (fragment)
                 p2 = Geometry.Point2D(
                     p1.x + panelx * (child_col_index - col_index),
                     row_index * panely + panely * 1.25,
                 )
+
+                # Set the arrowhead size to be constant
+                # regardless of the length of the arrow
                 length = ((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2) ** 0.5
                 try:
                     frac = arrow_length / length
                 except ZeroDivisionError:
-                    frac = arrow_length
+                    frac = 0
 
                 d2d.DrawArrow(
                     p1, p2, color=arrowColor, rawCoords=True, asPolygon=False, frac=frac
                 )
-                num_children += 1
     d2d.FinishDrawing()
     svg = d2d.GetDrawingText()
     return svg
