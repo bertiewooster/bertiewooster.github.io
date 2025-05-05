@@ -9,6 +9,14 @@ Scientific software developer in the Washington, D.C. area.
 
 ## Cheminformatics blog posts
 
+### [Visualize Annotated Retrosynthetic Analysis Hierarchically]({% post_url 2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated %})
+
+[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:400px; height:300px" src="/images/tree_marked_up_automated.svg">]({% post_url 2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated %})
+
+This is an update of a Recap retrosynthetic tree blog post to programmatically annotate the diagram. Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee){:target='_blank'} to decompose it into a set of fragments that could be combined to make the parent molecule using common reactions. Display the fragmentation hierarchically.
+
+Given a target molecule, use the [Recap algorithm](https://www.semanticscholar.org/paper/RECAP-%E2%80%94-Retrosynthetic-Combinatorial-Analysis-A-New-Lewell-Judd/fbfb10d1f63aa803f6d47df6587aa0e41109f5ee){:target='_blank'} to decompose it into a set of fragments that could be combined to make the parent molecule using common reactions. Display the fragmentation hierarchically.
+
 ### [Tutorial for Skeletal Editing in Drug Discovery]({% post_url 2025-04-22-Skeletal-Editing %})
 [<img alt="Reaction converting a pyrrolidine to a cyclobutane" style="width:363px; height:93px" src="/images/skeletal_editing.png">]({% post_url 2025-04-22-Skeletal-Editing %})
 
