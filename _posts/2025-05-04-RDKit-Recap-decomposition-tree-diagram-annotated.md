@@ -175,10 +175,10 @@ Here comes the new part, annotating the tree. It has two parts:
 
 1. The `Increasing fragmentation` text and arrow on the left edge from the top to the bottom of the tree. This is simple to draw because it applies to the tree as a whole, so we just need to calculate where to draw the text and arrow once.
 2. Draw an arrow from each parent to child (fragment). This requires more logic to detect each parent-child pair.
-    1. RDKit's DrawArrow specifies the arrowhead size as a fraction of the line's length. I want all the arrowheads to be the same size, so I set the fraction to be inversely proportional to the line length using the `arrow_length` logic.
-    2. I decided to drop the "Fragments" labels under the arrows because the "Increasing fragmentation" label explains what the vertical axis means.
+    1. RDKit's `DrawArrow` specifies the arrowhead size as a fraction of the line's length. I want all the arrowheads to be the same size, so I set the fraction to be inversely proportional to the line length using the `arrow_length` logic.
+    2. I decided to drop the `Fragments` labels under the arrows because the `Increasing fragmentation` label explains what the vertical axis means.
 
-To draw on the drawing, we use DrawMolecules rather than [`MolsMatrixToGridImage`](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) or [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage) as in the [original blog post](https://bertiewooster.github.io/2022/11/11/RDKit-Recap-decomposition-tree.html).
+To draw on the drawing, we use `DrawMolecules` rather than [`MolsMatrixToGridImage`](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) or [`MolsToGridImage`](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage) as in the [original blog post](https://bertiewooster.github.io/2022/11/11/RDKit-Recap-decomposition-tree.html).
 
 
 ```python
