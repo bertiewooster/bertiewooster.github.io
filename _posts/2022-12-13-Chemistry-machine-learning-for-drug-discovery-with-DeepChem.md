@@ -31,9 +31,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 ```
 
-[DeepChem](https://deepchem.io/) is a free and open-source Python package for deep learning for chemistry and other sciences. DeepChem has a [lipophilicity data set](https://deepchem.readthedocs.io/en/latest/api_reference/moleculenet.html#lipo-datasets) contains measured [logD](https://www.cambridgemedchemconsulting.com/resources/physiochem/logD.html) values for 4200 compounds.
+[DeepChem](https://deepchem.io/) is a free and open-source Python package for deep learning for chemistry and other sciences. DeepChem has a [lipophilicity data set](https://deepchem.readthedocs.io/en/latest/api_reference/moleculenet.html#lipo-datasets) contains measured [logD](https://www.cambridgemedchemconsulting.com/resources/physiochem/logD.html) values for 4200 compounds. Fitting a machine learning (ML) model to the logarithm of the data values helps reduce the effect of outliers; otherwise, they might skew the model.
 
-As usual for machine learning (ML), we split the data set into training and test data. We train the ML model on the train data, then apply it to the test data and check how well the model predicts the lipophilicity of compounds that the model hasn't processed before.
+As usual for ML, we split the data set into training and test data. We train the ML model on the train data, then apply it to the test data and check how well the model predicts the lipophilicity of compounds that the model hasn't processed before.
 
 For this data set, we [split by scaffold](https://deepchem.readthedocs.io/en/latest/api_reference/splitters.html#scaffoldsplitter) the 4200 compounds based on the [Bemis-Murcko scaffold representation](https://pubs.acs.org/doi/10.1021/jm9602928). Such splitting groups molecules based on their scaffolds (core structure) to [prevent train and test from having very similar molecules](httphttps://github.com/deepchem/deepchem/blob/master/examples/tutorials/Working_With_Splitters.ipynb), which could lead to the model appearing to perform well on the test set, but then performing poorly on less-similar molecules in production.
 
@@ -89,7 +89,7 @@ Then we train the model on the train dataset.
 model.fit(train_dataset, nb_epoch=200);
 ```
 
-To check how well the model fits the train and test data, we examine the [Pearson correlation coefficient](https://www.scribbr.com/statistics/pearson-correlation-coefficient/) score. Its value can range from -1 to 1, where positive values indicate postive correlation, zero indicates no correlation, and negative values indicate negative correlation. The magnitude of the value indicates the strength of the correlation: less than 0.3 is weak, 0.3-0.5 is moderate, and 0.5-1 is strong.
+To check how well the model fits the train and test data, we examine the [Pearson correlation coefficient](https://www.scribbr.com/statistics/pearson-correlation-coefficient/) score. Its value can range from -1 to 1, where positive values indicate positive correlation, zero indicates no correlation, and negative values indicate negative correlation. The magnitude of the value indicates the strength of the correlation: less than 0.3 is weak, 0.3-0.5 is moderate, and 0.5-1 is strong.
 
 
 ```python
@@ -102,7 +102,7 @@ print("Test set score:", model.evaluate(test_dataset, [metric], transformers))
     Test set score: {'pearson_r2_score': 0.5358381141161308}
 
 
-The [Pearson correlation coefficient](https://www.scribbr.com/statistics/pearson-correlation-coefficient/) score is worse for the test data than for the train data. This is expected because the test data is new to the model. Nevertheless, the magnitude being greater than 0.5 indicates a strong, positive correlation betwen predicted and measued lipophilicity.
+The [Pearson correlation coefficient](https://www.scribbr.com/statistics/pearson-correlation-coefficient/) score is worse for the test data than for the train data. This is expected because the test data is new to the model. Nevertheless, the magnitude being greater than 0.5 indicates a strong, positive correlation between predicted and measured lipophilicity.
 
 One contributing factor might be that our train set may not have molecules similar enough to those in the test set. Recall that we [split by scaffold](https://deepchem.readthedocs.io/en/latest/api_reference/splitters.html#scaffoldsplitter), so it's possible that such splitting led to compounds in the test set that have scaffolds significantly different from those in the train set.
 
@@ -321,7 +321,7 @@ df
 
 
 
-Now we can use a scatter plot to compare the predicted against measured values. We use the [seaborn statistical data visualization package](https://seaborn.pydata.org/) to plot the data. We show the line where the predicted and measured lipophilicity values are equal, in other words the line that all points would lie on if the model made perfect predictions.
+Now we can use a scatter plot to compare the predicted against measured values, which is called a parity plot. We use the [seaborn statistical data visualization package](https://seaborn.pydata.org/) to plot the data. We show the line where the predicted and measured lipophilicity values are equal, in other words the line that all points would lie on if the model made perfect predictions.
 
 
 ```python
