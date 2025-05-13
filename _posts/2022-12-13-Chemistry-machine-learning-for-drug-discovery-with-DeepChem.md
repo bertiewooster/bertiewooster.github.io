@@ -31,7 +31,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 ```
 
-[DeepChem](https://deepchem.io/) is a free and open-source Python package for deep learning for chemistry and other sciences. DeepChem has a [lipophilicity data set](https://deepchem.readthedocs.io/en/latest/api_reference/moleculenet.html#lipo-datasets) contains measured [logD](https://www.cambridgemedchemconsulting.com/resources/physiochem/logD.html) values for 4200 compounds. Fitting a machine learning (ML) model to the logarithm of the data values helps reduce the effect of outliers; otherwise, they might skew the model.
+[DeepChem](https://deepchem.io/) is a free and open-source Python package for deep learning for chemistry and other sciences. DeepChem has a [lipophilicity data set](https://deepchem.readthedocs.io/en/latest/api_reference/moleculenet.html#lipo-datasets) that contains measured [logD](https://www.cambridgemedchemconsulting.com/resources/physiochem/logD.html) values for 4200 compounds. Fitting a machine learning (ML) model to the logarithm of the data values helps reduce the effect of outliers; otherwise, they might skew the model.
 
 As usual for ML, we split the data set into training and test data. We train the ML model on the train data, then apply it to the test data and check how well the model predicts the lipophilicity of compounds that the model hasn't processed before.
 
@@ -79,17 +79,15 @@ Next, we build a model using DeepChem's [graph convolutional network](https://de
 model = dc.models.GraphConvModel(n_tasks=1, mode='regression', dropout=0.2)
 ```
 
-Then we train the model on the train dataset.
+Then we train the model on the train dataset. Then we train the model on the train dataset. Note that training with 200 epochs takes around 8 minutes on Google Colab. If you are debugging or just running a proof of concept, you may want to set `nb_epoch=10` to speed execution.
 
 
 ```python
-# Note that training with 200 epochs takes around 8 minutes on Google Colab.
-# If you are debugging or just running a proof of concept, you may want to set nb_epoch=10 to speed execution.
 %%capture
 model.fit(train_dataset, nb_epoch=200);
 ```
 
-To check how well the model fits the train and test data, we examine the [Pearson correlation coefficient](https://www.scribbr.com/statistics/pearson-correlation-coefficient/) score. Its value can range from -1 to 1, where positive values indicate positive correlation, zero indicates no correlation, and negative values indicate negative correlation. The magnitude of the value indicates the strength of the correlation: less than 0.3 is weak, 0.3-0.5 is moderate, and 0.5-1 is strong.
+To check how well the model fits the train and test data, we examine the [Pearson correlation coefficient](https://www.scribbr.com/statistics/pearson-correlation-coefficient/) score which measures a linear correlation. Its value can range from -1 to 1, where positive values indicate positive correlation, zero indicates no correlation, and negative values indicate negative correlation. The magnitude of the value indicates the strength of the correlation: less than 0.3 is weak, 0.3-0.5 is moderate, and 0.5-1 is strong.
 
 
 ```python
@@ -104,7 +102,7 @@ print("Test set score:", model.evaluate(test_dataset, [metric], transformers))
 
 The [Pearson correlation coefficient](https://www.scribbr.com/statistics/pearson-correlation-coefficient/) score is worse for the test data than for the train data. This is expected because the test data is new to the model. Nevertheless, the magnitude being greater than 0.5 indicates a strong, positive correlation between predicted and measured lipophilicity.
 
-One contributing factor might be that our train set may not have molecules similar enough to those in the test set. Recall that we [split by scaffold](https://deepchem.readthedocs.io/en/latest/api_reference/splitters.html#scaffoldsplitter), so it's possible that such splitting led to compounds in the test set that have scaffolds significantly different from those in the train set.
+One contributing factor for the lower coefficient in the test set might be that our train set may not have molecules similar enough to those in the test set. Recall that we [split by scaffold](https://deepchem.readthedocs.io/en/latest/api_reference/splitters.html#scaffoldsplitter), so it's possible that such splitting led to compounds in the test set that have scaffolds significantly different from those in the train set.
 
 Adding compounds to the dataset so that there is less "scaffold distance" (difference in scaffold structure) between groups of compounds might help. To take a simple hypothetical example, if we had a dataset with compounds containing fused rings, with many two-ring compounds and few four-ring compounds, scaffold splitting might put all the two-ring compounds in the train set and all the four-ring compounds in the test set. We expect that would lead to poor predictions on the test set. We would want to augment the dataset by adding compounds containing three fused rings.
 
@@ -321,7 +319,7 @@ df
 
 
 
-Now we can use a scatter plot to compare the predicted against measured values, which is called a parity plot. We use the [seaborn statistical data visualization package](https://seaborn.pydata.org/) to plot the data. We show the line where the predicted and measured lipophilicity values are equal, in other words the line that all points would lie on if the model made perfect predictions.
+Now we can use a scatter plot to compare the predicted against measured values, which is called a [parity plot](https://en.wikipedia.org/wiki/Parity_plot). We use the [seaborn statistical data visualization package](https://seaborn.pydata.org/) to plot the data. We show the line where the predicted and measured lipophilicity values are equal, in other words the line that all points would lie on if the model made perfect predictions.
 
 
 ```python
