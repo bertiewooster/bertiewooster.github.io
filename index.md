@@ -144,9 +144,12 @@ Understand how the elements are related to each other. Emphasizes electronic con
 ## Open-source contributions
 
 ### The RDKit cheminformatics package
-- Conceived, proposed, and coded [MolsMatrixToGridImage](https://github.com/rdkit/rdkit/pull/6080) feature to use a two-dimensional (nested) data structure as input to create molecular grid images. Feature was merged into the main codebase by the project maintainer and released in the 2023.09.1 release. It was the subject of an [article on the site Macs In Chemistry](https://macinchem.org/2023/12/06/rdkit-molsmatrixtogridimagerdkit/), which included:
+- Conceived, proposed, and coded [`MolsMatrixToGridImage`](https://github.com/rdkit/rdkit/pull/6080) feature to use a two-dimensional (nested) data structure as input to create molecular grid images. Feature was merged into the main codebase by the project maintainer and released in the 2023.09.1 release. It was the subject of an [article on the site Macs In Chemistry](https://macinchem.org/2023/12/06/rdkit-molsmatrixtogridimagerdkit/), which included:
 
   > If you need to display molecules and associated data in a grid then Jeremy Monat’s MolsMatrixToGridImage is exactly what you need. To underline just how useful this is and to highlight how it simplifies code he has written a very [nice blog post](https://bertiewooster.github.io/2023/12/02/MolsMatrixToGridImage-simplifies-code.html).
+
+  and [`MolsMatrixToGridImage` was praised by an RDKit user](https://github.com/rdkit/rdkit/discussions/8456#discussioncomment-12929298):
+  > I've also been using MolsMatrixToGridImage() as a convenient way to represent the possible ensembles, I think it's a great use.
 
 - Implemented improved [combinatorial function](https://github.com/rdkit/rdkit/pull/8214), making computations ~75x faster for [Gen2DFingerprint](https://www.rdkit.org/docs/source/rdkit.Chem.Pharm2D.Generate.html#rdkit.Chem.Pharm2D.Generate.Gen2DFingerprint) 
 - [Improved documentation](https://github.com/rdkit/rdkit/pulls?q=is%3Amerged+is%3Apr+author%3Abertiewooster+) by enhancing API documentation, adding to the guide for contributors, adding an example of how to include a bond index, illustrating molecular drawing capability in tutorial, adding SMILES (chemical notation) for R groups, and more
