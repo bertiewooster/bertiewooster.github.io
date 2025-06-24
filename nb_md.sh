@@ -19,7 +19,7 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-jupyter nbconvert _notebooks/2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated.ipynb --to markdown --output 2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated.md
+jupyter nbconvert _notebooks/2025-06-24-Skeletal-Editing-Atom-Substitution.ipynb --to markdown --output 2025-06-24-Skeletal-Editing-Atom-Substitution.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
