@@ -8,7 +8,7 @@ Here's the skeletal-editing reaction that we'll be working with, pyrylium → py
 
 Here's [my previous tutorial on skeletal editing]({% post_url 2025-04-22-Skeletal-Editing %}).
 
-*[Open this notebook in Google Colab](link) so you can run it without installing anything on your computer*
+*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1tGUhoD7W2TAZy3kcsV-YUcEyPtqvPvkr?usp=sharing) so you can run it without installing anything on your computer*
 
 ## Code foundation
 
