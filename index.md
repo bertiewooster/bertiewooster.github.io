@@ -11,7 +11,7 @@ Scientific software developer in the Washington, D.C. area.
 
 ### [Skeletal Editing with Reaction SMARTS and RDKit Atom Substitution]({% post_url 2025-06-24-Skeletal-Editing-Atom-Substitution %})
 
-[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:300px; height:100px" src="/images/skeletal_editing_reaction.png">]({% post_url 2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated %})
+[<img alt="Skeletal-editing reaction: pyrylium → pyridinium" style="width:300px; height:100px" src="/images/skeletal_editing_reaction.png">]({% post_url 2025-06-24-Skeletal-Editing-Atom-Substitution %})
 
 This tutorial shows two ways to accomplish skeletal editing reactions in the RDKit: By using Reaction SMARTS or atom editing.
 
