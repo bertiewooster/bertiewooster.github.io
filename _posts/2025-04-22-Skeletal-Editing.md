@@ -375,3 +375,7 @@ product_smls = plot_rxn(nitroarene_to_azepane_modified, starting_mol)
 
 
 Phyo Phyo discusses the distinction between these two products and the factors favoring one over the other in the blog post [How to Use Skeletal Editing in Drug Discovery: Key Benefits & Applications](https://drzinph.com/skeletal-editing-in-drug-discovery-applications-and-challenges/).
+
+## Update
+
+Here's a follow-up tutorial: [Skeletal Editing with Reaction SMARTS and RDKit Atom Substitution]({% post_url 2025-06-24-Skeletal-Editing-Atom-Substitution %})

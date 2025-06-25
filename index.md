@@ -9,6 +9,12 @@ Scientific software developer in the Washington, D.C. area.
 
 ## Cheminformatics blog posts
 
+### [Skeletal Editing with Reaction SMARTS and RDKit Atom Substitution]({% post_url 2025-06-24-Skeletal-Editing-Atom-Substitution %})
+
+[<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:900px; height:300px" src="/images/skeletal_editing_reaction.png">]({% post_url 2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated %})
+
+This tutorial shows two ways to accomplish skeletal editing reactions in the RDKit: By using Reaction SMARTS or atom editing.
+
 ### [Visualize Annotated Retrosynthetic Analysis Hierarchically]({% post_url 2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated %})
 
 [<img alt="Annotated Recap retrosynthetic hierarchy tree" style="width:400px; height:300px" src="/images/tree_marked_up_automated.svg">]({% post_url 2025-05-04-RDKit-Recap-decomposition-tree-diagram-annotated %})
