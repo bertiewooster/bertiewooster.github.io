@@ -6,6 +6,8 @@ Here's the skeletal-editing reaction that we'll be working with, pyrylium → py
 
 ![pyrylium → pyridinium reaction](/images/skeletal_editing_reaction.png)
 
+Here's [my previous tutorial on skeletal editing]({% post_url 2025-04-22-Skeletal-Editing %}).
+
 *[Open this notebook in Google Colab](link) so you can run it without installing anything on your computer*
 
 ## Code foundation
