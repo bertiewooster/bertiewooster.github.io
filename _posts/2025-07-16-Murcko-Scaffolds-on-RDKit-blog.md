@@ -1,8 +1,10 @@
 # Murcko Scaffolds Post on the RDKit Blog: An LLM Circle
 
+How I came to write a simple blog post and the effects it had.
+
 ## An LLM Chat Plants the Seed
 
-To come up with small projects to do in preparation for job interviews (contact me if you need a cheminformatics scientific software developer!), I interactively asked ChatGPT for suggestions. It suggested
+To come up with small projects to do in preparation for job interviews ([contact me](https://www.linkedin.com/in/jemonat/) if you need a cheminformatics or scientific software developer!), I interactively asked ChatGPT for suggestions. It suggested
 
 > **Cheminformatics-Flavored Algorithm Problem**
 > A classic coding challenge but wrapped in a domain-relevant context.
