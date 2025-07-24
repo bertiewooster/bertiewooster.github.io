@@ -9,6 +9,12 @@ Scientific software developer in the Washington, D.C. area.
 
 ## Cheminformatics blog posts
 
+### [Murcko Scaffolds Post on the RDKit Blog: An LLM Circle]({% post_url 2025-07-16-Murcko-Scaffolds-on-RDKit-blog %})
+
+[<img alt="Molecular grid displaying each of three Murcko scaffolds as a row, with 1-3 molecules to the right of that scaffold" style="width:400px; height:300px" src="/images/murcko_scaffold_matrix.png">]({% post_url 2025-07-16-Murcko-Scaffolds-on-RDKit-blog %})
+
+How I came to write a simple blog post and the effects it had.
+
 ### [Skeletal Editing with Reaction SMARTS and RDKit Atom Substitution]({% post_url 2025-06-24-Skeletal-Editing-Atom-Substitution %})
 
 [<img alt="Skeletal-editing reaction: pyrylium → pyridinium" style="width:300px; height:100px" src="/images/skeletal_editing_reaction.png">]({% post_url 2025-06-24-Skeletal-Editing-Atom-Substitution %})
