@@ -139,13 +139,10 @@ def get_longest_conjugated_bond_chain(
                 bond_j_obj = mol.GetBondWithIdx(bond_j)
                 # Check if two conjugated bonds share an atom--
                 #   do the set of {beginning atom, ending atom} overlap for the two bonds
-                if (
-                    len(
-                        {bond_i_obj.GetBeginAtomIdx(), bond_i_obj.GetEndAtomIdx()}
-                        & {bond_j_obj.GetBeginAtomIdx(), bond_j_obj.GetEndAtomIdx()}
-                    )
-                    > 0
-                ):
+                if {bond_i_obj.GetBeginAtomIdx(), bond_i_obj.GetEndAtomIdx()} & {
+                    bond_j_obj.GetBeginAtomIdx(),
+                    bond_j_obj.GetEndAtomIdx(),
+                }:
                     # Change the bond matrix value to 1, indicating the two bonds are connected
                     bond_matrix[i, j] = 1
                     bond_matrix[j, i] = 1
