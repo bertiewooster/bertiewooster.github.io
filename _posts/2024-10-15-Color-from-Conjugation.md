@@ -135,7 +135,7 @@ def get_longest_conjugated_bond_chain(
     for i, bond_i in enumerate(conjugated_bonds):
         bond_i_obj = mol.GetBondWithIdx(bond_i)
         for j, bond_j in enumerate(conjugated_bonds):
-            if i != j:
+            if i > j:
                 bond_j_obj = mol.GetBondWithIdx(bond_j)
                 # Check if two conjugated bonds share an atom--
                 #   do the set of {beginning atom, ending atom} overlap for the two bonds
