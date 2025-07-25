@@ -141,10 +141,8 @@ def get_longest_conjugated_bond_chain(
                 #   do the set of {beginning atom, ending atom} overlap for the two bonds
                 if (
                     len(
-                        set([bond_i_obj.GetBeginAtomIdx(), bond_i_obj.GetEndAtomIdx()])
-                        & set(
-                            [bond_j_obj.GetBeginAtomIdx(), bond_j_obj.GetEndAtomIdx()]
-                        )
+                        {bond_i_obj.GetBeginAtomIdx(), bond_i_obj.GetEndAtomIdx()}
+                        & {bond_j_obj.GetBeginAtomIdx(), bond_j_obj.GetEndAtomIdx()}
                     )
                     > 0
                 ):
