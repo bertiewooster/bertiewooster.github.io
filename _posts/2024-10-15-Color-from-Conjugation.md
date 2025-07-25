@@ -134,18 +134,18 @@ def get_longest_conjugated_bond_chain(
     # Populate the bond adjacency matrix for conjugated bonds
     for i, bond_i in enumerate(conjugated_bonds):
         bond_i_obj = mol.GetBondWithIdx(bond_i)
-        for j, bond_j in enumerate(conjugated_bonds):
-            if i > j:
-                bond_j_obj = mol.GetBondWithIdx(bond_j)
-                # Check if two conjugated bonds share an atom--
-                #   do the set of {beginning atom, ending atom} overlap for the two bonds
-                if {bond_i_obj.GetBeginAtomIdx(), bond_i_obj.GetEndAtomIdx()} & {
-                    bond_j_obj.GetBeginAtomIdx(),
-                    bond_j_obj.GetEndAtomIdx(),
-                }:
-                    # Change the bond matrix value to 1, indicating the two bonds are connected
-                    bond_matrix[i, j] = 1
-                    bond_matrix[j, i] = 1
+        # Avoid duplicate work by only processing pairs where j < i
+        for j, bond_j in enumerate(conjugated_bonds[:i]):
+            bond_j_obj = mol.GetBondWithIdx(bond_j)
+            # Check if two conjugated bonds share an atom--
+            #   do the set of {beginning atom, ending atom} overlap for the two bonds
+            if {bond_i_obj.GetBeginAtomIdx(), bond_i_obj.GetEndAtomIdx()} & {
+                bond_j_obj.GetBeginAtomIdx(),
+                bond_j_obj.GetEndAtomIdx(),
+            }:
+                # Change the bond matrix value to 1, indicating the two bonds are connected
+                bond_matrix[i, j] = 1
+                bond_matrix[j, i] = 1
 
     # Initialize variables to store the longest conjugated bond chain
     visited = set()
