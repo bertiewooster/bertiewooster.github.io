@@ -158,6 +158,8 @@ Understand how the elements are related to each other. Emphasizes electronic con
 
 A simple [React app tic-tac-toe game](https://bertiewooster.github.io/react_tic_tac_toe/).
 
+<div style="clear: both;"></div>
+
 ## Open-source contributions
 
 ### The RDKit cheminformatics package
