@@ -154,7 +154,7 @@ Optionally, identify the components (dimensions) in the constraints file using c
 Understand how the elements are related to each other. Emphasizes electronic configuration of the elements.
 
 ### [Tic-tac-toe](https://bertiewooster.github.io/react_tic_tac_toe/)
-[<img alt="Tic-tac-toe game" style="float: right; width:578px; height:316px;" src="images/react_tic_tac_toe.png">](https://bertiewooster.github.io/react_tic_tac_toe/)
+[<img alt="Tic-tac-toe game" style="float: right; width:289px; height:158px;" src="images/react_tic_tac_toe.png">](https://bertiewooster.github.io/react_tic_tac_toe/)
 
 A simple [React app tic-tac-toe game](https://bertiewooster.github.io/react_tic_tac_toe/).
 
