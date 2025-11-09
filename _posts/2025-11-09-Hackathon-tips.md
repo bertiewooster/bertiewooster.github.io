@@ -33,10 +33,7 @@ Video("/images/MethanolVibrations.mov")
 
 
 <video src="/images/MethanolVibrations.mov" controls style="max-width:700px;width:100%;height:auto;">
-  Your browser does not support the <code>video</code> element.
 </video>
-      Your browser does not support the <code>video</code> element.
-    </video>
 
 
 
