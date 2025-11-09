@@ -21,7 +21,7 @@ An effective way to plan a video is with storyboards, that is the still images t
 
 
 ```python
-# Source - https://stackoverflow.com/a
+# Source - https://stackoverflow.com/questions/18019477/how-can-i-play-a-local-video-in-my-ipython-notebook#18026076
 # Posted by Viktor Kerkez, modified by community. See post 'Timeline' for change history
 # Retrieved 2025-11-06, License - CC BY-SA 4.0
 
