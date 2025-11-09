@@ -32,7 +32,9 @@ Video("/images/MethanolVibrations.mov")
 
 
 
-<video src="/images/MethanolVibrations.mov" controls  >
+<video src="/images/MethanolVibrations.mov" controls style="max-width:400px;width:100%;height:auto;">
+  Your browser does not support the <code>video</code> element.
+</video>
       Your browser does not support the <code>video</code> element.
     </video>
 
