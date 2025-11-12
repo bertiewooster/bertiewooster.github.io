@@ -1,6 +1,8 @@
 # Hackathon Tips
 
-I participated in the [LLM Hackathon for Applications in Materials Science & Chemistry](https://llmhackathon.github.io/) September 11-12, 2025. It was a great opportunity to think and learn about how LLMs can be used in science. It was also a chance to meet new people in the community, or collaborate live with folks I know from online. I was on the [ChemGraph-IR](https://github.com/argonne-lcf/ChemGraph) team whose goal was to calculate the infrared absorption spectrum of a molecule given an LLM prompt requesting the IR spectrum. Here are some things I learned about how to get the most done in a hackathon.
+I participated in the [LLM Hackathon for Applications in Materials Science & Chemistry](https://llmhackathon.github.io/) September 11-12, 2025. It was a great opportunity to think and learn about how LLMs can be used in science. It was also a chance to meet new people in the community, or collaborate live with folks I know from online. Here are some things I learned about how to get the most done in a hackathon.
+
+I was on the [ChemGraph-IR](https://github.com/argonne-lcf/ChemGraph) team whose goal was to calculate the infrared absorption spectrum of a molecule given an LLM prompt requesting the IR spectrum of a named chemical.
 
 ![Infrared absorption spectrum of ethanol](/images/Ethanol_IR_spectrum.png)
 
@@ -78,4 +80,4 @@ In fact, it would have been useful to analyze that sheet and notice that no one 
 
 ## Acknowledgements
 
-Thanks to everyone on the ChemGraph-IR team, particularly the organizers [Murat Keçeli](https://www.linkedin.com/in/keceli/) and [Thang Pham](https://www.linkedin.com/in/thangdpham/)!
+Thanks to everyone on the ChemGraph-IR team, particularly the organizers [Murat Keçeli](https://www.linkedin.com/in/keceli/) and [Thang Pham](https://www.linkedin.com/in/thangdpham/)! And to [Ben Blaiszik]() for organizing the hackathon, and [David Elbert](https://www.linkedin.com/in/david-elbert-26074847/) and [Mohd Zaki](https://www.linkedin.com/in/iamzaki/) for [hosting me at The Johns Hopkins University](https://www.linkedin.com/posts/jemonat_llm-hackathon-chemistry-activity-7374438301165838336-NOTs) in Baltimore.
