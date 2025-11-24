@@ -81,3 +81,5 @@ In fact, it would have been useful to analyze that sheet and notice that no one 
 ## Acknowledgements
 
 Thanks to everyone on the ChemGraph-IR team, particularly the organizers [Murat Keçeli](https://www.linkedin.com/in/keceli/) and [Thang Pham](https://www.linkedin.com/in/thangdpham/)! And to [Ben Blaiszik](https://www.linkedin.com/in/benblaiszik/) for organizing the hackathon, and [David Elbert](https://www.linkedin.com/in/david-elbert-26074847/) and [Mohd Zaki](https://www.linkedin.com/in/iamzaki/) for [hosting me at The Johns Hopkins University](https://www.linkedin.com/posts/jemonat_llm-hackathon-chemistry-activity-7374438301165838336-NOTs) in Baltimore.
+
+Check out this [article in *Science*](https://www.science.org/content/article/researchers-customize-ai-tools-global-hackathon) about the hackathon.
