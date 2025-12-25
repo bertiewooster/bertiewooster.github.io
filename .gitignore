@@ -9,5 +9,6 @@ _site
 vendor
 _notebooks/.ipynb_checkpoints
 .venv
+.venv-old
 _gitignore
 .vscode/

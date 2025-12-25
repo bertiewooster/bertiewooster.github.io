@@ -1,0 +1,11 @@
+[project]
+name = "bertiewooster-github-io"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp>=3.13.2",
+    "chembl-webresource-client>=0.10.9",
+    "sqlalchemy>=2.0.45",
+]
