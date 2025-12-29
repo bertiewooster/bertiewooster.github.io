@@ -120,7 +120,7 @@ def get_chembl_molecules(
         ]):
             targets[t["target_chembl_id"]] = t
     end = time.time()
-    logging.info(f"Fetch target metadata took {end-start} seconds.")
+    logging.info(f"For {len(targets)} targets, fetch target metadata took {end-start} seconds.")
 
     # ---------------------------------
     # 4) Attach targets to molecules
@@ -285,7 +285,7 @@ if __name__ == "__main__":
     start = time.time()
     result = get_chembl_molecules(
         n_compounds=20,
-        start_id=40, # Has targets
+        start_id=1, # Has targets
         # start_id=3430873, # Not a molecule
     )
     end = time.time()
