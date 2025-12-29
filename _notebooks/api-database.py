@@ -4,6 +4,7 @@ import json
 import logging
 import time
 import traceback
+from collections import defaultdict
 from typing import Optional
 
 import aiohttp
@@ -33,23 +34,98 @@ def get_chembl_molecules(
     start_id: int = 1,
 ):
     chembl_ids = [f"CHEMBL{id}" for id in range(start_id, start_id + n_compounds)]
+
     molecule = new_client.molecule
-    
+    activity = new_client.activity
+    target = new_client.target
+
     # Suppress INFO logs from the chembl package while keeping global INFO level
     logging.getLogger("chembl_webresource_client").setLevel(logging.WARNING)
 
-    mols = molecule.filter(molecule_chembl_id__in=chembl_ids).only(
-        [
-            "molecule_chembl_id",
-            "molecule_structures",
-            "pref_name",
-            "molecule_properties",
-        ]
+    # --------------------
+    # 1) Fetch molecules
+    # --------------------
+    mols = list(
+        molecule.filter(molecule_chembl_id__in=chembl_ids).only(
+            [
+                "molecule_chembl_id",
+                "molecule_structures",
+                "pref_name",
+                "molecule_properties",
+            ]
+        )
     )
 
     logging.info(
-        f"Of the {n_compounds} ChEMBL IDs ({start_id}-{start_id + n_compounds - 1}), {len(mols)} are compounds."
+        f"Of the {n_compounds} ChEMBL IDs "
+        f"({start_id}-{start_id + n_compounds - 1}), {len(mols)} are compounds."
     )
+
+    if not mols:
+        return []
+
+    mol_ids_present = [m["molecule_chembl_id"] for m in mols]
+
+    # ---------------------------------
+    # 2) Bulk fetch activities → targets
+    # ---------------------------------
+    start = time.time()
+    acts = activity.filter(
+        molecule_chembl_id__in=mol_ids_present,
+        target_organism="Homo sapiens",   # optional but recommended
+    ).only([
+        "molecule_chembl_id",
+        "target_chembl_id",
+    ])
+    end = time.time()
+    logging.info(f"Bulk fetch activities → targets took {end-start} seconds.")
+
+    mol_to_target_ids = defaultdict(set)
+
+    start = time.time()
+    # for a in acts:
+    #     if a["target_chembl_id"]:
+    #         mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
+
+    for a in acts:
+        try:
+            mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
+        except Exception as e:
+            print(e)
+
+    end = time.time()
+    logging.info(f"Setting mol_to_target_ids took {end-start} seconds.")
+
+    # ---------------------------------
+    # 3) Fetch target metadata (bulk)
+    # ---------------------------------
+    all_target_ids = sorted(
+        {tid for tids in mol_to_target_ids.values() for tid in tids}
+    )
+
+    targets = {}
+    if all_target_ids:
+        start = time.time()
+
+        for t in target.filter(
+            target_chembl_id__in=all_target_ids
+        ).only([
+            "target_chembl_id",
+            "pref_name",
+            "target_type",
+            "organism",
+        ]):
+            targets[t["target_chembl_id"]] = t
+    end = time.time()
+    logging.info(f"Fetch target metadata took {end-start} seconds.")
+
+    # ---------------------------------
+    # 4) Attach targets to molecules
+    # ---------------------------------
+    for m in mols:
+        t_ids = mol_to_target_ids.get(m["molecule_chembl_id"], [])
+        m["targets"] = [targets[tid] for tid in t_ids if tid in targets]
+
     return mols
 
 
@@ -199,8 +275,9 @@ if __name__ == "__main__":
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
     result = get_chembl_molecules(
-        n_compounds=1000,
-        # start_id=3430873,
+        n_compounds=2,
+        # start_id=100, # Has targets
+        # start_id=3430873, # Not a molecule
     )
     end = time.time()
     logging.info(f"Fetched {len(result)} molecules in {end - start:.2f} seconds.")
