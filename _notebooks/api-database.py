@@ -2,6 +2,7 @@ import asyncio
 import concurrent.futures
 import json
 import logging
+import time
 import traceback
 from typing import Optional
 
@@ -18,6 +19,9 @@ from sqlalchemy import Column, Float, Integer, String, create_engine
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import declarative_base, sessionmaker
 
+# Set logging level to INFO
+logging.getLogger().setLevel(logging.INFO)
+
 Base = declarative_base()
 
 engine = create_engine("sqlite:///compounds.db", echo=False)
@@ -30,18 +34,22 @@ def get_chembl_molecules(
 ):
     chembl_ids = [f"CHEMBL{id}" for id in range(start_id, start_id + n_compounds)]
     molecule = new_client.molecule
+    
+    # Suppress INFO logs from the chembl package while keeping global INFO level
+    logging.getLogger("chembl_webresource_client").setLevel(logging.WARNING)
+
     mols = molecule.filter(molecule_chembl_id__in=chembl_ids).only(
-        ["molecule_chembl_id", "molecule_structures", "pref_name"]
+        [
+            "molecule_chembl_id",
+            "molecule_structures",
+            "pref_name",
+            "molecule_properties",
+        ]
     )
-    #TODO Figure out how to batch process descriptors to avoid per-molecule API calls
 
-
-    for mol in mols:
-        canon_sml = mol.get("molecule_structures").get("canonical_smiles")
-        mol_ctab = utils.smiles2ctab(canon_sml)
-        descs = json.loads(utils.chemblDescriptors(mol_ctab))[0]
-        mol["descs"] = descs
-    logging.info(f"Of the {n_compounds} ChEMBL IDs ({start_id}-{start_id + n_compounds - 1}), {len(mols)} are compounds.")
+    logging.info(
+        f"Of the {n_compounds} ChEMBL IDs ({start_id}-{start_id + n_compounds - 1}), {len(mols)} are compounds."
+    )
     return mols
 
 
@@ -188,8 +196,12 @@ def run_queries():
 
 if __name__ == "__main__":
     # main()
+    # Measure how long it takes to fetch ChEMBL molecules
+    start = time.time()
     result = get_chembl_molecules(
-        n_compounds=50,
+        n_compounds=1000,
         # start_id=3430873,
     )
+    end = time.time()
+    logging.info(f"Fetched {len(result)} molecules in {end - start:.2f} seconds.")
     pass
