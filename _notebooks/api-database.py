@@ -33,7 +33,6 @@ def get_chembl_molecules(
     n_compounds: int = 2,
     start_id: int = 1,
 ):
-    fn_start = time.time()
     chembl_ids = [f"CHEMBL{id}" for id in range(start_id, start_id + n_compounds)]
 
     molecule = new_client.molecule
@@ -70,40 +69,27 @@ def get_chembl_molecules(
     # ---------------------------------
     # 2) Bulk fetch activities → targets
     # ---------------------------------
-    start = time.time()
     acts = activity.filter(
         molecule_chembl_id__in=mol_ids_present,
         target_organism="Homo sapiens",
         standard_type="IC50",
         assay_type="B",
-        # document_year__gt=2010,
-        # document_year__lt=1990, # 16 activities
-        # document_year__lt=2000, # 46 activities
-        document_year__lt=2010,  # 284 activities
+        document_year__lt=2010,
     ).only(
         [
             "molecule_chembl_id",
             "target_chembl_id",
         ]
     )
-    end = time.time()
-    logging.info(
-        f"For {len(acts)} activities, bulk fetch activities → targets took {end - start} seconds."
-    )
+    logging.info(f"Activities: {len(acts)}")
 
     mol_to_target_ids = defaultdict(set)
 
-    start = time.time()
     for a in acts:
         try:
             mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
         except Exception as e:
             print(e)
-
-    end = time.time()
-    logging.info(
-        f"For {len(acts)} activities, setting mol_to_target_ids with 'try' took {end - start} seconds."
-    )
 
     # ---------------------------------
     # 3) Fetch target metadata (bulk)
@@ -114,8 +100,6 @@ def get_chembl_molecules(
 
     targets = {}
     if all_target_ids:
-        start = time.time()
-
         for t in target.filter(target_chembl_id__in=all_target_ids).only(
             [
                 "target_chembl_id",
@@ -125,27 +109,14 @@ def get_chembl_molecules(
             ]
         ):
             targets[t["target_chembl_id"]] = t
-    end = time.time()
-    logging.info(
-        f"For {len(targets)} targets, fetch target metadata took {end - start} seconds."
-    )
 
     # ---------------------------------
     # 4) Attach targets to molecules
     # ---------------------------------
-    start = time.time()
 
     for m in mols:
         t_ids = mol_to_target_ids.get(m["molecule_chembl_id"], [])
         m["targets"] = [targets[tid] for tid in t_ids if tid in targets]
-    end = time.time()
-    logging.info(
-        f"Attach targets to molecules target metadata took {end - start} seconds."
-    )
-
-    logging.info(
-        f"Total time for get_chembl_molecules: {time.time() - fn_start} seconds."
-    )
 
     return mols
 
@@ -237,8 +208,6 @@ def save_compounds_to_db(molecules: list[dict]) -> tuple[int, int, int]:
             raise
 
     return n_mols_saved, n_targets_saved, n_compounds_targets_saved
-
-
 
 
 def init_db():
