@@ -109,6 +109,7 @@ def get_chembl_molecules(
             ]
         ):
             targets[t["target_chembl_id"]] = t
+    logging.info(f"Fetched metadata for {len(targets)} targets.")
 
     # ---------------------------------
     # 4) Attach targets to molecules
@@ -303,7 +304,7 @@ if __name__ == "__main__":
     logging.info(
         f"Saved {n_mols_saved} compounds, "
         f"{n_targets_saved} targets, "
-        f"{n_compounds_targets_saved} compound-target associations to the database,"
+        f"{n_compounds_targets_saved} compound-target associations to the database, "
         f"in {time.time() - start:.2f} seconds."
     )
 
