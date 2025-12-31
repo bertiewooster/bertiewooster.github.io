@@ -75,29 +75,35 @@ def get_chembl_molecules(
         molecule_chembl_id__in=mol_ids_present,
         target_organism="Homo sapiens",
         standard_type="IC50",
-        assay_type='B',
+        assay_type="B",
         # document_year__gt=2010,
         # document_year__lt=1990, # 16 activities
         # document_year__lt=2000, # 46 activities
-        document_year__lt=2010, # 284 activities
-    ).only([
-        "molecule_chembl_id",
-        "target_chembl_id",
-    ])
+        document_year__lt=2010,  # 284 activities
+    ).only(
+        [
+            "molecule_chembl_id",
+            "target_chembl_id",
+        ]
+    )
     end = time.time()
-    logging.info(f"For {len(acts)} activities, bulk fetch activities → targets took {end-start} seconds.")
+    logging.info(
+        f"For {len(acts)} activities, bulk fetch activities → targets took {end - start} seconds."
+    )
 
     mol_to_target_ids = defaultdict(set)
 
     start = time.time()
     for a in acts:
-         try:
-             mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
-         except Exception as e:
-             print(e)
+        try:
+            mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
+        except Exception as e:
+            print(e)
 
     end = time.time()
-    logging.info(f"For {len(acts)} activities, setting mol_to_target_ids with 'try' took {end-start} seconds.")
+    logging.info(
+        f"For {len(acts)} activities, setting mol_to_target_ids with 'try' took {end - start} seconds."
+    )
 
     # ---------------------------------
     # 3) Fetch target metadata (bulk)
@@ -110,17 +116,19 @@ def get_chembl_molecules(
     if all_target_ids:
         start = time.time()
 
-        for t in target.filter(
-            target_chembl_id__in=all_target_ids
-        ).only([
-            "target_chembl_id",
-            "pref_name",
-            "target_type",
-            "organism",
-        ]):
+        for t in target.filter(target_chembl_id__in=all_target_ids).only(
+            [
+                "target_chembl_id",
+                "pref_name",
+                "target_type",
+                "organism",
+            ]
+        ):
             targets[t["target_chembl_id"]] = t
     end = time.time()
-    logging.info(f"For {len(targets)} targets, fetch target metadata took {end-start} seconds.")
+    logging.info(
+        f"For {len(targets)} targets, fetch target metadata took {end - start} seconds."
+    )
 
     # ---------------------------------
     # 4) Attach targets to molecules
@@ -131,93 +139,106 @@ def get_chembl_molecules(
         t_ids = mol_to_target_ids.get(m["molecule_chembl_id"], [])
         m["targets"] = [targets[tid] for tid in t_ids if tid in targets]
     end = time.time()
-    logging.info(f"Attach targets to molecules target metadata took {end-start} seconds.")
+    logging.info(
+        f"Attach targets to molecules target metadata took {end - start} seconds."
+    )
 
-    logging.info(f"Total time for get_chembl_molecules: {time.time()-fn_start} seconds.")
+    logging.info(
+        f"Total time for get_chembl_molecules: {time.time() - fn_start} seconds."
+    )
 
     return mols
 
 
-def save_compound_to_db(
-    cid: int, name: str, type_names: list[str], stats_map: dict[str, int]
-) -> bool:
-    """Save a single compound and its descriptors to the database.
-    Args:
-        cid (int): The PubChem CID.
-        name (str): The compound name.
-        type_names (list of str): List of type names for the Pokemon. #TODO fix
-        stats_map (dict): Mapping of stat names to their values. #TODO fix
-    Returns:
-        bool: True if saved successfully.
-    """
-    compound = database.Compound(
-        cid=cid,
-        name=name,
-        hp=stats_map.get("hp"),
-        attack=stats_map.get("attack"),
-        defense=stats_map.get("defense"),
-        speed=stats_map.get("speed"),
-        special_attack=stats_map.get("special-attack"),
-        special_defense=stats_map.get("special-defense"),
-    )
-    # Create and use a database session here so each async task has its own session, to prevent conflicts
-    with database.Session() as db_session:
-        # Use transaction context manager to ensure atomicity and auto-rollback on error
+def save_compounds_to_db(molecules: list[dict]) -> tuple[int, int, int]:
+    """Save multiple compounds and their targets to the database efficiently avoiding duplicate Targets."""
+    # collect all target ids present in incoming molecules
+    all_target_ids = {
+        t["target_chembl_id"]
+        for m in molecules
+        for t in m.get("targets", [])
+        if t.get("target_chembl_id")
+    }
+
+    n_mols_saved = 0
+    n_targets_saved = 0
+    n_compounds_targets_saved = 0
+
+    with Session() as db_session:
         try:
-            with db_session.begin():
-                db_session.add(compound)
-                db_session.flush()
-                for type_name in type_names:
-                    pokemon_type = database.Type(
-                        pokemon_id=compound.id, type_name=type_name
-                    )
-                    db_session.add(pokemon_type)
-        except IntegrityError as e:
-            logging.info(f"IntegrityError saving PubChem CID {cid}: {e}")
-            return False
-        except SQLAlchemyError:
-            logging.exception(f"Database error saving PubChem CID {cid}")
-            raise
-    return True
-
-
-def main():
-    """Main entry point to initialize/reset DB, fetch compound data, compute descriptors, and run queries."""
-    # configure logging in the application entrypoint
-    logging.basicConfig(level=logging.INFO)
-    # Ensure tables exist
-    database.init_db()
-
-    # Get Pokemon data from the PubChem API and store it in the database.
-    # Create and own the ThreadPoolExecutor from the synchronous main function so it
-    # is shut down deterministically before interpreter teardown.
-    try:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            n_compounds_added, _ = asyncio.run(
-                get_pubchem_api(
-                    n_compounds=151,
-                    executor=executor,
+            # preload existing targets into a mapping chembl_id -> Target instance
+            existing_targets = {}
+            if all_target_ids:
+                rows = (
+                    db_session.query(Target)
+                    .filter(Target.target_chembl_id.in_(list(all_target_ids)))
+                    .all()
                 )
-            )
-    except ExceptionGroup as eg:
-        logging.exception(
-            f"\nCompleted with ExceptionGroup: {len(eg.exceptions)} sub-exception(s); "
-            f"{getattr(eg, 'successful_tasks', 'unknown')} succeeded"
-        )
-        for i, sub in enumerate(eg.exceptions, 1):
-            logging.exception(
-                f"\n--- Sub-exception #{i}: {type(sub).__name__}: {sub} ---"
-            )
-            traceback.print_exception(type(sub), sub, sub.__traceback__)
-        return
-    else:
-        logging.info(
-            f"\nSuccessfully added {n_compounds_added} compounds to the database."
-        )
+                existing_targets = {r.target_chembl_id: r for r in rows}
 
-    # Run the queries from this script; can alternatively run from queries.py directly
-    run_queries()
-    pass
+            for mol in molecules:
+                chembl_id = mol.get("molecule_chembl_id")
+                pref_name = mol.get("pref_name")
+                props = mol.get("molecule_properties", {}) or {}
+                compound = Compound(
+                    chembl_id=chembl_id,
+                    sml=mol.get("molecule_structures", {}).get("canonical_smiles"),
+                    pref_name=pref_name,
+                    molwt=props.get("full_molweight"),
+                    tpsa=props.get("tpsa"),
+                    num_h_acceptors=props.get("num_h_acceptors"),
+                    num_h_donors=props.get("num_h_donors"),
+                    num_ro5=props.get("num_ro5_violations"),
+                    mol_logp=props.get("alogp"),
+                )
+
+                with db_session.begin_nested():
+                    db_session.add(compound)
+                    db_session.flush()  # get compound.id
+
+                    for target_data in mol.get("targets", []):
+                        target_id = target_data.get("target_chembl_id")
+                        if not target_id:
+                            continue
+
+                        # reuse existing Target if present
+                        target_obj = existing_targets.get(target_id)
+                        if target_obj is None:
+                            # create new Target, add and flush to get id, then cache it
+                            target_obj = Target(
+                                organism=target_data.get("organism"),
+                                pref_name=target_data.get("pref_name"),
+                                target_chembl_id=target_id,
+                                target_type=target_data.get("target_type"),
+                            )
+                            db_session.add(target_obj)
+                            db_session.flush()  # populates target_obj.id
+                            existing_targets[target_id] = target_obj
+                            n_targets_saved += 1
+
+                        # create association
+                        compound_target = CompoundTarget(
+                            compound_id=compound.id,
+                            target_id=target_obj.id,
+                        )
+                        db_session.add(compound_target)
+                        n_compounds_targets_saved += 1
+
+                n_mols_saved += 1
+
+            # outer commit happens when exiting the with Session() context
+        except IntegrityError as e:
+            # handle unexpected integrity issues gracefully
+            logging.info(f"IntegrityError while saving: {e}")
+            db_session.rollback()
+        except SQLAlchemyError:
+            logging.exception("Database error saving compounds")
+            db_session.rollback()
+            raise
+
+    return n_mols_saved, n_targets_saved, n_compounds_targets_saved
+
+
 
 
 def init_db():
@@ -249,10 +270,19 @@ class Target(Base):
     __tablename__ = "target"
 
     id = Column(Integer, primary_key=True)
-    target_chembl_id = Column(String, unique=True)
-    target_type = Column(String)
     organism = Column(String)
     pref_name = Column(String)
+    target_chembl_id = Column(String, unique=True)
+    target_type = Column(String)
+
+
+# Join table
+class CompoundTarget(Base):
+    __tablename__ = "compound_target"
+
+    id = Column(Integer, primary_key=True)
+    compound_id = Column(Integer, sqlalchemy.ForeignKey("compound.id"))
+    target_id = Column(Integer, sqlalchemy.ForeignKey("target.id"))
 
 
 def run_queries():
@@ -280,14 +310,32 @@ def run_queries():
 
 
 if __name__ == "__main__":
-    # main()
+    # Reset database (uncomment to start fresh)
+    reset_db()
+
+    # Ensure tables exist
+    init_db()
+
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
-    result = get_chembl_molecules(
-        n_compounds=20,
-        start_id=1, # Has targets
+    mols = get_chembl_molecules(
+        n_compounds=10,
+        start_id=1,  # Has targets
         # start_id=3430873, # Not a molecule
     )
     end = time.time()
-    logging.info(f"Fetched {len(result)} molecules in {end - start:.2f} seconds.")
+    logging.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
+
+    start = time.time()
+
+    n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
+        mols
+    )
+    logging.info(
+        f"Saved {n_mols_saved} compounds, "
+        f"{n_targets_saved} targets, "
+        f"{n_compounds_targets_saved} compound-target associations to the database,"
+        f"in {time.time() - start:.2f} seconds."
+    )
+
     pass

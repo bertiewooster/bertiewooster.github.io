@@ -12,3 +12,6 @@ _notebooks/.ipynb_checkpoints
 .venv-old
 _gitignore
 .vscode/
+
+# Databases
+*.db
