@@ -274,13 +274,21 @@ def run_queries():
 
         # Build per-compound target combo subquery:
         # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
-        target_combo_subq = (
-            select(func.group_concat(Target.pref_name, "/"))
-            .where(Compound.id == CompoundTarget.compound_id)
-            .where(CompoundTarget.target_id == Target.id)
+
+        # correlated inner select returning pref_name for the current Compound, ordered
+        inner = (
+            select(Target.pref_name)
+            .select_from(Target.__table__.join(CompoundTarget.__table__, CompoundTarget.target_id == Target.id))
+            .where(CompoundTarget.compound_id == Compound.id)
             .order_by(Target.pref_name)
-            .scalar_subquery()
+            .correlate(Compound)
         )
+
+        # name the derived table so the outer group_concat can select from it
+        ordered_targets = inner.subquery("ordered_targets")
+
+        # aggregate the ordered names with a '/' separator
+        target_combo_subq = select(func.group_concat(ordered_targets.c.pref_name, "/")).scalar_subquery()
 
         # Create a subquery that selects each compound's id and its target combination.
         type_combinations = db_session.query(
@@ -289,7 +297,7 @@ def run_queries():
         ).subquery()
 
         # Create a list of distinct type combinations and their counts
-        # where each is a tuple like (type_combo, num_pokemons)
+        # where each is a tuple like (target_combo, num_compounds)
         compound_targets = (
             db_session.query(
                 type_combinations.c.target_combo, func.count().label("num_compounds")
