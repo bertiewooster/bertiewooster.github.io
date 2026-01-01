@@ -14,7 +14,17 @@ import sqlalchemy
 from aiohttp import ClientSession
 from chembl_webresource_client.new_client import new_client
 from chembl_webresource_client.utils import utils
-from sqlalchemy import Column, Float, Integer, String, create_engine
+from sqlalchemy import (
+    Column,
+    Float,
+    Integer,
+    MetaData,
+    String,
+    Table,
+    create_engine,
+    func,
+    select,
+)
 
 # from queries import run_queries
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -258,24 +268,44 @@ class CompoundTarget(Base):
 def run_queries():
     """Run the required queries against the Pokemon database and print the results."""
     with Session() as db_session:
+        # 1. Find the count of all distinct counts of compound targets (ex: Voltage-gated inwardly rectifying potassium channel KCNH2:14, Neuronal acetylcholine receptor subunit alpha-3/Neuronal acetylcholine receptor subunit alpha-7: 5).
+        # For each compound, concatenate its targets with a slash.
+        # Then, count how many distinct such tuples exist in the database.
+
+        # Build per-compound target combo subquery:
+        # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
+        target_combo_subq = (
+            select(func.group_concat(Target.pref_name, "/"))
+            .where(Compound.id == CompoundTarget.compound_id)
+            .where(CompoundTarget.target_id == Target.id)
+            .order_by(Target.pref_name)
+            .scalar_subquery()
+        )
+
+        # Create a subquery that selects each compound's id and its target combination.
+        type_combinations = db_session.query(
+            Compound.id.label("compound_id"),
+            target_combo_subq.label("target_combo"),
+        ).subquery()
+
         # Create a list of distinct type combinations and their counts
         # where each is a tuple like (type_combo, num_pokemons)
-        poke_types = (
+        compound_targets = (
             db_session.query(
-                type_combinations.c.type_combo, func.count().label("num_pokemons")
+                type_combinations.c.target_combo, func.count().label("num_compounds")
             )
-            .group_by(type_combinations.c.type_combo)
-            .order_by(type_combinations.c.type_combo)
+            .group_by(type_combinations.c.target_combo)
+            .order_by(type_combinations.c.target_combo)
             .all()
         )
 
-        n_poke_by_type = 0
-        logging.info("1. Distinct Pokemon type combinations and their counts:")
-        for type_combo, count in poke_types:
-            logging.info(f"    {type_combo}: {count}")
-            n_poke_by_type += count
+        n_compound_by_target = 0
+        logging.info("1. Distinct compound target combinations and their counts:")
+        for target_combo, count in compound_targets:
+            logging.info(f"    {target_combo}: {count}")
+            n_compound_by_target += count
         logging.info(
-            f"    Total Pokemon counted by type combinations: {n_poke_by_type}"
+            f"    Total compounds counted by target combinations: {n_compound_by_target}"
         )
 
 
@@ -307,5 +337,7 @@ if __name__ == "__main__":
         f"{n_compounds_targets_saved} compound-target associations to the database, "
         f"in {time.time() - start:.2f} seconds."
     )
+
+    run_queries()
 
     pass
