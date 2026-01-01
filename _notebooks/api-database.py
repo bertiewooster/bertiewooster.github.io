@@ -66,9 +66,18 @@ def get_chembl_molecules(
         )
     )
 
+    # From the molecules in mols, extract the digits after "CHEMBL" to see which IDs were found
+    chembl_ids_found = set()
+    for mol in mols:
+        chembl_id = mol.get("molecule_chembl_id", "")
+        if chembl_id.startswith("CHEMBL"):
+            chembl_ids_found.add(int(chembl_id.replace("CHEMBL", "")))
+    chembl_ids_found_str = ", ".join(map(str, sorted(chembl_ids_found)))
+
     logging.info(
         f"Of the {n_compounds} ChEMBL IDs "
-        f"({start_id}-{start_id + n_compounds - 1}), {len(mols)} are compounds."
+        f"({start_id}-{start_id + n_compounds - 1}), {len(mols)} are compounds: "
+        f"ChEMBL IDs {chembl_ids_found_str}"
     )
 
     if not mols:
@@ -291,7 +300,7 @@ def run_queries():
         target_combo_subq = select(func.group_concat(ordered_targets.c.pref_name, "/")).scalar_subquery()
 
         # Create a subquery that selects each compound's id and its target combination.
-        type_combinations = db_session.query(
+        target_combinations = db_session.query(
             Compound.id.label("compound_id"),
             target_combo_subq.label("target_combo"),
         ).subquery()
@@ -300,17 +309,20 @@ def run_queries():
         # where each is a tuple like (target_combo, num_compounds)
         compound_targets = (
             db_session.query(
-                type_combinations.c.target_combo, func.count().label("num_compounds")
+            target_combinations.c.target_combo,
+            func.count().label("num_compounds"),
+            func.group_concat(Compound.chembl_id, ", ").label("chembl_ids"),
             )
-            .group_by(type_combinations.c.target_combo)
-            .order_by(type_combinations.c.target_combo)
+            .join(Compound, Compound.id == target_combinations.c.compound_id)
+            .group_by(target_combinations.c.target_combo)
+            .order_by(target_combinations.c.target_combo)
             .all()
         )
 
         n_compound_by_target = 0
         logging.info("1. Distinct compound target combinations and their counts:")
-        for target_combo, count in compound_targets:
-            logging.info(f"    {target_combo}: {count}")
+        for target_combo, count, chembl_ids in compound_targets:
+            logging.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
             n_compound_by_target += count
         logging.info(
             f"    Total compounds counted by target combinations: {n_compound_by_target}"
