@@ -290,7 +290,7 @@ def run_queries():
             select(Target.pref_name)
             .select_from(Target.__table__.join(CompoundTarget.__table__, CompoundTarget.target_id == Target.id))
             .where(CompoundTarget.compound_id == Compound.id)
-            .order_by(Target.pref_name)
+            .order_by(func.lower(Target.pref_name))
             .correlate(Compound)
         )
 
