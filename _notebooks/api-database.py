@@ -331,32 +331,32 @@ def run_queries():
 
 if __name__ == "__main__":
     # Reset database (uncomment to start fresh)
-    reset_db()
+    # reset_db()
 
     # Ensure tables exist
-    init_db()
+    # init_db()
 
     # Measure how long it takes to fetch ChEMBL molecules
-    start = time.time()
-    mols = get_chembl_molecules(
-        n_compounds=10,
-        start_id=1,  # Has targets
-        # start_id=3430873, # Not a molecule
-    )
-    end = time.time()
-    logging.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
+    # start = time.time()
+    # mols = get_chembl_molecules(
+    #     n_compounds=10,
+    #     start_id=1,  # Has targets
+    #     # start_id=3430873, # Not a molecule
+    # )
+    # end = time.time()
+    # logging.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
 
-    start = time.time()
+    # start = time.time()
 
-    n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
-        mols
-    )
-    logging.info(
-        f"Saved {n_mols_saved} compounds, "
-        f"{n_targets_saved} targets, "
-        f"{n_compounds_targets_saved} compound-target associations to the database, "
-        f"in {time.time() - start:.2f} seconds."
-    )
+    # n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
+    #     mols
+    # )
+    # logging.info(
+    #     f"Saved {n_mols_saved} compounds, "
+    #     f"{n_targets_saved} targets, "
+    #     f"{n_compounds_targets_saved} compound-target associations to the database, "
+    #     f"in {time.time() - start:.2f} seconds."
+    # )
 
     run_queries()
 
