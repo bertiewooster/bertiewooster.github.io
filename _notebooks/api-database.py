@@ -12,8 +12,9 @@ import sqlalchemy
 
 # import database
 from aiohttp import ClientSession
-from chembl_webresource_client.new_client import new_client
-from chembl_webresource_client.utils import utils
+
+# from chembl_webresource_client.new_client import new_client
+# from chembl_webresource_client.utils import utils
 from sqlalchemy import (
     Column,
     Float,
@@ -296,8 +297,8 @@ def run_queries():
         # name the derived table so the outer group_concat can select from it
         ordered_targets = inner.subquery("ordered_targets")
 
-        # aggregate the ordered names with a '/' separator
-        target_combo_subq = select(func.group_concat(ordered_targets.c.pref_name, "/")).scalar_subquery()
+        # aggregate the ordered names with a '\' separator
+        target_combo_subq = select(func.group_concat(ordered_targets.c.pref_name, "\\")).scalar_subquery()
 
         # Create a subquery that selects each compound's id and its target combination.
         target_combinations = db_session.query(
@@ -318,7 +319,7 @@ def run_queries():
             .order_by(target_combinations.c.target_combo)
             .all()
         )
-
+        
         n_compound_by_target = 0
         logging.info("1. Distinct compound target combinations and their counts:")
         for target_combo, count, chembl_ids in compound_targets:
@@ -329,7 +330,10 @@ def run_queries():
         )
 
 
+
+
 if __name__ == "__main__":
+    pass
     # Reset database (uncomment to start fresh)
     # reset_db()
 
