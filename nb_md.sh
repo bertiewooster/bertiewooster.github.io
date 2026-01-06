@@ -21,7 +21,7 @@
 
 FILENAME="2026-01-05-ChEBML-database"
 
-marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
+# marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
 jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --output ../_posts/$FILENAME.md
 
 # Note: After running this script, to post a blog post:
