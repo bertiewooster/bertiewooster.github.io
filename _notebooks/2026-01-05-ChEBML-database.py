@@ -12,12 +12,7 @@ def _():
 
 @app.cell
 def _(a):
-    a + 2
-    return
-
-
-@app.cell
-def _():
+    a + 3
     return
 
 

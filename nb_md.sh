@@ -14,7 +14,7 @@
 #  4) Change the name of the notebook (input) and markdown (output) files in the non-commented code below
 #  5) Save this script
 #  6) Use venv in this folder, not conda, in terminal using 
-#        . venv/bin/activate
+#        . .venv/bin/activate
 
 # Run this script in the terminal using:
 # ./nb_md.sh
@@ -22,7 +22,7 @@
 FILENAME="2026-01-05-ChEBML-database"
 
 marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
-jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --output ../_posts/$FILENAME.md
+jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --output ../_posts/$FILENAME.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
