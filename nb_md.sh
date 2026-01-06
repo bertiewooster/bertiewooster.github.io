@@ -19,7 +19,7 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-jupyter nbconvert _notebooks/2025-11-09-Hackathon-tips.ipynb --to markdown --output 2025-11-09-Hackathon-tips.md
+jupyter nbconvert _notebooks/2026-01-05-ChEBML-database.ipynb --to markdown --output 2026-01-05-ChEBML-database.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
