@@ -7,5 +7,6 @@ requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.13.2",
     "chembl-webresource-client>=0.10.9",
+    "marimo>=0.18.4",
     "sqlalchemy>=2.0.45",
 ]
