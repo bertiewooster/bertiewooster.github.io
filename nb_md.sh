@@ -19,8 +19,10 @@
 # Run this script in the terminal using:
 # ./nb_md.sh
 
-marimo export ipynb _notebooks/2026-01-05-ChEBML-database.py -o _notebooks/2026-01-05-ChEBML-database.ipynb
-jupyter nbconvert _notebooks/2026-01-05-ChEBML-database.ipynb --to markdown --output 2026-01-05-ChEBML-database.md
+FILENAME="2026-01-05-ChEBML-database"
+
+marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
+jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --output ../_posts/$FILENAME.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the markdown file into the _posts folder
