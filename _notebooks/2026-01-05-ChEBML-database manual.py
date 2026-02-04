@@ -1,62 +1,64 @@
 import marimo
 
-__generated_with = "0.19.7"
+__generated_with = "0.19.2"
 app = marimo.App()
 
 
 @app.cell
 def _():
-    import logging
-    import time
-    from collections import defaultdict
+    import matplotlib.pyplot as plt
+    return (plt,)
 
-    import sqlalchemy
-    from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-    from sqlalchemy.orm import declarative_base, sessionmaker
-    from sqlalchemy import (
-        Column,
-        Float,
-        Integer,
-        String,
-        create_engine,
-        func,
-        select,
-    )
-    from chembl_webresource_client.new_client import new_client
-    return (
-        Column,
-        Float,
-        Integer,
-        IntegrityError,
-        SQLAlchemyError,
-        String,
-        create_engine,
-        declarative_base,
-        defaultdict,
-        func,
-        logging,
-        new_client,
-        select,
-        sessionmaker,
-        sqlalchemy,
-        time,
-    )
+
+@app.cell
+def _():
+    a = 7
+    return (a,)
+
+
+@app.cell
+def _(a):
+    b = a + 3
+    b
+    return (b,)
+
+
+@app.cell
+def _(a, b, plt):
+    # Create the plot
+    fig, ax = plt.subplots()
+    ax.scatter(a, b)
+    ax.set_xlabel("a")
+    ax.set_ylabel("b")
+    ax.set_title("Plot of b against a")
+
+    fig
+    return
 
 
 @app.cell
 def _(create_engine, declarative_base, logging, sessionmaker):
-    # Set logging level to INFO
     logging.getLogger().setLevel(logging.INFO)
 
     Base = declarative_base()
 
     engine = create_engine("sqlite:///compounds.db", echo=False)
     Session = sessionmaker(bind=engine)
-    return Base, Session, engine
+    return (Session,)
 
 
 @app.cell
-def _(defaultdict, logging, new_client):
+def _(
+    Compound,
+    CompoundTarget,
+    IntegrityError,
+    SQLAlchemyError,
+    Session,
+    Target,
+    defaultdict,
+    logging,
+    new_client,
+):
     def get_chembl_molecules(
         n_compounds: int = 2,
         start_id: int = 1,
@@ -157,19 +159,8 @@ def _(defaultdict, logging, new_client):
             m["targets"] = [targets[tid] for tid in t_ids if tid in targets]
 
         return mols
-    return (get_chembl_molecules,)
 
 
-@app.cell
-def _(
-    Compound,
-    CompoundTarget,
-    IntegrityError,
-    SQLAlchemyError,
-    Session,
-    Target,
-    logging,
-):
     def save_compounds_to_db(molecules: list[dict]) -> tuple[int, int, int]:
         """Save multiple compounds and their targets to the database efficiently avoiding duplicate Targets."""
         # collect all target ids present in incoming molecules
@@ -257,168 +248,11 @@ def _(
                 raise
 
         return n_mols_saved, n_targets_saved, n_compounds_targets_saved
-    return (save_compounds_to_db,)
+    return
 
 
 @app.cell
-def _(Base, engine):
-    def init_db():
-        """Create database tables (call once at app startup or from scripts/tests)."""
-        Base.metadata.create_all(engine)
-    return (init_db,)
-
-
-@app.cell
-def _(Base, engine):
-    def reset_db():
-        """Drop all database tables (use with caution)."""
-        Base.metadata.drop_all(engine)
-    return (reset_db,)
-
-
-@app.cell
-def _(Base, Column, Float, Integer, String):
-    class Compound(Base):
-        __tablename__ = "compound"
-
-        id = Column(Integer, primary_key=True)
-        chembl_id = Column(Integer, unique=True)
-        sml = Column(String)
-        pref_name = Column(String)
-        molwt = Column(Float)  # MolWt
-        tpsa = Column(Float)  # TPSA
-        num_h_acceptors = Column(Integer)  # NumHAcceptors
-        num_h_donors = Column(Integer)  # NumHDonors
-        num_ro5 = Column(Integer)  # NumRo5
-        mol_logp = Column(Float)  # MolLogP
-    return (Compound,)
-
-
-@app.cell
-def _(Base, Column, Integer, String):
-    class Target(Base):
-        __tablename__ = "target"
-
-        id = Column(Integer, primary_key=True)
-        organism = Column(String)
-        pref_name = Column(String)
-        target_chembl_id = Column(String, unique=True)
-        target_type = Column(String)
-    return (Target,)
-
-
-@app.cell
-def _(Base, Column, Integer, sqlalchemy):
-    # Join table
-    class CompoundTarget(Base):
-        __tablename__ = "compound_target"
-
-        id = Column(Integer, primary_key=True)
-        compound_id = Column(Integer, sqlalchemy.ForeignKey("compound.id"))
-        target_id = Column(Integer, sqlalchemy.ForeignKey("target.id"))
-    return (CompoundTarget,)
-
-
-@app.cell
-def _(Compound, CompoundTarget, Session, Target, func, logging, select):
-    def run_queries():
-        """Run the required queries against the Pokemon database and print the results."""
-        with Session() as db_session:
-            # 1. Find the count of all distinct counts of compound targets (ex: Voltage-gated inwardly rectifying potassium channel KCNH2:14, Neuronal acetylcholine receptor subunit alpha-3/Neuronal acetylcholine receptor subunit alpha-7: 5).
-            # For each compound, concatenate its targets with a slash.
-            # Then, count how many distinct such tuples exist in the database.
-
-            # Build per-compound target combo subquery:
-            # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
-
-            # correlated inner select returning pref_name for the current Compound, ordered
-            inner = (
-                select(Target.pref_name)
-                .select_from(Target.__table__.join(CompoundTarget.__table__, CompoundTarget.target_id == Target.id))
-                .where(CompoundTarget.compound_id == Compound.id)
-                .order_by(func.lower(Target.pref_name))
-                .correlate(Compound)
-            )
-
-            # name the derived table so the outer group_concat can select from it
-            ordered_targets = inner.subquery("ordered_targets")
-
-            # aggregate the ordered names with a '\' separator
-            target_combo_subq = select(func.group_concat(ordered_targets.c.pref_name, "\\")).scalar_subquery()
-
-            # Create a subquery that selects each compound's id and its target combination.
-            target_combinations = db_session.query(
-                Compound.id.label("compound_id"),
-                target_combo_subq.label("target_combo"),
-            ).subquery()
-
-            # Create a list of distinct type combinations and their counts
-            # where each is a tuple like (target_combo, num_compounds)
-            compound_targets = (
-                db_session.query(
-                target_combinations.c.target_combo,
-                func.count().label("num_compounds"),
-                func.group_concat(Compound.chembl_id, ", ").label("chembl_ids"),
-                )
-                .join(Compound, Compound.id == target_combinations.c.compound_id)
-                .group_by(target_combinations.c.target_combo)
-                .order_by(target_combinations.c.target_combo)
-                .all()
-            )
-
-            n_compound_by_target = 0
-            logging.info("1. Distinct compound target combinations and their counts:")
-            for target_combo, count, chembl_ids in compound_targets:
-                logging.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
-                n_compound_by_target += count
-            logging.info(
-                f"    Total compounds counted by target combinations: {n_compound_by_target}"
-            )
-    return (run_queries,)
-
-
-@app.cell
-def _(
-    get_chembl_molecules,
-    init_db,
-    logging,
-    reset_db,
-    run_queries,
-    save_compounds_to_db,
-    time,
-):
-    # Reset database (uncomment to start fresh)
-    reset_db()
-
-    # Ensure tables exist
-    init_db()
-
-    # Measure how long it takes to fetch ChEMBL molecules
-    start = time.time()
-    mols = get_chembl_molecules(
-        n_compounds=10,
-        start_id=1,  # Has targets
-        # start_id=3430873, # Not a molecule
-    )
-
-    end = time.time()
-    logging.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
-
-    start = time.time()
-
-    n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
-        mols
-    )
-    logging.info(
-        f"Saved {n_mols_saved} compounds, "
-        f"{n_targets_saved} targets, "
-        f"{n_compounds_targets_saved} compound-target associations to the database, "
-        f"in {time.time() - start:.2f} seconds."
-    )
-
-    run_queries()
-
-    pass
+def _():
     return
 
 
