@@ -337,8 +337,8 @@ def _(
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
     mols = get_chembl_molecules(
-        n_compounds=10,
-        start_id=1,  # Has targets
+        n_compounds=30,
+        start_id=1000,  # Has targets
         # start_id=3430873, # Not a molecule
     )
 
@@ -437,23 +437,19 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
             )
             logging.info("2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:")
             current_target_combo = ""
+            logging.info("        Rule of 5 violation(s)")
             for target_combo, chembl_id, pref_name, num_ro5 in compounds_by_ro5:
                 if target_combo != current_target_combo:
                     current_target_combo = target_combo
                     logging.info(f"    Target combination: {current_target_combo}")
 
-                logging.info(f"        {num_ro5} Rule of 5 violation(s) for {pref_name} ({chembl_id})")
+                logging.info(f"        {num_ro5} for {pref_name} ({chembl_id})")
     return (run_queries,)
 
 
 @app.cell
 def _(run_queries):
     run_queries()
-    return
-
-
-@app.cell
-def _():
     return
 
 
