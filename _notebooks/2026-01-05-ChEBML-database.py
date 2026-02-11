@@ -320,9 +320,49 @@ def _(Base, Column, Integer, sqlalchemy):
 
 
 @app.cell
+def _(
+    get_chembl_molecules,
+    init_db,
+    logging,
+    reset_db,
+    save_compounds_to_db,
+    time,
+):
+    # Reset database (uncomment to start fresh)
+    reset_db()
+
+    # Ensure tables exist
+    init_db()
+
+    # Measure how long it takes to fetch ChEMBL molecules
+    start = time.time()
+    mols = get_chembl_molecules(
+        n_compounds=10,
+        start_id=1,  # Has targets
+        # start_id=3430873, # Not a molecule
+    )
+
+    end = time.time()
+    logging.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
+
+    start = time.time()
+
+    n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
+        mols
+    )
+    logging.info(
+        f"Saved {n_mols_saved} compounds, "
+        f"{n_targets_saved} targets, "
+        f"{n_compounds_targets_saved} compound-target associations to the database, "
+        f"in {time.time() - start:.2f} seconds."
+    )
+    return
+
+
+@app.cell
 def _(Compound, CompoundTarget, Session, Target, func, logging, select):
     def run_queries():
-        """Run the required queries against the Pokemon database and print the results."""
+        """Run the required queries against the ChEMBL database and print the results."""
         with Session() as db_session:
             # 1. Find the count of all distinct counts of compound targets (ex: Voltage-gated inwardly rectifying potassium channel KCNH2:14, Neuronal acetylcholine receptor subunit alpha-3/Neuronal acetylcholine receptor subunit alpha-7: 5).
             # For each compound, concatenate its targets with a slash.
@@ -374,51 +414,46 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
             logging.info(
                 f"    Total compounds counted by target combinations: {n_compound_by_target}"
             )
+
+            # Query compounds grouped by type and ordered by descending number of Rule of 5 violations
+            compounds_by_ro5 = (
+                db_session.query(
+                    target_combinations.c.target_combo,
+                    Compound.chembl_id,
+                    Compound.pref_name,
+                    Compound.num_ro5,
+                    # Compound.molwt,
+                    # Compound.tpsa,
+                    # Compound.num_h_acceptors,
+                    # Compound.num_h_donors,
+                    # Compound.mol_logp,
+                )
+                .join(Compound, Compound.id == target_combinations.c.compound_id)
+                .order_by(
+                    target_combinations.c.target_combo,
+                    Compound.num_ro5.desc(),
+                )
+                .all()
+            )
+            logging.info("2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:")
+            current_target_combo = ""
+            for target_combo, chembl_id, pref_name, num_ro5 in compounds_by_ro5:
+                if target_combo != current_target_combo:
+                    current_target_combo = target_combo
+                    logging.info(f"    Target combination: {current_target_combo}")
+
+                logging.info(f"        {num_ro5} Rule of 5 violation(s) for {pref_name} ({chembl_id})")
     return (run_queries,)
 
 
 @app.cell
-def _(
-    get_chembl_molecules,
-    init_db,
-    logging,
-    reset_db,
-    run_queries,
-    save_compounds_to_db,
-    time,
-):
-    # Reset database (uncomment to start fresh)
-    reset_db()
-
-    # Ensure tables exist
-    init_db()
-
-    # Measure how long it takes to fetch ChEMBL molecules
-    start = time.time()
-    mols = get_chembl_molecules(
-        n_compounds=10,
-        start_id=1,  # Has targets
-        # start_id=3430873, # Not a molecule
-    )
-
-    end = time.time()
-    logging.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
-
-    start = time.time()
-
-    n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
-        mols
-    )
-    logging.info(
-        f"Saved {n_mols_saved} compounds, "
-        f"{n_targets_saved} targets, "
-        f"{n_compounds_targets_saved} compound-target associations to the database, "
-        f"in {time.time() - start:.2f} seconds."
-    )
-
+def _(run_queries):
     run_queries()
+    return
 
-    pass
+
+@app.cell
+def _():
     return
 
 
