@@ -1,7 +1,7 @@
 [project]
 name = "bertiewooster-github-io"
 version = "0.1.0"
-description = "Add your description here"
+description = "Cheminformatics blog of Jeremy Monat"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

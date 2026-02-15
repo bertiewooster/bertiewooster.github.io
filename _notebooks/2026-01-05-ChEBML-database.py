@@ -5,6 +5,54 @@ app = marimo.App()
 
 
 @app.cell
+def _(mo):
+    mo.md(r"""
+    # ChEMBL Compounds, Targets, and Rule of 5
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    When reviewing data to find pharma compounds for virtual screening, we might want to check what they target and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. This post uses the ChEMBL API and a SQLite database to do that.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    This post pulls data from ChEMBL using its chembl_webresource_client for Python. It's a helpful package which handles the API calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.)
+
+    We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100%. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ChEMBL has the connections as molecules → activities → targets. That makes sense as a comprehensive schema; here, I wanted to simplify it by connecting molecules to targets more directly. So my schema is simpler Compound and Target are connected by a many-to-many relationship CompoundTarget.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    This is my first post using Marimo as the notebook: I had previously used just Jupyter. Initially Marimo wasn't great because
+
+    - I discovered that publishing to a Markdown file directly from Marimo didn't lead to good formatting on my Jekyll, so I converted from Marimo to Jupyter and then to Markdown
+    - I didn't have a reliable Internet connection when working on this and Marimo seemed to need a connection in VS Code
+    - Marimo doesn't seem to let me rename a variable in VS Code (and automatically change the variable name wherever it's used)
+
+    However, it seemed worth it when, before committing via git, the diff was so much more readable than in Jupyter (which is a ton of TypeScript, metadata, etc.). With Marimo, the diff is just the actual code changes and a small amount of formatting in Python.
+    """)
+    return
+
+
+@app.cell
 def _():
     import logging
     import time
@@ -106,7 +154,7 @@ def _(defaultdict, logging, new_client):
         # ---------------------------------
         # 2) Bulk fetch activities → targets
         # ---------------------------------
-        acts = activity.filter(
+        activities = activity.filter(
             molecule_chembl_id__in=mol_ids_present,
             target_organism="Homo sapiens",
             standard_type="IC50",
@@ -118,11 +166,11 @@ def _(defaultdict, logging, new_client):
                 "target_chembl_id",
             ]
         )
-        logging.info(f"Activities: {len(acts)}")
+        logging.info(f"Activities: {len(activities)}")
 
         mol_to_target_ids = defaultdict(set)
 
-        for a in acts:
+        for a in activities:
             try:
                 mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
             except Exception as e:
@@ -431,7 +479,7 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
                 .join(Compound, Compound.id == target_combinations.c.compound_id)
                 .order_by(
                     target_combinations.c.target_combo,
-                    Compound.num_ro5.desc(),
+                    Compound.num_ro5,
                 )
                 .all()
             )
