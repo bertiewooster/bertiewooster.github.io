@@ -33,7 +33,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ChEMBL has the connections as molecules ↔ activities ↔ targets.
+    ChEMBL has the connections as compounds ↔ activities ↔ targets.
     """)
     return
 
@@ -42,8 +42,10 @@ def _(mo):
 def _():
     from graphviz import Digraph
     from IPython.display import SVG, display
+    from sqlalchemy_schemadisplay import create_schema_graph
+    import pydot
 
-    return Digraph, SVG, display
+    return Digraph, SVG, create_schema_graph, display, pydot
 
 
 @app.cell
@@ -469,14 +471,7 @@ def _(init_db, reset_db):
 
 
 @app.cell
-def _(Base, SVG, display, engine):
-    from sqlalchemy_schemadisplay import create_schema_graph
-    from sqlalchemy import MetaData
-    import pydot
-
-    # Assuming your Base is declarative
-    metadata = Base.metadata
-
+def _(Base, SVG, create_schema_graph, display, engine, pydot):
     # Create the ERD graph
     graph = create_schema_graph(
         engine=engine,
@@ -491,11 +486,27 @@ def _(Base, SVG, display, engine):
     graph.add_edge(pydot.Edge("compound", "compound_target", style="invis"))
     graph.add_edge(pydot.Edge("compound_target", "target", style="invis"))
 
-    # Optional cleanup
+    # Cleanup
     graph.set_splines("ortho")
 
+    # Move FK labels horizontally away from edges
+    for edge in graph.get_edges():
+        head = edge.get_headlabel()
+        tail = edge.get_taillabel()
+
+        if head:
+            # Remove the "+ " prefix
+            clean_head = head.replace("+ ", "").replace("+", "")
+            edge.set_headlabel(clean_head)
+
+        if tail:
+            # Remove the "+ " prefix
+            clean_tail = tail.replace("+ ", "").replace("+", "")
+            edge.set_taillabel(clean_tail)
+            edge.set_labeldistance("2.5")
+
+    # Increase horizontal spacing between tables
     graph.set_ranksep("1.0")
-    graph.set_nodesep("0.6")
 
     svg_content = graph.create_svg()
     display(SVG(svg_content))
