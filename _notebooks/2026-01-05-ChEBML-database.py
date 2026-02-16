@@ -50,24 +50,25 @@ def _():
 def _():
     # Scale down size of labels and arrowheads
     crow_fontsize = "8"   # smaller font for "1" labels
-    arrow_scale = "0.5"   # smaller arrowheads
+    arrow_scale = "0.4"   # smaller arrowheads
     return arrow_scale, crow_fontsize
 
 
 @app.cell
 def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
-    dot = Digviz = Digraph(format="svg")
+    # Create the diagram
+    dot = Digraph(format="svg")
     dot.attr(rankdir="LR", splines="ortho")
     dot.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
 
-    # Define nodes
+    # Nodes
     dot.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
     dot.node("Activity", "{Activity|activity_id (PK)\\ncompound_id (FK)\\nassay_id (FK)}", fillcolor="#F4D35E")
     dot.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
     dot.node("AssayTarget", "{AssayTarget|assay_id (FK)\\ntarget_id (FK)}", fillcolor="#F4D35E")
     dot.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
 
-    # Invisible edges to enforce left-to-right ordering
+    # Invisible edges for layout
     dot.edge("Compound", "Activity", style="invis")
     dot.edge("Activity", "Assay", style="invis")
     dot.edge("Assay", "AssayTarget", style="invis")
@@ -82,7 +83,7 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     dot.edge("Target", "AssayTarget", xlabel="1", fontsize=crow_fontsize,
              arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
 
-    # Render SVG in memory and display
+    # Render inline SVG (scalable, no file saved)
     svg_content = dot.pipe(format="svg").decode("utf-8")
     display(SVG(svg_content))
     return
@@ -110,6 +111,96 @@ def _(Digraph, SVG, crow_fontsize, display):
     # Render and display
     svg_content_simple = dot_simple.pipe(format="svg").decode("utf-8")
     display(SVG(svg_content_simple))
+    return
+
+
+@app.cell
+def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
+    # Create the diagram
+    dot_no_joins = Digraph(format="svg")
+    dot_no_joins.attr(rankdir="LR", splines="ortho")
+    dot_no_joins.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
+
+    # Nodes
+    dot_no_joins.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
+    dot_no_joins.node("Activity", "{Activity|activity_id (PK)\\ncompound_id (FK)\\nassay_id (FK)}", fillcolor="#F4D35E")
+    dot_no_joins.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
+    dot_no_joins.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
+
+    # Invisible edges for layout
+    dot_no_joins.edge("Compound", "Activity", style="invis")
+    dot_no_joins.edge("Activity", "Assay", style="invis")
+    dot_no_joins.edge("Assay", "Target", style="invis")
+
+    dot_no_joins.edge("Compound", "Activity", xlabel="1", fontsize=crow_fontsize,
+             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
+    dot_no_joins.edge("Assay", "Activity", xlabel="1", fontsize=crow_fontsize,
+             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
+    dot_no_joins.edge("Assay", "Target", xlabel="1", fontsize=crow_fontsize,
+             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
+
+    # Render inline SVG (scalable, no file saved)
+    svg_content_no_joins = dot_no_joins.pipe(format="svg").decode("utf-8")
+    display(SVG(svg_content_no_joins))
+    return
+
+
+@app.cell
+def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
+    # Create the diagram
+    dot_no_activity = Digraph(format="svg")
+    dot_no_activity.attr(rankdir="LR", splines="ortho")
+    dot_no_activity.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
+
+    # Nodes
+    dot_no_activity.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
+    dot_no_activity.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
+    dot_no_activity.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
+
+    # Invisible edges for layout
+    dot_no_activity.edge("Compound", "Assay", style="invis")
+    dot_no_activity.edge("Assay", "Target", style="invis")
+
+    dot_no_activity.edge("Compound", "Assay", fontsize=crow_fontsize,
+             arrowhead="crow", arrowtail="crow", dir="both", color="black", arrowsize=arrow_scale)
+    dot_no_activity.edge("Assay", "Target", fontsize=crow_fontsize,
+             arrowhead="crow", arrowtail="crow", dir="both", color="black", arrowsize=arrow_scale)
+
+    # Render inline SVG (scalable, no file saved)
+    svg_content_no_activity = dot_no_activity.pipe(format="svg").decode("utf-8")
+    display(SVG(svg_content_no_activity))
+    return
+
+
+@app.cell
+def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
+    # Create the diagram
+    dot_simple_no_join = Digraph(format="svg")
+    dot_simple_no_join.attr(rankdir="LR", splines="ortho")
+    dot_simple_no_join.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
+
+    # Define nodes
+    dot_simple_no_join.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
+    dot_simple_no_join.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
+
+    # Invisible edge to force left-to-right ordering
+    dot_simple_no_join.edge("Compound", "Target", style="invis")
+
+    # Many-to-many edge (crow's foot at both ends)
+    dot_simple_no_join.edge(
+        "Compound",
+        "Target",
+        fontsize=crow_fontsize,
+        arrowhead="crow",
+        arrowtail="crow",
+        dir="both",
+        color="black",
+        arrowsize=arrow_scale
+    )
+
+    # Render inline SVG (no file saved)
+    svg_content_simple_no_join = dot_simple_no_join.pipe(format="svg").decode("utf-8")
+    display(SVG(svg_content_simple_no_join))
     return
 
 
