@@ -7,7 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.13.2",
     "chembl-webresource-client>=0.10.9",
-    "marimo>=0.19.0",
+    "marimo>=0.19.10",
     "matplotlib>=3.10.8",
     "nbconvert>=7.16.6",
     "nbformat>=5.10.4",

@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.7"
+__generated_with = "0.19.11"
 app = marimo.App()
 
 
@@ -39,6 +39,81 @@ def _(mo):
 
 
 @app.cell
+def _():
+    from graphviz import Digraph
+    from IPython.display import SVG, display
+
+    return Digraph, SVG, display
+
+
+@app.cell
+def _():
+    # Scale down size of labels and arrowheads
+    crow_fontsize = "8"   # smaller font for "1" labels
+    arrow_scale = "0.5"   # smaller arrowheads
+    return arrow_scale, crow_fontsize
+
+
+@app.cell
+def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
+    dot = Digviz = Digraph(format="svg")
+    dot.attr(rankdir="LR", splines="ortho")
+    dot.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
+
+    # Define nodes
+    dot.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
+    dot.node("Activity", "{Activity|activity_id (PK)\\ncompound_id (FK)\\nassay_id (FK)}", fillcolor="#F4D35E")
+    dot.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
+    dot.node("AssayTarget", "{AssayTarget|assay_id (FK)\\ntarget_id (FK)}", fillcolor="#F4D35E")
+    dot.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
+
+    # Invisible edges to enforce left-to-right ordering
+    dot.edge("Compound", "Activity", style="invis")
+    dot.edge("Activity", "Assay", style="invis")
+    dot.edge("Assay", "AssayTarget", style="invis")
+    dot.edge("AssayTarget", "Target", style="invis")
+
+    dot.edge("Compound", "Activity", xlabel="1", fontsize=crow_fontsize,
+             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
+    dot.edge("Assay", "Activity", xlabel="1", fontsize=crow_fontsize,
+             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
+    dot.edge("Assay", "AssayTarget", xlabel="1", fontsize=crow_fontsize,
+             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
+    dot.edge("Target", "AssayTarget", xlabel="1", fontsize=crow_fontsize,
+             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
+
+    # Render SVG in memory and display
+    svg_content = dot.pipe(format="svg").decode("utf-8")
+    display(SVG(svg_content))
+    return
+
+
+@app.cell
+def _(Digraph, SVG, crow_fontsize, display):
+    dot_simple = Digraph(format="svg")
+    dot_simple.attr(rankdir="LR", splines="ortho")
+    dot_simple.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
+
+    # Define nodes without invalid < > symbols
+    dot_simple.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")      
+    dot_simple.node("CompoundTarget", "{CompoundTarget|compound_id (FK)\\ntarget_id (FK)}", fillcolor="#F4D35E")  
+    dot_simple.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")           
+
+    # Invisible edges to force left-to-right ordering
+    dot_simple.edge("Compound", "CompoundTarget", style="invis", fontsize=crow_fontsize)
+    dot_simple.edge("CompoundTarget", "Target", style="invis", fontsize=crow_fontsize)
+
+    # Crow's-foot relationships (many end at CompoundTarget)
+    dot_simple.edge("Compound", "CompoundTarget", xlabel="1", arrowhead="none", arrowtail="crow", dir="back", color="black", fontsize=crow_fontsize)
+    dot_simple.edge("Target", "CompoundTarget", xlabel="1", arrowhead="none", arrowtail="crow", dir="back", color="black", fontsize=crow_fontsize)
+
+    # Render and display
+    svg_content_simple = dot_simple.pipe(format="svg").decode("utf-8")
+    display(SVG(svg_content_simple))
+    return
+
+
+@app.cell
 def _(mo):
     mo.md(r"""
     This is my first post using Marimo as the notebook: I had previously used just Jupyter. Initially Marimo wasn't great because
@@ -71,6 +146,7 @@ def _():
         select,
     )
     from chembl_webresource_client.new_client import new_client
+
     return (
         Column,
         Float,
@@ -205,6 +281,7 @@ def _(defaultdict, logging, new_client):
             m["targets"] = [targets[tid] for tid in t_ids if tid in targets]
 
         return mols
+
     return (get_chembl_molecules,)
 
 
@@ -305,6 +382,7 @@ def _(
                 raise
 
         return n_mols_saved, n_targets_saved, n_compounds_targets_saved
+
     return (save_compounds_to_db,)
 
 
@@ -313,6 +391,7 @@ def _(Base, engine):
     def init_db():
         """Create database tables (call once at app startup or from scripts/tests)."""
         Base.metadata.create_all(engine)
+
     return (init_db,)
 
 
@@ -321,6 +400,7 @@ def _(Base, engine):
     def reset_db():
         """Drop all database tables (use with caution)."""
         Base.metadata.drop_all(engine)
+
     return (reset_db,)
 
 
@@ -339,6 +419,7 @@ def _(Base, Column, Float, Integer, String):
         num_h_donors = Column(Integer)  # NumHDonors
         num_ro5 = Column(Integer)  # NumRo5
         mol_logp = Column(Float)  # MolLogP
+
     return (Compound,)
 
 
@@ -352,6 +433,7 @@ def _(Base, Column, Integer, String):
         pref_name = Column(String)
         target_chembl_id = Column(String, unique=True)
         target_type = Column(String)
+
     return (Target,)
 
 
@@ -364,6 +446,7 @@ def _(Base, Column, Integer, sqlalchemy):
         id = Column(Integer, primary_key=True)
         compound_id = Column(Integer, sqlalchemy.ForeignKey("compound.id"))
         target_id = Column(Integer, sqlalchemy.ForeignKey("target.id"))
+
     return (CompoundTarget,)
 
 
@@ -492,6 +575,7 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
                     logging.info(f"    Target combination: {current_target_combo}")
 
                 logging.info(f"        {num_ro5} for {pref_name} ({chembl_id})")
+
     return (run_queries,)
 
 
