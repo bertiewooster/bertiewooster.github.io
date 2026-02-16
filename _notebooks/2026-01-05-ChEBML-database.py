@@ -471,7 +471,44 @@ def _(init_db, reset_db):
 
 
 @app.cell
-def _(Base, SVG, create_schema_graph, display, engine, pydot):
+def _(pydot):
+    def add_ordering_edges(graph, Base):
+        """
+        Add invisible edges based on foreign key relationships to enforce left-to-right ordering
+    
+        Args:
+            graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
+            Base: SQLAlchemy declarative base containing table metadata.
+        
+        Returns:
+            The modified graph object with invisible ordering edges added.
+
+        """
+    
+        # inspector = inspect(Base.metadata)
+    
+        # Get all table names
+        tables = Base.metadata.tables.keys()
+    
+        # For each table, check for foreign keys
+        for table_name in tables:
+            table = Base.metadata.tables[table_name]
+        
+            for fk in table.foreign_key_constraints:
+                # fk.referred_table.name is the parent table
+                # table_name is the child table (join table)
+                parent_table = fk.referred_table.name
+            
+                # Add invisible edge: parent -> child
+                graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
+    
+        return graph
+
+    return (add_ordering_edges,)
+
+
+@app.cell
+def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
     # Create the ERD graph
     graph = create_schema_graph(
         engine=engine,
@@ -482,11 +519,10 @@ def _(Base, SVG, create_schema_graph, display, engine, pydot):
         concentrate=False
     )
 
-    # Force strict left-to-right ordering with invisible edges
-    graph.add_edge(pydot.Edge("compound", "compound_target", style="invis"))
-    graph.add_edge(pydot.Edge("compound_target", "target", style="invis"))
+    # Force strict left-to-right ordering with invisible edges;
+    # add them programmatically by inspecting the SQLAlchemy model
+    add_ordering_edges(graph, Base)
 
-    # Cleanup
     graph.set_splines("ortho")
 
     # Move FK labels horizontally away from edges
