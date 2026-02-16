@@ -459,20 +459,51 @@ def _(Base, Column, Integer, sqlalchemy):
 
 
 @app.cell
-def _(
-    get_chembl_molecules,
-    init_db,
-    logging,
-    reset_db,
-    save_compounds_to_db,
-    time,
-):
+def _(init_db, reset_db):
     # Reset database (uncomment to start fresh)
     reset_db()
 
     # Ensure tables exist
     init_db()
+    return
 
+
+@app.cell
+def _(Base, SVG, display, engine):
+    from sqlalchemy_schemadisplay import create_schema_graph
+    from sqlalchemy import MetaData
+    import pydot
+
+    # Assuming your Base is declarative
+    metadata = Base.metadata
+
+    # Create the ERD graph
+    graph = create_schema_graph(
+        engine=engine,
+        metadata=Base.metadata,
+        show_datatypes=True,
+        show_indexes=False,
+        rankdir='LR',
+        concentrate=False
+    )
+
+    # Force strict left-to-right ordering with invisible edges
+    graph.add_edge(pydot.Edge("compound", "compound_target", style="invis"))
+    graph.add_edge(pydot.Edge("compound_target", "target", style="invis"))
+
+    # Optional cleanup
+    graph.set_splines("ortho")
+
+    graph.set_ranksep("1.0")
+    graph.set_nodesep("0.6")
+
+    svg_content = graph.create_svg()
+    display(SVG(svg_content))
+    return
+
+
+@app.cell
+def _(get_chembl_molecules, logging, save_compounds_to_db, time):
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
     mols = get_chembl_molecules(

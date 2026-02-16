@@ -11,5 +11,7 @@ dependencies = [
     "matplotlib>=3.10.8",
     "nbconvert>=7.16.6",
     "nbformat>=5.10.4",
+    "pydot>=4.0.1",
     "sqlalchemy>=2.0.45",
+    "sqlalchemy-schemadisplay>=2.0",
 ]
