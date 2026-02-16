@@ -33,7 +33,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ChEMBL has the connections as molecules → activities → targets. That makes sense as a comprehensive schema; here, I wanted to simplify it by connecting molecules to targets more directly. So my schema is simpler Compound and Target are connected by a many-to-many relationship CompoundTarget.
+    ChEMBL has the connections as molecules ↔ activities ↔ targets.
     """)
     return
 
@@ -52,97 +52,6 @@ def _():
     crow_fontsize = "8"   # smaller font for "1" labels
     arrow_scale = "0.4"   # smaller arrowheads
     return arrow_scale, crow_fontsize
-
-
-@app.cell
-def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
-    # Create the diagram
-    dot = Digraph(format="svg")
-    dot.attr(rankdir="LR", splines="ortho")
-    dot.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
-
-    # Nodes
-    dot.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
-    dot.node("Activity", "{Activity|activity_id (PK)\\ncompound_id (FK)\\nassay_id (FK)}", fillcolor="#F4D35E")
-    dot.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
-    dot.node("AssayTarget", "{AssayTarget|assay_id (FK)\\ntarget_id (FK)}", fillcolor="#F4D35E")
-    dot.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
-
-    # Invisible edges for layout
-    dot.edge("Compound", "Activity", style="invis")
-    dot.edge("Activity", "Assay", style="invis")
-    dot.edge("Assay", "AssayTarget", style="invis")
-    dot.edge("AssayTarget", "Target", style="invis")
-
-    dot.edge("Compound", "Activity", xlabel="1", fontsize=crow_fontsize,
-             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
-    dot.edge("Assay", "Activity", xlabel="1", fontsize=crow_fontsize,
-             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
-    dot.edge("Assay", "AssayTarget", xlabel="1", fontsize=crow_fontsize,
-             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
-    dot.edge("Target", "AssayTarget", xlabel="1", fontsize=crow_fontsize,
-             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
-
-    # Render inline SVG (scalable, no file saved)
-    svg_content = dot.pipe(format="svg").decode("utf-8")
-    display(SVG(svg_content))
-    return
-
-
-@app.cell
-def _(Digraph, SVG, crow_fontsize, display):
-    dot_simple = Digraph(format="svg")
-    dot_simple.attr(rankdir="LR", splines="ortho")
-    dot_simple.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
-
-    # Define nodes without invalid < > symbols
-    dot_simple.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")      
-    dot_simple.node("CompoundTarget", "{CompoundTarget|compound_id (FK)\\ntarget_id (FK)}", fillcolor="#F4D35E")  
-    dot_simple.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")           
-
-    # Invisible edges to force left-to-right ordering
-    dot_simple.edge("Compound", "CompoundTarget", style="invis", fontsize=crow_fontsize)
-    dot_simple.edge("CompoundTarget", "Target", style="invis", fontsize=crow_fontsize)
-
-    # Crow's-foot relationships (many end at CompoundTarget)
-    dot_simple.edge("Compound", "CompoundTarget", xlabel="1", arrowhead="none", arrowtail="crow", dir="back", color="black", fontsize=crow_fontsize)
-    dot_simple.edge("Target", "CompoundTarget", xlabel="1", arrowhead="none", arrowtail="crow", dir="back", color="black", fontsize=crow_fontsize)
-
-    # Render and display
-    svg_content_simple = dot_simple.pipe(format="svg").decode("utf-8")
-    display(SVG(svg_content_simple))
-    return
-
-
-@app.cell
-def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
-    # Create the diagram
-    dot_no_joins = Digraph(format="svg")
-    dot_no_joins.attr(rankdir="LR", splines="ortho")
-    dot_no_joins.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
-
-    # Nodes
-    dot_no_joins.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
-    dot_no_joins.node("Activity", "{Activity|activity_id (PK)\\ncompound_id (FK)\\nassay_id (FK)}", fillcolor="#F4D35E")
-    dot_no_joins.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
-    dot_no_joins.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
-
-    # Invisible edges for layout
-    dot_no_joins.edge("Compound", "Activity", style="invis")
-    dot_no_joins.edge("Activity", "Assay", style="invis")
-    dot_no_joins.edge("Assay", "Target", style="invis")
-
-    dot_no_joins.edge("Compound", "Activity", xlabel="1", fontsize=crow_fontsize,
-             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
-    dot_no_joins.edge("Assay", "Activity", xlabel="1", fontsize=crow_fontsize,
-             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
-    dot_no_joins.edge("Assay", "Target", xlabel="1", fontsize=crow_fontsize,
-             arrowhead="none", arrowtail="crow", dir="back", color="black", arrowsize=arrow_scale)
-
-    # Render inline SVG (scalable, no file saved)
-    svg_content_no_joins = dot_no_joins.pipe(format="svg").decode("utf-8")
-    display(SVG(svg_content_no_joins))
-    return
 
 
 @app.cell
@@ -169,6 +78,14 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     # Render inline SVG (scalable, no file saved)
     svg_content_no_activity = dot_no_activity.pipe(format="svg").decode("utf-8")
     display(SVG(svg_content_no_activity))
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    That makes sense as a comprehensive schema; here, I wanted to simplify it by connecting molecules to targets more directly. So my schema is simply Compound ↔ Target.
+    """)
     return
 
 
@@ -213,7 +130,7 @@ def _(mo):
     - I didn't have a reliable Internet connection when working on this and Marimo seemed to need a connection in VS Code
     - Marimo doesn't seem to let me rename a variable in VS Code (and automatically change the variable name wherever it's used)
 
-    However, it seemed worth it when, before committing via git, the diff was so much more readable than in Jupyter (which is a ton of TypeScript, metadata, etc.). With Marimo, the diff is just the actual code changes and a small amount of formatting in Python.
+    However, it seemed worth it when, before committing via git, the diff was so much more readable than in Jupyter (which is a ton of TypeScript, metadata, etc.). With Marimo, the diff is just the actual code changes and a small amount of formatting in Python. With Jupyter Notebooks, in theory source control works, but in practice it's so difficult to tell what changes were made that I didn't find it useful for identifying or rolling back changes.
     """)
     return
 
