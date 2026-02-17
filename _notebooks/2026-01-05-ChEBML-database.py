@@ -43,6 +43,7 @@ def _():
     from graphviz import Digraph
     from IPython.display import SVG, display
     from sqlalchemy_schemadisplay import create_schema_graph
+    # from sqlalchemy import Table
     import pydot
 
     return Digraph, SVG, create_schema_graph, display, pydot
@@ -562,6 +563,98 @@ def _(
     engine,
     pydot,
 ):
+    def detect_join_tables(Base):
+        """
+        Detect join tables (tables with only an id and two foreign keys).
+    
+        Returns:
+            dict: Mapping of join_table_name -> (parent_table1, parent_table2)
+        """
+        join_tables = {}
+    
+        for table_name, table in Base.metadata.tables.items():        
+            # Get foreign key constraints
+            fk_constraints = list(table.foreign_key_constraints)
+        
+            # A join table typically has:
+            # - Only id as primary key (or composite PK of the two FKs)
+            # - Exactly 2 foreign key columns
+            # - Minimal or no other columns
+        
+            foreign_key_columns = []
+            for fk in fk_constraints:
+                foreign_key_columns.extend(fk.column_keys)
+        
+            # Check if this looks like a join table:
+            # Has exactly 2 FK constraints pointing to different tables
+            if len(fk_constraints) == 2:
+                referred_tables = [fk.referred_table.name for fk in fk_constraints]
+            
+                # Make sure they point to different tables
+                if referred_tables[0] != referred_tables[1]:
+                    join_tables[table_name] = tuple(referred_tables)
+    
+        return join_tables
+
+
+    def get_primary_key_name(Base, table_name):
+        """
+        Get the primary key column name for a table.
+    
+        Args:
+            Base: SQLAlchemy declarative base
+            table_name: Name of the table
+        
+        Returns:
+            str: Primary key column name (or comma-separated list if composite)
+        """
+        table = Base.metadata.tables[table_name]
+        pk_columns = [col.name for col in table.columns if col.primary_key]
+    
+        if len(pk_columns) == 1:
+            return pk_columns[0]
+        elif len(pk_columns) > 1:
+            return ', '.join(pk_columns)  # Composite key
+        else:
+            return 'id'  # Fallback
+
+
+    def remove_join_tables_from_graph(graph, Base):
+        """
+        Remove join tables from graph and replace with direct many-to-many edges.
+    
+        Args:
+            graph: pydot.Dot graph object
+            Base: SQLAlchemy declarative base
+        
+        Returns:
+            set: Names of removed join tables
+        """
+        join_tables = detect_join_tables(Base)
+    
+        for join_table, (table1, table2) in join_tables.items():
+            # Remove the join table node
+            graph.del_node(join_table)
+        
+            # Remove all edges connected to the join table
+            for edge in list(graph.get_edges()):
+                if edge.get_source() == join_table or edge.get_destination() == join_table:
+                    graph.del_edge(edge.get_source(), edge.get_destination())
+        
+            # Get primary key names for both tables
+            table1_pk = get_primary_key_name(Base, table1)
+            table2_pk = get_primary_key_name(Base, table2)
+        
+            # Add a direct many-to-many edge between the two tables
+            graph.add_edge(pydot.Edge(table1, table2, 
+                                      taillabel=table1_pk, 
+                                      headlabel=table2_pk,
+                                      arrowhead='crow',
+                                      arrowtail='crow',
+                                      dir='both'))
+    
+        return set(join_tables.keys())
+
     # Create the ERD graph
     graph = create_schema_graph(
         engine=engine,
@@ -572,22 +665,11 @@ def _(
         concentrate=False
     )
 
-    # Remove compound_target node and all its edges
-    graph.del_node('compound_target')
-    for edge in list(graph.get_edges()):
-        if edge.get_source() == 'compound_target' or edge.get_destination() == 'compound_target':
-            graph.del_edge(edge.get_source(), edge.get_destination())
+    # Automatically detect and remove join tables
+    excluded_tables = remove_join_tables_from_graph(graph, Base)
 
-    # Add a direct many-to-many edge between compound and target
-    graph.add_edge(pydot.Edge('compound', 'target', 
-                              taillabel='id', 
-                              headlabel='id',
-                              arrowhead='crow',
-                              arrowtail='crow',
-                              dir='both'))
-
-    # Add ordering edges (excluding compound_target)
-    add_ordering_edges(graph, Base, exclude_tables={'compound_target'})
+    # Add ordering edges (excluding detected join tables)
+    add_ordering_edges(graph, Base, exclude_tables=excluded_tables)
 
     graph.set_splines("ortho")
 
@@ -597,12 +679,10 @@ def _(
         tail = edge.get_taillabel()
 
         if head:
-            clean_head = head.replace("+ ", "").replace("+", "")
-            edge.set_headlabel(clean_head)
+            edge.set_headlabel(head)
 
         if tail:
-            clean_tail = tail.replace("+ ", "").replace("+", "")
-            edge.set_taillabel(clean_tail)
+            edge.set_taillabel(tail)
             edge.set_labeldistance("2.5")
 
     graph.set_ranksep("1.0")
