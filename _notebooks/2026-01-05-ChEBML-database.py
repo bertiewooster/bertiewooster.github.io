@@ -130,7 +130,8 @@ def _(mo):
 
     - I discovered that publishing to a Markdown file directly from Marimo didn't lead to good formatting on my Jekyll, so I converted from Marimo to Jupyter and then to Markdown
     - I didn't have a reliable Internet connection when working on this and Marimo seemed to need a connection in VS Code
-    - Marimo doesn't seem to let me rename a variable in VS Code (and automatically change the variable name wherever it's used)
+    - I sometimes am not allowed to rename a variable in VS Code (and automatically change the variable name wherever it's used)
+    - Marimo is very serious about not allowing you to re-use a variable name, even an iterator variable which is usually a throw-away. So for example if you're trying out two versions of a code block, you have to rename every variable, even the iterators. While I understand the need for this, perhaps there's a way to make it easier by specifying a suffix to append to each variable name when you clone a code block--seems like something an LLM could handle.
 
     However, it seemed worth it when, before committing via git, the diff was so much more readable than in Jupyter (which is a ton of TypeScript, metadata, etc.). With Marimo, the diff is just the actual code changes and a small amount of formatting in Python. With Jupyter Notebooks, in theory source control works, but in practice it's so difficult to tell what changes were made that I didn't find it useful for identifying or rolling back changes.
     """)
@@ -472,35 +473,37 @@ def _(init_db, reset_db):
 
 @app.cell
 def _(pydot):
-    def add_ordering_edges(graph, Base):
+    def add_ordering_edges(graph, Base, exclude_tables=None):
         """
         Add invisible edges based on foreign key relationships to enforce left-to-right ordering
     
         Args:
             graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
             Base: SQLAlchemy declarative base containing table metadata.
+            exclude_tables: Set of table names to exclude from processing
         
         Returns:
             The modified graph object with invisible ordering edges added.
-
         """
-    
-        # inspector = inspect(Base.metadata)
+        if exclude_tables is None:
+            exclude_tables = set()
     
         # Get all table names
         tables = Base.metadata.tables.keys()
     
         # For each table, check for foreign keys
         for table_name in tables:
+            if table_name in exclude_tables:
+                continue
+            
             table = Base.metadata.tables[table_name]
         
             for fk in table.foreign_key_constraints:
-                # fk.referred_table.name is the parent table
-                # table_name is the child table (join table)
                 parent_table = fk.referred_table.name
             
-                # Add invisible edge: parent -> child
-                graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
+                if parent_table not in exclude_tables:
+                    # Add invisible edge: parent -> child
+                    graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
     
         return graph
 
@@ -510,7 +513,7 @@ def _(pydot):
 @app.cell
 def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
     # Create the ERD graph
-    graph = create_schema_graph(
+    graph_full = create_schema_graph(
         engine=engine,
         metadata=Base.metadata,
         show_datatypes=True,
@@ -521,7 +524,70 @@ def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
 
     # Force strict left-to-right ordering with invisible edges;
     # add them programmatically by inspecting the SQLAlchemy model
-    add_ordering_edges(graph, Base)
+    add_ordering_edges(graph_full, Base)
+
+    graph_full.set_splines("ortho")
+
+    # Move FK labels horizontally away from edges
+    for edge_full in graph_full.get_edges():
+        head_full = edge_full.get_headlabel()
+        tail_full = edge_full.get_taillabel()
+
+        if head_full:
+            # Remove the "+ " prefix
+            clean_head_full = head_full.replace("+ ", "").replace("+", "")
+            edge_full.set_headlabel(clean_head_full)
+
+        if tail_full:
+            # Remove the "+ " prefix
+            clean_tail_full = tail_full.replace("+ ", "").replace("+", "")
+            edge_full.set_taillabel(clean_tail_full)
+            edge_full.set_labeldistance("2.5")
+
+    # Increase horizontal spacing between tables
+    graph_full.set_ranksep("1.0")
+
+    svg_content_full = graph_full.create_svg()
+    display(SVG(svg_content_full))
+    return
+
+
+@app.cell
+def _(
+    Base,
+    SVG,
+    add_ordering_edges,
+    create_schema_graph,
+    display,
+    engine,
+    pydot,
+):
+    # Create the ERD graph
+    graph = create_schema_graph(
+        engine=engine,
+        metadata=Base.metadata,
+        show_datatypes=True,
+        show_indexes=False,
+        rankdir='LR',
+        concentrate=False
+    )
+
+    # Remove compound_target node and all its edges
+    graph.del_node('compound_target')
+    for edge in list(graph.get_edges()):
+        if edge.get_source() == 'compound_target' or edge.get_destination() == 'compound_target':
+            graph.del_edge(edge.get_source(), edge.get_destination())
+
+    # Add a direct many-to-many edge between compound and target
+    graph.add_edge(pydot.Edge('compound', 'target', 
+                              taillabel='id', 
+                              headlabel='id',
+                              arrowhead='crow',
+                              arrowtail='crow',
+                              dir='both'))
+
+    # Add ordering edges (excluding compound_target)
+    add_ordering_edges(graph, Base, exclude_tables={'compound_target'})
 
     graph.set_splines("ortho")
 
@@ -531,17 +597,14 @@ def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
         tail = edge.get_taillabel()
 
         if head:
-            # Remove the "+ " prefix
             clean_head = head.replace("+ ", "").replace("+", "")
             edge.set_headlabel(clean_head)
 
         if tail:
-            # Remove the "+ " prefix
             clean_tail = tail.replace("+ ", "").replace("+", "")
             edge.set_taillabel(clean_tail)
             edge.set_labeldistance("2.5")
 
-    # Increase horizontal spacing between tables
     graph.set_ranksep("1.0")
 
     svg_content = graph.create_svg()
