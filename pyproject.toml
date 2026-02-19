@@ -7,11 +7,14 @@ requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.13.2",
     "chembl-webresource-client>=0.10.9",
+    "graphviz>=0.21",
+    "ipython>=9.10.0",
     "marimo>=0.19.10",
     "matplotlib>=3.10.8",
     "nbconvert>=7.16.6",
     "nbformat>=5.10.4",
     "pydot>=4.0.1",
+    "ruff>=0.15.1",
     "sqlalchemy>=2.0.45",
     "sqlalchemy-schemadisplay>=2.0",
 ]

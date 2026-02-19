@@ -33,54 +33,110 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ChEMBL has the connections as compounds ↔ activities ↔ targets.
+    ChEMBL has the connections as compounds ↔ assays ↔ targets. Let's plot that as an [entity-relationship diagram](https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model) (ERD) using [graphviz](https://graphviz.org/).
     """)
     return
 
 
 @app.cell
 def _():
+    import logging
+    import time
+    from collections import defaultdict
+
+    import pydot
+    import sqlalchemy
+    from chembl_webresource_client.new_client import new_client
     from graphviz import Digraph
     from IPython.display import SVG, display
+    from sqlalchemy import (
+        Column,
+        Float,
+        Integer,
+        String,
+        create_engine,
+        func,
+        select,
+    )
+    from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+    from sqlalchemy.orm import declarative_base, sessionmaker
     from sqlalchemy_schemadisplay import create_schema_graph
-    # from sqlalchemy import Table
-    import pydot
 
-    return Digraph, SVG, create_schema_graph, display, pydot
+    return (
+        Column,
+        Digraph,
+        Float,
+        Integer,
+        IntegrityError,
+        SQLAlchemyError,
+        SVG,
+        String,
+        create_engine,
+        create_schema_graph,
+        declarative_base,
+        defaultdict,
+        display,
+        func,
+        logging,
+        new_client,
+        pydot,
+        select,
+        sessionmaker,
+        sqlalchemy,
+        time,
+    )
 
 
 @app.cell
 def _():
-    # Scale down size of labels and arrowheads
-    crow_fontsize = "8"   # smaller font for "1" labels
-    arrow_scale = "0.4"   # smaller arrowheads
+    # Scale down size of ERD relationship labels and arrowheads
+    crow_fontsize = "8"  # smaller font for labels
+    arrow_scale = "0.4"  # smaller arrowheads
     return arrow_scale, crow_fontsize
 
 
 @app.cell
 def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     # Create the diagram
-    dot_no_activity = Digraph(format="svg")
-    dot_no_activity.attr(rankdir="LR", splines="ortho")
-    dot_no_activity.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
+    dot_chembl = Digraph(format="svg")
+    dot_chembl.attr(rankdir="LR", splines="ortho")
+    dot_chembl.attr(
+        "node", shape="record", fontsize="10", style="filled", fillcolor="lightgrey"
+    )
 
     # Nodes
-    dot_no_activity.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
-    dot_no_activity.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
-    dot_no_activity.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
+    dot_chembl.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
+    dot_chembl.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
+    dot_chembl.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
 
     # Invisible edges for layout
-    dot_no_activity.edge("Compound", "Assay", style="invis")
-    dot_no_activity.edge("Assay", "Target", style="invis")
+    dot_chembl.edge("Compound", "Assay", style="invis")
+    dot_chembl.edge("Assay", "Target", style="invis")
 
-    dot_no_activity.edge("Compound", "Assay", fontsize=crow_fontsize,
-             arrowhead="crow", arrowtail="crow", dir="both", color="black", arrowsize=arrow_scale)
-    dot_no_activity.edge("Assay", "Target", fontsize=crow_fontsize,
-             arrowhead="crow", arrowtail="crow", dir="both", color="black", arrowsize=arrow_scale)
+    dot_chembl.edge(
+        "Compound",
+        "Assay",
+        fontsize=crow_fontsize,
+        arrowhead="crow",
+        arrowtail="crow",
+        dir="both",
+        color="black",
+        arrowsize=arrow_scale,
+    )
+    dot_chembl.edge(
+        "Assay",
+        "Target",
+        fontsize=crow_fontsize,
+        arrowhead="crow",
+        arrowtail="crow",
+        dir="both",
+        color="black",
+        arrowsize=arrow_scale,
+    )
 
     # Render inline SVG (scalable, no file saved)
-    svg_content_no_activity = dot_no_activity.pipe(format="svg").decode("utf-8")
-    display(SVG(svg_content_no_activity))
+    svg_chembl = dot_chembl.pipe(format="svg").decode("utf-8")
+    display(SVG(svg_chembl))
     return
 
 
@@ -95,19 +151,21 @@ def _(mo):
 @app.cell
 def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     # Create the diagram
-    dot_simple_no_join = Digraph(format="svg")
-    dot_simple_no_join.attr(rankdir="LR", splines="ortho")
-    dot_simple_no_join.attr('node', shape='record', fontsize='10', style='filled', fillcolor='lightgrey')
+    dot_simple = Digraph(format="svg")
+    dot_simple.attr(rankdir="LR", splines="ortho")
+    dot_simple.attr(
+        "node", shape="record", fontsize="10", style="filled", fillcolor="lightgrey"
+    )
 
     # Define nodes
-    dot_simple_no_join.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
-    dot_simple_no_join.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
+    dot_simple.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
+    dot_simple.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
 
     # Invisible edge to force left-to-right ordering
-    dot_simple_no_join.edge("Compound", "Target", style="invis")
+    dot_simple.edge("Compound", "Target", style="invis")
 
     # Many-to-many edge (crow's foot at both ends)
-    dot_simple_no_join.edge(
+    dot_simple.edge(
         "Compound",
         "Target",
         fontsize=crow_fontsize,
@@ -115,12 +173,12 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
         arrowtail="crow",
         dir="both",
         color="black",
-        arrowsize=arrow_scale
+        arrowsize=arrow_scale,
     )
 
     # Render inline SVG (no file saved)
-    svg_content_simple_no_join = dot_simple_no_join.pipe(format="svg").decode("utf-8")
-    display(SVG(svg_content_simple_no_join))
+    svg_simple = dot_simple.pipe(format="svg").decode("utf-8")
+    display(SVG(svg_simple))
     return
 
 
@@ -132,67 +190,33 @@ def _(mo):
     - I discovered that publishing to a Markdown file directly from Marimo didn't lead to good formatting on my Jekyll, so I converted from Marimo to Jupyter and then to Markdown
     - I didn't have a reliable Internet connection when working on this and Marimo seemed to need a connection in VS Code
     - I sometimes am not allowed to rename a variable in VS Code (and automatically change the variable name wherever it's used)
+    - The ruff VS Code extension doesn't work that well with Marimo notebooks for me
     - Marimo is very serious about not allowing you to re-use a variable name, even an iterator variable which is usually a throw-away. So for example if you're trying out two versions of a code block, you have to rename every variable, even the iterators. While I understand the need for this, perhaps there's a way to make it easier by specifying a suffix to append to each variable name when you clone a code block--seems like something an LLM could handle.
 
-    However, it seemed worth it when, before committing via git, the diff was so much more readable than in Jupyter (which is a ton of TypeScript, metadata, etc.). With Marimo, the diff is just the actual code changes and a small amount of formatting in Python. With Jupyter Notebooks, in theory source control works, but in practice it's so difficult to tell what changes were made that I didn't find it useful for identifying or rolling back changes.
+    However, it seemed worth it when, before committing via git, the diff was so much more readable than in Jupyter (which is a ton of TypeScript, metadata, etc.). With Marimo, the diff is just the actual code changes and a small amount of formatting in Python. With Jupyter Notebooks, in theory source control works, but in practice the diff is so large it's so difficult to tell what changes were made that I didn't find it useful for identifying or rolling back changes.
     """)
     return
 
 
 @app.cell
-def _():
-    import logging
-    import time
-    from collections import defaultdict
-
-    import sqlalchemy
-    from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-    from sqlalchemy.orm import declarative_base, sessionmaker
-    from sqlalchemy import (
-        Column,
-        Float,
-        Integer,
-        String,
-        create_engine,
-        func,
-        select,
-    )
-    from chembl_webresource_client.new_client import new_client
-
-    return (
-        Column,
-        Float,
-        Integer,
-        IntegrityError,
-        SQLAlchemyError,
-        String,
-        create_engine,
-        declarative_base,
-        defaultdict,
-        func,
-        logging,
-        new_client,
-        select,
-        sessionmaker,
-        sqlalchemy,
-        time,
-    )
-
-
-@app.cell
 def _(create_engine, declarative_base, logging, sessionmaker):
-    # Set logging level to INFO
-    logging.getLogger().setLevel(logging.INFO)
+    # Set logger level to INFO
+    logging.basicConfig(
+        level=logging.INFO,
+        format="[%(levelname)s] %(message)s",
+        force=True,
+    )
+    logger = logging.getLogger(__name__)
 
     Base = declarative_base()
 
     engine = create_engine("sqlite:///compounds.db", echo=False)
     Session = sessionmaker(bind=engine)
-    return Base, Session, engine
+    return Base, Session, engine, logger
 
 
 @app.cell
-def _(defaultdict, logging, new_client):
+def _(defaultdict, logger, logging, new_client):
     def get_chembl_molecules(
         n_compounds: int = 2,
         start_id: int = 1,
@@ -228,7 +252,7 @@ def _(defaultdict, logging, new_client):
                 chembl_ids_found.add(int(chembl_id.replace("CHEMBL", "")))
         chembl_ids_found_str = ", ".join(map(str, sorted(chembl_ids_found)))
 
-        logging.info(
+        logger.info(
             f"Of the {n_compounds} ChEMBL IDs "
             f"({start_id}-{start_id + n_compounds - 1}), {len(mols)} are compounds: "
             f"ChEMBL IDs {chembl_ids_found_str}"
@@ -254,7 +278,7 @@ def _(defaultdict, logging, new_client):
                 "target_chembl_id",
             ]
         )
-        logging.info(f"Activities: {len(activities)}")
+        logger.info(f"Activities: {len(activities)}")
 
         mol_to_target_ids = defaultdict(set)
 
@@ -282,7 +306,7 @@ def _(defaultdict, logging, new_client):
                 ]
             ):
                 targets[t["target_chembl_id"]] = t
-        logging.info(f"Fetched metadata for {len(targets)} targets.")
+        logger.info(f"Fetched metadata for {len(targets)} targets.")
 
         # ---------------------------------
         # 4) Attach targets to molecules
@@ -305,7 +329,7 @@ def _(
     SQLAlchemyError,
     Session,
     Target,
-    logging,
+    logger,
 ):
     def save_compounds_to_db(molecules: list[dict]) -> tuple[int, int, int]:
         """Save multiple compounds and their targets to the database efficiently avoiding duplicate Targets."""
@@ -386,10 +410,10 @@ def _(
                 # outer commit happens when exiting the with Session() context
             except IntegrityError as e:
                 # handle unexpected integrity issues gracefully
-                logging.info(f"IntegrityError while saving: {e}")
+                logger.info(f"IntegrityError while saving: {e}")
                 db_session.rollback()
             except SQLAlchemyError:
-                logging.exception("Database error saving compounds")
+                logger.exception("Database error saving compounds")
                 db_session.rollback()
                 raise
 
@@ -477,35 +501,35 @@ def _(pydot):
     def add_ordering_edges(graph, Base, exclude_tables=None):
         """
         Add invisible edges based on foreign key relationships to enforce left-to-right ordering
-    
+
         Args:
             graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
             Base: SQLAlchemy declarative base containing table metadata.
             exclude_tables: Set of table names to exclude from processing
-        
+
         Returns:
             The modified graph object with invisible ordering edges added.
         """
         if exclude_tables is None:
             exclude_tables = set()
-    
+
         # Get all table names
         tables = Base.metadata.tables.keys()
-    
+
         # For each table, check for foreign keys
         for table_name in tables:
             if table_name in exclude_tables:
                 continue
-            
+
             table = Base.metadata.tables[table_name]
-        
+
             for fk in table.foreign_key_constraints:
                 parent_table = fk.referred_table.name
-            
+
                 if parent_table not in exclude_tables:
                     # Add invisible edge: parent -> child
                     graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
-    
+
         return graph
 
     return (add_ordering_edges,)
@@ -519,8 +543,8 @@ def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
         metadata=Base.metadata,
         show_datatypes=True,
         show_indexes=False,
-        rankdir='LR',
-        concentrate=False
+        rankdir="LR",
+        concentrate=False,
     )
 
     # Force strict left-to-right ordering with invisible edges;
@@ -566,93 +590,98 @@ def _(
     def detect_join_tables(Base):
         """
         Detect join tables (tables with only an id and two foreign keys).
-    
+
         Returns:
             dict: Mapping of join_table_name -> (parent_table1, parent_table2)
         """
         join_tables = {}
-    
-        for table_name, table in Base.metadata.tables.items():        
+
+        for table_name, table in Base.metadata.tables.items():
             # Get foreign key constraints
             fk_constraints = list(table.foreign_key_constraints)
-        
+
             # A join table typically has:
             # - Only id as primary key (or composite PK of the two FKs)
             # - Exactly 2 foreign key columns
             # - Minimal or no other columns
-        
+
             foreign_key_columns = []
             for fk in fk_constraints:
                 foreign_key_columns.extend(fk.column_keys)
-        
+
             # Check if this looks like a join table:
             # Has exactly 2 FK constraints pointing to different tables
             if len(fk_constraints) == 2:
                 referred_tables = [fk.referred_table.name for fk in fk_constraints]
-            
+
                 # Make sure they point to different tables
                 if referred_tables[0] != referred_tables[1]:
                     join_tables[table_name] = tuple(referred_tables)
-    
-        return join_tables
 
+        return join_tables
 
     def get_primary_key_name(Base, table_name):
         """
         Get the primary key column name for a table.
-    
+
         Args:
             Base: SQLAlchemy declarative base
             table_name: Name of the table
-        
+
         Returns:
             str: Primary key column name (or comma-separated list if composite)
         """
         table = Base.metadata.tables[table_name]
         pk_columns = [col.name for col in table.columns if col.primary_key]
-    
-        if len(pk_columns) == 1:
-            return pk_columns[0]
-        elif len(pk_columns) > 1:
-            return ', '.join(pk_columns)  # Composite key
-        else:
-            return 'id'  # Fallback
 
+        if pk_columns:
+            return ", ".join(pk_columns)
+        else:
+            # Fallback
+            return "id"
 
     def remove_join_tables_from_graph(graph, Base):
         """
         Remove join tables from graph and replace with direct many-to-many edges.
-    
+
         Args:
             graph: pydot.Dot graph object
             Base: SQLAlchemy declarative base
-        
+
         Returns:
             set: Names of removed join tables
         """
         join_tables = detect_join_tables(Base)
-    
+
         for join_table, (table1, table2) in join_tables.items():
             # Remove the join table node
             graph.del_node(join_table)
-        
+
             # Remove all edges connected to the join table
             for edge in list(graph.get_edges()):
-                if edge.get_source() == join_table or edge.get_destination() == join_table:
+                if (
+                    edge.get_source() == join_table
+                    or edge.get_destination() == join_table
+                ):
                     graph.del_edge(edge.get_source(), edge.get_destination())
-        
+
             # Get primary key names for both tables
             table1_pk = get_primary_key_name(Base, table1)
             table2_pk = get_primary_key_name(Base, table2)
-        
+
             # Add a direct many-to-many edge between the two tables
-            graph.add_edge(pydot.Edge(table1, table2, 
-                                      taillabel=table1_pk, 
-                                      headlabel=table2_pk,
-                                      arrowhead='crow',
-                                      arrowtail='crow',
-                                      dir='both'))
-    
+            graph.add_edge(
+                pydot.Edge(
+                    table1,
+                    table2,
+                    taillabel=table1_pk,
+                    headlabel=table2_pk,
+                    arrowhead="crow",
+                    arrowtail="crow",
+                    dir="both",
+                )
+            )
+
         return set(join_tables.keys())
 
     # Create the ERD graph
@@ -661,8 +690,8 @@ def _(
         metadata=Base.metadata,
         show_datatypes=True,
         show_indexes=False,
-        rankdir='LR',
-        concentrate=False
+        rankdir="LR",
+        concentrate=False,
     )
 
     # Automatically detect and remove join tables
@@ -693,7 +722,7 @@ def _(
 
 
 @app.cell
-def _(get_chembl_molecules, logging, save_compounds_to_db, time):
+def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
     mols = get_chembl_molecules(
@@ -703,14 +732,14 @@ def _(get_chembl_molecules, logging, save_compounds_to_db, time):
     )
 
     end = time.time()
-    logging.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
+    logger.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
 
     start = time.time()
 
     n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
         mols
     )
-    logging.info(
+    logger.info(
         f"Saved {n_mols_saved} compounds, "
         f"{n_targets_saved} targets, "
         f"{n_compounds_targets_saved} compound-target associations to the database, "
@@ -720,10 +749,11 @@ def _(get_chembl_molecules, logging, save_compounds_to_db, time):
 
 
 @app.cell
-def _(Compound, CompoundTarget, Session, Target, func, logging, select):
+def _(Compound, CompoundTarget, Session, Target, func, logger, select):
     def run_queries():
         """Run the required queries against the ChEMBL database and print the results."""
         with Session() as db_session:
+            print("run_queries")
             # 1. Find the count of all distinct counts of compound targets (ex: Voltage-gated inwardly rectifying potassium channel KCNH2:14, Neuronal acetylcholine receptor subunit alpha-3/Neuronal acetylcholine receptor subunit alpha-7: 5).
             # For each compound, concatenate its targets with a slash.
             # Then, count how many distinct such tuples exist in the database.
@@ -734,7 +764,11 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
             # correlated inner select returning pref_name for the current Compound, ordered
             inner = (
                 select(Target.pref_name)
-                .select_from(Target.__table__.join(CompoundTarget.__table__, CompoundTarget.target_id == Target.id))
+                .select_from(
+                    Target.__table__.join(
+                        CompoundTarget.__table__, CompoundTarget.target_id == Target.id
+                    )
+                )
                 .where(CompoundTarget.compound_id == Compound.id)
                 .order_by(func.lower(Target.pref_name))
                 .correlate(Compound)
@@ -744,7 +778,9 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
             ordered_targets = inner.subquery("ordered_targets")
 
             # aggregate the ordered names with a '\' separator
-            target_combo_subq = select(func.group_concat(ordered_targets.c.pref_name, "\\")).scalar_subquery()
+            target_combo_subq = select(
+                func.group_concat(ordered_targets.c.pref_name, "\\")
+            ).scalar_subquery()
 
             # Create a subquery that selects each compound's id and its target combination.
             target_combinations = db_session.query(
@@ -756,9 +792,9 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
             # where each is a tuple like (target_combo, num_compounds)
             compound_targets = (
                 db_session.query(
-                target_combinations.c.target_combo,
-                func.count().label("num_compounds"),
-                func.group_concat(Compound.chembl_id, ", ").label("chembl_ids"),
+                    target_combinations.c.target_combo,
+                    func.count().label("num_compounds"),
+                    func.group_concat(Compound.chembl_id, ", ").label("chembl_ids"),
                 )
                 .join(Compound, Compound.id == target_combinations.c.compound_id)
                 .group_by(target_combinations.c.target_combo)
@@ -767,26 +803,21 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
             )
 
             n_compound_by_target = 0
-            logging.info("1. Distinct compound target combinations and their counts:")
+            logger.info("1. Distinct compound target combinations and their counts:")
             for target_combo, count, chembl_ids in compound_targets:
-                logging.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
+                logger.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
                 n_compound_by_target += count
-            logging.info(
+            logger.info(
                 f"    Total compounds counted by target combinations: {n_compound_by_target}"
             )
 
-            # Query compounds grouped by type and ordered by descending number of Rule of 5 violations
+            # Query compounds grouped by type and ordered by ascending number of Rule of 5 violations
             compounds_by_ro5 = (
                 db_session.query(
                     target_combinations.c.target_combo,
                     Compound.chembl_id,
                     Compound.pref_name,
                     Compound.num_ro5,
-                    # Compound.molwt,
-                    # Compound.tpsa,
-                    # Compound.num_h_acceptors,
-                    # Compound.num_h_donors,
-                    # Compound.mol_logp,
                 )
                 .join(Compound, Compound.id == target_combinations.c.compound_id)
                 .order_by(
@@ -795,15 +826,17 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
                 )
                 .all()
             )
-            logging.info("2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:")
+            logger.info(
+                "2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:"
+            )
             current_target_combo = ""
-            logging.info("        Rule of 5 violation(s)")
             for target_combo, chembl_id, pref_name, num_ro5 in compounds_by_ro5:
                 if target_combo != current_target_combo:
                     current_target_combo = target_combo
-                    logging.info(f"    Target combination: {current_target_combo}")
+                    logger.info(f"    Target combination: {current_target_combo}")
+                    logger.info("        Rule of 5 violation count")
 
-                logging.info(f"        {num_ro5} for {pref_name} ({chembl_id})")
+                logger.info(f"        {num_ro5} for {pref_name} ({chembl_id})")
 
     return (run_queries,)
 
@@ -811,6 +844,11 @@ def _(Compound, CompoundTarget, Session, Target, func, logging, select):
 @app.cell
 def _(run_queries):
     run_queries()
+    return
+
+
+@app.cell
+def _():
     return
 
 
