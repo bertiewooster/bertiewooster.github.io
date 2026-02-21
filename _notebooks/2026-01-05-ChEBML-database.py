@@ -391,7 +391,6 @@ def _(
 ):
     def save_compounds_to_db(molecules: list[dict], all_target_ids) -> tuple[int, int, int]:
         """Save multiple compounds and their targets to the database efficiently using bulk inserts."""
-        logger.info(f"{len(all_target_ids)} {all_target_ids=}")
 
         # Deduplicate targets across all molecules
         target_map: dict[str, dict] = {
@@ -406,8 +405,6 @@ def _(
             if t.get("target_chembl_id")
         }
         all_targets = list(target_map.values())
-        if all_targets:
-            logger.info(f"first unique target={all_targets[0]}")
 
         # Build compound records for bulk insert, deduplicating compounds by chembl_id
         compound_map_input: dict[str, dict] = {}
@@ -480,23 +477,6 @@ def _(
                     n_compounds_targets_saved = len(compound_target_records)
 
                 db_session.commit()
-
-                compound_target1 = db_session.get(CompoundTarget, 1)
-                logger.info(f"{compound_target1.target_id=}, {compound_target1.compound_id=}")
-                target_ct1 = db_session.get(Target, compound_target1.target_id)
-                compound_ct1 = db_session.get(Compound, compound_target1.compound_id)
-                logger.info(f"{target_ct1.id=}, {target_ct1.target_chembl_id=}")
-                logger.info(f"{compound_ct1.id=}, {compound_ct1.chembl_id=}")
-
-                # Invert the dicts to look up ChEMBL ID by DB ID
-                db_id_to_target_chembl = {v: k for k, v in existing_targets.items()}
-                db_id_to_compound_chembl = {v: k for k, v in compound_map.items()}
-
-                target_ct1_chembl_id = db_id_to_target_chembl.get(compound_target1.target_id)
-                compound_ct1_chembl_id = db_id_to_compound_chembl.get(compound_target1.compound_id)
-
-                logger.info(f"target_ct1: db_id={compound_target1.target_id}, {target_ct1_chembl_id=}")
-                logger.info(f"compound_ct1: db_id={compound_target1.compound_id}, {compound_ct1_chembl_id=}")
 
             except IntegrityError as e:
                 logger.info(f"IntegrityError while saving: {e}")
@@ -816,7 +796,7 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
     mols, all_target_ids = get_chembl_molecules(
-        n_compounds=30,
+        n_compounds=50,
         start_id=1000,  # Has targets
         # start_id=3430873, # Not a molecule
     )
