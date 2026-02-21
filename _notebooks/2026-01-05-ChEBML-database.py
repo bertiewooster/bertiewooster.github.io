@@ -41,7 +41,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ChEMBL has the connections as compounds ↔ assays ↔ targets. Let's plot that as an [entity-relationship diagram](https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model) (ERD) using [graphviz](https://graphviz.org/).
+    ChEMBL has the connections as compounds ↔ activities ↔ targets. Let's plot that as an [entity-relationship diagram](https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model) (ERD) using [graphviz](https://graphviz.org/).
     """)
     return
 
@@ -104,14 +104,6 @@ def _():
 
 
 @app.cell
-def _(mo):
-    mo.md(r"""
-    #NoteToSelf: ChEMBL web client has activity rather than assay, should activity be shown here?
-    """)
-    return
-
-
-@app.cell
 def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     # Create the diagram
     dot_chembl = Digraph(format="svg")
@@ -122,12 +114,12 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
 
     # Nodes
     dot_chembl.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
-    dot_chembl.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
+    dot_chembl.node("Activity", "{Activity|activity_id (PK)}", fillcolor="#A3C1DA")
     dot_chembl.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
 
     dot_chembl.edge(
         "Compound",
-        "Assay",
+        "Activity",
         fontsize=crow_fontsize,
         arrowhead="crow",
         arrowtail="crow",
@@ -136,7 +128,7 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
         arrowsize=arrow_scale,
     )
     dot_chembl.edge(
-        "Assay",
+        "Activity",
         "Target",
         fontsize=crow_fontsize,
         arrowhead="crow",
@@ -263,7 +255,15 @@ def _(mo):
 
     Then we get target data including its ChEMBL ID, name, type, and organism.
 
-    Lastly we associate targets with compounds by creating a list of targets for each molecule. This will make it easier to populate out database tables.
+    Lastly we associate targets with compounds by creating a list of targets for each molecule. This will make it easier to populate our database tables.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    #NoteToSelf: Instead of determining all_target_ids twice, output it from get_chembl_molecules and import it into save_compounds_to_db?
     """)
     return
 
@@ -297,7 +297,7 @@ def _(defaultdict, logger, logging, new_client):
             )
         )
 
-        # From the molecules in mols, extract the digits after "CHEMBL" to see which IDs were found
+        # From the molecules in mols, extract the digits after "CHEMBL" to check which IDs were found
         chembl_ids_found = set()
         for mol in mols:
             chembl_id = mol.get("molecule_chembl_id", "")
@@ -335,9 +335,9 @@ def _(defaultdict, logger, logging, new_client):
 
         mol_to_target_ids = defaultdict(set)
 
-        for a in activities:
+        for act in activities:
             try:
-                mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
+                mol_to_target_ids[act["molecule_chembl_id"]].add(act["target_chembl_id"])
             except Exception as e:
                 logger.warning(e)
 
@@ -345,9 +345,10 @@ def _(defaultdict, logger, logging, new_client):
         # 3) Fetch target metadata (bulk)
         # ---------------------------------
         all_target_ids = sorted(
-            {tid for tids in mol_to_target_ids.values() for tid in tids}
+            {tar_id for tar_ids in mol_to_target_ids.values() for tar_id in tar_ids}
         )
 
+        # Create dictionary of ChEMLB ID: target entries
         targets = {}
         if all_target_ids:
             for t in target.filter(target_chembl_id__in=all_target_ids).only(
@@ -367,7 +368,7 @@ def _(defaultdict, logger, logging, new_client):
 
         for m in mols:
             t_ids = mol_to_target_ids.get(m["molecule_chembl_id"], [])
-            m["targets"] = [targets[tid] for tid in t_ids if tid in targets]
+            m["targets"] = [targets[tar_id] for tar_id in t_ids if tar_id in targets]
 
         return mols
 
