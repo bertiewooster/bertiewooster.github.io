@@ -54,9 +54,6 @@ def _():
 
     import pydot
     import sqlalchemy
-    from chembl_webresource_client.new_client import new_client
-    from graphviz import Digraph
-    from IPython.display import SVG, display
     from sqlalchemy import (
         Column,
         Float,
@@ -65,9 +62,13 @@ def _():
         create_engine,
         func,
         select,
+        insert
     )
     from sqlalchemy.exc import IntegrityError, SQLAlchemyError
     from sqlalchemy.orm import declarative_base, sessionmaker
+    from chembl_webresource_client.new_client import new_client
+    from graphviz import Digraph
+    from IPython.display import SVG, display
     from sqlalchemy_schemadisplay import create_schema_graph
 
     return (
@@ -85,6 +86,7 @@ def _():
         defaultdict,
         display,
         func,
+        insert,
         logging,
         new_client,
         pydot,
@@ -117,6 +119,7 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     dot_chembl.node("Activity", "{Activity|activity_id (PK)}", fillcolor="#A3C1DA")
     dot_chembl.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
 
+    # Relationships
     dot_chembl.edge(
         "Compound",
         "Activity",
@@ -370,7 +373,7 @@ def _(defaultdict, logger, logging, new_client):
             t_ids = mol_to_target_ids.get(m["molecule_chembl_id"], [])
             m["targets"] = [targets[tar_id] for tar_id in t_ids if tar_id in targets]
 
-        return mols
+        return mols, all_target_ids
 
     return (get_chembl_molecules,)
 
@@ -379,7 +382,6 @@ def _(defaultdict, logger, logging, new_client):
 def _(mo):
     mo.md(r"""
     Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table. Then we create a dictionary, which is an O(1) lookup, between target ChEMBL ID and its database entry so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound.
-    existing_target=('CHEMBL1855', <__main__.Target object at 0x11623bb90>)
     """)
     return
 
@@ -392,19 +394,13 @@ def _(
     SQLAlchemyError,
     Session,
     Target,
+    insert,
     logger,
 ):
-    def save_compounds_to_db(molecules: list[dict]) -> tuple[int, int, int]:
+    def save_compounds_to_db(molecules: list[dict], all_target_ids) -> tuple[int, int, int]:
         """Save multiple compounds and their targets to the database efficiently avoiding duplicate Targets."""
-        # collect all target ids present in incoming molecules
-        all_target_ids = {
-            t["target_chembl_id"]
-            for m in molecules
-            for t in m.get("targets", [])
-            if t.get("target_chembl_id")
-        }
+        logger.info(f"{len(all_target_ids)} {all_target_ids=}")
 
-        # build a dictionary of metadata keyed by target Chembl ID to deduplicate
         target_map: dict[str, dict] = {
             t["target_chembl_id"]: {
                 "organism": t.get("organism"),
@@ -421,31 +417,24 @@ def _(
         if all_targets:
             print(f"first unique target={all_targets[0]}")
 
-        logger.info(f"{len(all_target_ids)=}: {all_target_ids=}")
         n_mols_saved = 0
         n_targets_saved = 0
         n_compounds_targets_saved = 0
 
         with Session() as db_session:
-            # Bulk insert targets into Target table
-            db_session.bulk_insert_mappings(Target, all_targets)
-            db_session.commit()
-
             try:
-                # preload existing targets into a mapping chembl_id -> Target instance
-                existing_targets = {}
-                if all_target_ids:
-                    rows = (
-                        db_session.query(Target)
-                        .filter(Target.target_chembl_id.in_(list(all_target_ids)))
-                        .all()
-                    )
-                    logger.info(f"{len(rows)=}: {rows=}")
-                    existing_targets = {r.target_chembl_id: r for r in rows}
-                    for existing_target in existing_targets.items():
-                        print(f"{existing_target=}")
-                        break
+                # Bulk insert targets into Target table and get their database IDs
+                result = db_session.execute(
+                    insert(Target).returning(Target.target_chembl_id, Target.id),
+                    all_targets,
+                )
 
+                # Make a dictionary of Target chembl id: database id
+                #   so we can associate targets with compounds 
+                #   without having to query database for each target database ID
+                existing_targets = {row.target_chembl_id: row.id for row in result}
+
+                # Add molecules to database
                 for mol in molecules:
                     chembl_id = mol.get("molecule_chembl_id")
                     pref_name = mol.get("pref_name")
@@ -466,33 +455,30 @@ def _(
                         db_session.add(compound)
                         db_session.flush()  # get compound.id
 
+                        # Iterate over this compound's targets
                         for target_data in mol.get("targets", []):
-                            target_id = target_data.get("target_chembl_id")
-                            if not target_id:
-                                continue
+                            target_id_chembl = target_data.get("target_chembl_id")
+                            target_id_db = existing_targets.get(target_id_chembl)
 
-                            # reuse existing Target if present
-                            target_obj = existing_targets.get(target_id)
-                            logger.info(f" {target_id=}, {target_obj=}")
-
-                            if target_obj is None:
-                                logger.info(f"Had to create {target_id=}")
+                            if not target_id_db:
+                                logger.info(f"Had to create {target_id_chembl=}")
                                 # create new Target, add and flush to get id, then cache it to existing_targets
                                 target_obj = Target(
                                     organism=target_data.get("organism"),
                                     pref_name=target_data.get("pref_name"),
-                                    target_chembl_id=target_id,
+                                    target_chembl_id=target_id_chembl,
                                     target_type=target_data.get("target_type"),
                                 )
                                 db_session.add(target_obj)
                                 db_session.flush()  # populates target_obj.id
-                                existing_targets[target_id] = target_obj
+                                existing_targets[target_id_chembl] = target_obj
+                                target_id_db = target_obj.id
                                 n_targets_saved += 1
 
-                            # create association
+                            # create association aka join table entry
                             compound_target = CompoundTarget(
                                 compound_id=compound.id,
-                                target_id=target_obj.id,
+                                target_id=target_id_db,
                             )
                             db_session.add(compound_target)
                             n_compounds_targets_saved += 1
@@ -504,8 +490,8 @@ def _(
                 # handle unexpected integrity issues gracefully
                 logger.info(f"IntegrityError while saving: {e}")
                 db_session.rollback()
-            except SQLAlchemyError:
-                logger.exception("Database error saving compounds")
+            except SQLAlchemyError as e:
+                logger.exception("Database error saving compounds: {e}")
                 db_session.rollback()
                 raise
 
@@ -661,7 +647,7 @@ def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
 
             edge_full.set_label("")  # critical fix
             edge_full.set_labeldistance("2.5")
-        
+
     # Increase horizontal spacing between tables
     graph_full.set("ranksep", "1.0")
     svg_content_full = graph_full.create_svg()
@@ -818,7 +804,7 @@ def _(
 def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
-    mols = get_chembl_molecules(
+    mols, all_target_ids = get_chembl_molecules(
         n_compounds=30,
         start_id=1000,  # Has targets
         # start_id=3430873, # Not a molecule
@@ -830,7 +816,7 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     start = time.time()
 
     n_mols_saved, n_targets_saved, n_compounds_targets_saved = save_compounds_to_db(
-        mols
+        mols, all_target_ids
     )
     logger.info(
         f"Saved {n_mols_saved} compounds, "
