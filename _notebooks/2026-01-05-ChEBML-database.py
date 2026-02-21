@@ -264,14 +264,6 @@ def _(mo):
 
 
 @app.cell
-def _(mo):
-    mo.md(r"""
-    #NoteToSelf: Instead of determining all_target_ids twice, output it from get_chembl_molecules and import it into save_compounds_to_db?
-    """)
-    return
-
-
-@app.cell
 def _(defaultdict, logger, logging, new_client):
     def get_chembl_molecules(
         n_compounds: int = 2,
@@ -398,9 +390,10 @@ def _(
     logger,
 ):
     def save_compounds_to_db(molecules: list[dict], all_target_ids) -> tuple[int, int, int]:
-        """Save multiple compounds and their targets to the database efficiently avoiding duplicate Targets."""
+        """Save multiple compounds and their targets to the database efficiently using bulk inserts."""
         logger.info(f"{len(all_target_ids)} {all_target_ids=}")
 
+        # Deduplicate targets across all molecules
         target_map: dict[str, dict] = {
             t["target_chembl_id"]: {
                 "organism": t.get("organism"),
@@ -412,86 +405,104 @@ def _(
             for t in m.get("targets", [])
             if t.get("target_chembl_id")
         }
-        # convert back to list of dicts for bulk insert
         all_targets = list(target_map.values())
         if all_targets:
-            print(f"first unique target={all_targets[0]}")
+            logger.info(f"first unique target={all_targets[0]}")
 
-        n_mols_saved = 0
+        # Build compound records for bulk insert, deduplicating compounds by chembl_id
+        compound_map_input: dict[str, dict] = {}
+        for mol in molecules:
+            chembl_id = mol.get("molecule_chembl_id")
+            if not chembl_id or chembl_id in compound_map_input:
+                continue
+            props = mol.get("molecule_properties") or {}
+            compound_map_input[chembl_id] = {
+                "chembl_id": chembl_id,
+                "sml": (mol.get("molecule_structures") or {}).get("canonical_smiles"),
+                "pref_name": mol.get("pref_name"),
+                "molwt": props.get("full_molweight"),
+                "tpsa": props.get("tpsa"),
+                "num_h_acceptors": props.get("num_h_acceptors"),
+                "num_h_donors": props.get("num_h_donors"),
+                "num_ro5": props.get("num_ro5_violations"),
+                "mol_logp": props.get("alogp"),
+            }
+
+        compound_records = list(compound_map_input.values())
+
         n_targets_saved = 0
+        n_mols_saved = 0
         n_compounds_targets_saved = 0
 
         with Session() as db_session:
             try:
-                # Bulk insert targets into Target table and get their database IDs
+                # Bulk insert targets, get back chembl_id -> db id mapping
+                existing_targets: dict[str, int] = {}
+                if all_targets:
+                    result = db_session.execute(
+                        insert(Target).returning(Target.target_chembl_id, Target.id),
+                        all_targets,
+                    )
+                    existing_targets = {row.target_chembl_id: row.id for row in result}
+                    n_targets_saved = len(existing_targets)
+
+                # Bulk insert compounds, get back chembl_id -> db id mapping
                 result = db_session.execute(
-                    insert(Target).returning(Target.target_chembl_id, Target.id),
-                    all_targets,
+                    insert(Compound).returning(Compound.chembl_id, Compound.id),
+                    compound_records,
                 )
+                compound_map: dict[str, int] = {row.chembl_id: row.id for row in result}
+                n_mols_saved = len(compound_map)
 
-                # Make a dictionary of Target chembl id: database id
-                #   so we can associate targets with compounds 
-                #   without having to query database for each target database ID
-                existing_targets = {row.target_chembl_id: row.id for row in result}
-
-                # Add molecules to database
+                # Build all CompoundTarget join rows in memory
+                compound_target_records = []
                 for mol in molecules:
                     chembl_id = mol.get("molecule_chembl_id")
-                    pref_name = mol.get("pref_name")
-                    props = mol.get("molecule_properties", {}) or {}
-                    compound = Compound(
-                        chembl_id=chembl_id,
-                        sml=mol.get("molecule_structures", {}).get("canonical_smiles"),
-                        pref_name=pref_name,
-                        molwt=props.get("full_molweight"),
-                        tpsa=props.get("tpsa"),
-                        num_h_acceptors=props.get("num_h_acceptors"),
-                        num_h_donors=props.get("num_h_donors"),
-                        num_ro5=props.get("num_ro5_violations"),
-                        mol_logp=props.get("alogp"),
-                    )
+                    compound_id = compound_map.get(chembl_id)
+                    if not compound_id:
+                        logger.warning(f"No DB id found for compound {chembl_id}, skipping its targets")
+                        continue
 
-                    with db_session.begin_nested():
-                        db_session.add(compound)
-                        db_session.flush()  # get compound.id
+                    for target_data in mol.get("targets", []):
+                        target_chembl_id = target_data.get("target_chembl_id")
+                        target_id = existing_targets.get(target_chembl_id)
+                        if not target_id:
+                            logger.warning(f"No DB id found for target {target_chembl_id}, skipping")
+                            continue
+                        compound_target_records.append({
+                            "compound_id": compound_id,
+                            "target_id": target_id,
+                        })
 
-                        # Iterate over this compound's targets
-                        for target_data in mol.get("targets", []):
-                            target_id_chembl = target_data.get("target_chembl_id")
-                            target_id_db = existing_targets.get(target_id_chembl)
+                # Bulk insert all CompoundTarget join rows
+                if compound_target_records:
+                    db_session.execute(insert(CompoundTarget), compound_target_records)
+                    n_compounds_targets_saved = len(compound_target_records)
 
-                            if not target_id_db:
-                                logger.info(f"Had to create {target_id_chembl=}")
-                                # create new Target, add and flush to get id, then cache it to existing_targets
-                                target_obj = Target(
-                                    organism=target_data.get("organism"),
-                                    pref_name=target_data.get("pref_name"),
-                                    target_chembl_id=target_id_chembl,
-                                    target_type=target_data.get("target_type"),
-                                )
-                                db_session.add(target_obj)
-                                db_session.flush()  # populates target_obj.id
-                                existing_targets[target_id_chembl] = target_obj
-                                target_id_db = target_obj.id
-                                n_targets_saved += 1
+                db_session.commit()
 
-                            # create association aka join table entry
-                            compound_target = CompoundTarget(
-                                compound_id=compound.id,
-                                target_id=target_id_db,
-                            )
-                            db_session.add(compound_target)
-                            n_compounds_targets_saved += 1
+                compound_target1 = db_session.get(CompoundTarget, 1)
+                logger.info(f"{compound_target1.target_id=}, {compound_target1.compound_id=}")
+                target_ct1 = db_session.get(Target, compound_target1.target_id)
+                compound_ct1 = db_session.get(Compound, compound_target1.compound_id)
+                logger.info(f"{target_ct1.id=}, {target_ct1.target_chembl_id=}")
+                logger.info(f"{compound_ct1.id=}, {compound_ct1.chembl_id=}")
 
-                    n_mols_saved += 1
+                # Invert the dicts to look up ChEMBL ID by DB ID
+                db_id_to_target_chembl = {v: k for k, v in existing_targets.items()}
+                db_id_to_compound_chembl = {v: k for k, v in compound_map.items()}
 
-                # outer commit happens when exiting the with Session() context
+                target_ct1_chembl_id = db_id_to_target_chembl.get(compound_target1.target_id)
+                compound_ct1_chembl_id = db_id_to_compound_chembl.get(compound_target1.compound_id)
+
+                logger.info(f"target_ct1: db_id={compound_target1.target_id}, {target_ct1_chembl_id=}")
+                logger.info(f"compound_ct1: db_id={compound_target1.compound_id}, {compound_ct1_chembl_id=}")
+
             except IntegrityError as e:
-                # handle unexpected integrity issues gracefully
                 logger.info(f"IntegrityError while saving: {e}")
                 db_session.rollback()
             except SQLAlchemyError as e:
-                logger.exception("Database error saving compounds: {e}")
+                logger.exception(f"Database error saving compounds: {e}")
                 db_session.rollback()
                 raise
 
@@ -923,6 +934,11 @@ def _(Compound, CompoundTarget, Session, Target, func, logger, select):
 @app.cell
 def _(run_queries):
     run_queries()
+    return
+
+
+@app.cell
+def _():
     return
 
 
