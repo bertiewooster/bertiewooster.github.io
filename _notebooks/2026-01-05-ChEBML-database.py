@@ -33,6 +33,14 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
+    ## Database schemas--conceptual
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
     ChEMBL has the connections as compounds ↔ assays ↔ targets. Let's plot that as an [entity-relationship diagram](https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model) (ERD) using [graphviz](https://graphviz.org/).
     """)
     return
@@ -96,6 +104,14 @@ def _():
 
 
 @app.cell
+def _(mo):
+    mo.md(r"""
+    #NoteToSelf: ChEMBL web client has activity rather than assay, should activity be shown here?
+    """)
+    return
+
+
+@app.cell
 def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     # Create the diagram
     dot_chembl = Digraph(format="svg")
@@ -108,10 +124,6 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     dot_chembl.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
     dot_chembl.node("Assay", "{Assay|assay_id (PK)}", fillcolor="#A3C1DA")
     dot_chembl.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
-
-    # Invisible edges for layout
-    dot_chembl.edge("Compound", "Assay", style="invis")
-    dot_chembl.edge("Assay", "Target", style="invis")
 
     dot_chembl.edge(
         "Compound",
@@ -134,7 +146,7 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
         arrowsize=arrow_scale,
     )
 
-    # Render inline SVG (scalable, no file saved)
+    # Render inline SVG
     svg_chembl = dot_chembl.pipe(format="svg").decode("utf-8")
     display(SVG(svg_chembl))
     return
@@ -143,7 +155,7 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
 @app.cell
 def _(mo):
     mo.md(r"""
-    That makes sense as a comprehensive schema; here, I wanted to simplify it by connecting molecules to targets more directly. So my schema is simply Compound ↔ Target.
+    That makes sense as a comprehensive schema; in this code, I wanted to simplify it by connecting compounds to targets directly. So my schema is simply compounds ↔ targets:
     """)
     return
 
@@ -161,9 +173,6 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
     dot_simple.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
     dot_simple.node("Target", "{Target|target_id (PK)}", fillcolor="#A3C1DA")
 
-    # Invisible edge to force left-to-right ordering
-    dot_simple.edge("Compound", "Target", style="invis")
-
     # Many-to-many edge (crow's foot at both ends)
     dot_simple.edge(
         "Compound",
@@ -176,9 +185,17 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
         arrowsize=arrow_scale,
     )
 
-    # Render inline SVG (no file saved)
+    # Render inline SVG
     svg_simple = dot_simple.pipe(format="svg").decode("utf-8")
     display(SVG(svg_simple))
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## Marimo pros and cons
+    """)
     return
 
 
@@ -199,7 +216,15 @@ def _(mo):
 
 
 @app.cell
-def _(create_engine, declarative_base, logging, sessionmaker):
+def _(mo):
+    mo.md(r"""
+    ### Code setup
+    """)
+    return
+
+
+@app.cell
+def _(logging):
     # Set logger level to INFO
     logging.basicConfig(
         level=logging.INFO,
@@ -207,12 +232,40 @@ def _(create_engine, declarative_base, logging, sessionmaker):
         force=True,
     )
     logger = logging.getLogger(__name__)
+    return (logger,)
 
+
+@app.cell
+def _(create_engine, declarative_base, sessionmaker):
     Base = declarative_base()
 
     engine = create_engine("sqlite:///compounds.db", echo=False)
     Session = sessionmaker(bind=engine)
-    return Base, Session, engine, logger
+    return Base, Session, engine
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## ChEMBL data fetching
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now let's get the data from ChEMBL. The `chembl_webresource_client` `new_client` provides objects for molecule, activity, and target.
+
+    We'll start with a set of molecules, then fetch associated data. Here we fetch a number of compounds `n_compounds` starting at ChEMBL ID `start_id`. Because ChEMBL assigns a ChEMBL ID to not only compounds but also targets, we'll count how many IDs correspond to compounds.
+
+    Then we'll fetch associated activities (interactions between compounds and targets) for those compounds. Let's say we're interested in older (before 2010) studies on humans with IC50 standards and binding assays. We specify those as filters when we ask for the activities. This will serve to limit us to a reasonable number of activities and thus targets.
+
+    Then we get target data including its ChEMBL ID, name, type, and organism.
+
+    Lastly we associate targets with compounds by creating a list of targets for each molecule. This will make it easier to populate out database tables.
+    """)
+    return
 
 
 @app.cell
@@ -286,7 +339,7 @@ def _(defaultdict, logger, logging, new_client):
             try:
                 mol_to_target_ids[a["molecule_chembl_id"]].add(a["target_chembl_id"])
             except Exception as e:
-                print(e)
+                logger.warning(e)
 
         # ---------------------------------
         # 3) Fetch target metadata (bulk)
@@ -322,6 +375,15 @@ def _(defaultdict, logger, logging, new_client):
 
 
 @app.cell
+def _(mo):
+    mo.md(r"""
+    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table. Then we create a dictionary, which is an O(1) lookup, between target ChEMBL ID and its database entry so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound.
+    existing_target=('CHEMBL1855', <__main__.Target object at 0x11623bb90>)
+    """)
+    return
+
+
+@app.cell
 def _(
     Compound,
     CompoundTarget,
@@ -341,11 +403,33 @@ def _(
             if t.get("target_chembl_id")
         }
 
+        # build a dictionary of metadata keyed by target Chembl ID to deduplicate
+        target_map: dict[str, dict] = {
+            t["target_chembl_id"]: {
+                "organism": t.get("organism"),
+                "pref_name": t.get("pref_name"),
+                "target_chembl_id": t.get("target_chembl_id"),
+                "target_type": t.get("target_type"),
+            }
+            for m in molecules
+            for t in m.get("targets", [])
+            if t.get("target_chembl_id")
+        }
+        # convert back to list of dicts for bulk insert
+        all_targets = list(target_map.values())
+        if all_targets:
+            print(f"first unique target={all_targets[0]}")
+
+        logger.info(f"{len(all_target_ids)=}: {all_target_ids=}")
         n_mols_saved = 0
         n_targets_saved = 0
         n_compounds_targets_saved = 0
 
         with Session() as db_session:
+            # Bulk insert targets into Target table
+            db_session.bulk_insert_mappings(Target, all_targets)
+            db_session.commit()
+
             try:
                 # preload existing targets into a mapping chembl_id -> Target instance
                 existing_targets = {}
@@ -355,7 +439,11 @@ def _(
                         .filter(Target.target_chembl_id.in_(list(all_target_ids)))
                         .all()
                     )
+                    logger.info(f"{len(rows)=}: {rows=}")
                     existing_targets = {r.target_chembl_id: r for r in rows}
+                    for existing_target in existing_targets.items():
+                        print(f"{existing_target=}")
+                        break
 
                 for mol in molecules:
                     chembl_id = mol.get("molecule_chembl_id")
@@ -384,8 +472,11 @@ def _(
 
                             # reuse existing Target if present
                             target_obj = existing_targets.get(target_id)
+                            logger.info(f" {target_id=}, {target_obj=}")
+
                             if target_obj is None:
-                                # create new Target, add and flush to get id, then cache it
+                                logger.info(f"Had to create {target_id=}")
+                                # create new Target, add and flush to get id, then cache it to existing_targets
                                 target_obj = Target(
                                     organism=target_data.get("organism"),
                                     pref_name=target_data.get("pref_name"),
@@ -551,30 +642,30 @@ def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
     # add them programmatically by inspecting the SQLAlchemy model
     add_ordering_edges(graph_full, Base)
 
-    graph_full.set_splines("ortho")
+    graph_full.set("splines", "ortho")
 
     # Move FK labels horizontally away from edges
     for edge_full in graph_full.get_edges():
+
         head_full = edge_full.get_headlabel()
         tail_full = edge_full.get_taillabel()
 
         if head_full:
-            # Remove the "+ " prefix
             clean_head_full = head_full.replace("+ ", "").replace("+", "")
             edge_full.set_headlabel(clean_head_full)
 
         if tail_full:
-            # Remove the "+ " prefix
             clean_tail_full = tail_full.replace("+ ", "").replace("+", "")
             edge_full.set_taillabel(clean_tail_full)
+
+            edge_full.set_label("")  # critical fix
             edge_full.set_labeldistance("2.5")
-
+        
     # Increase horizontal spacing between tables
-    graph_full.set_ranksep("1.0")
-
+    graph_full.set("ranksep", "1.0")
     svg_content_full = graph_full.create_svg()
     display(SVG(svg_content_full))
-    return
+    return (graph_full,)
 
 
 @app.cell
@@ -585,6 +676,7 @@ def _(
     create_schema_graph,
     display,
     engine,
+    graph_full,
     pydot,
 ):
     def detect_join_tables(Base):
@@ -700,7 +792,7 @@ def _(
     # Add ordering edges (excluding detected join tables)
     add_ordering_edges(graph, Base, exclude_tables=excluded_tables)
 
-    graph.set_splines("ortho")
+    graph_full.set("splines", "ortho")
 
     # Move FK labels horizontally away from edges
     for edge in graph.get_edges():
@@ -714,7 +806,7 @@ def _(
             edge.set_taillabel(tail)
             edge.set_labeldistance("2.5")
 
-    graph.set_ranksep("1.0")
+    graph_full.set("ranksep", "1.0")
 
     svg_content = graph.create_svg()
     display(SVG(svg_content))
@@ -844,11 +936,6 @@ def _(Compound, CompoundTarget, Session, Target, func, logger, select):
 @app.cell
 def _(run_queries):
     run_queries()
-    return
-
-
-@app.cell
-def _():
     return
 
 
