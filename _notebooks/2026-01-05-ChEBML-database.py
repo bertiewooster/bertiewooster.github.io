@@ -373,7 +373,7 @@ def _(defaultdict, logger, logging, new_client):
 @app.cell
 def _(mo):
     mo.md(r"""
-    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. That lets us create a dictionary mapping our input data (ChEMBL ID) to our database id, which is an O(1) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound. We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary. Now we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory add again bulk adding them to the database without querying the database for the compound or target IDs.
+    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. The key is the returning part, `.returning(Target.target_chembl_id, Target.id)`. That lets us create a dictionary mapping our input data (ChEMBL ID which we already had) to our database id (which was just created), which is an O(1) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound. We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary. Now we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory add again bulk adding them to the database without querying the database for the compound or target IDs.
 
     Note that creating the dictionaries does require some RAM, so if you were creating a huge number of records you might run out of memory.
     """)
@@ -825,6 +825,14 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
         f"{n_compounds_targets_saved} compound-target associations to the database, "
         f"in {time.time() - start:.2f} seconds."
     )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    #TODO describe queries
+    """)
     return
 
 
