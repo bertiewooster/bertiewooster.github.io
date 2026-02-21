@@ -373,7 +373,9 @@ def _(defaultdict, logger, logging, new_client):
 @app.cell
 def _(mo):
     mo.md(r"""
-    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table. Then we create a dictionary, which is an O(1) lookup, between target ChEMBL ID and its database entry so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound.
+    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. That lets us create a dictionary mapping our input data (ChEMBL ID) to our database id, which is an O(1) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound. We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary. Now we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory add again bulk adding them to the database without querying the database for the compound or target IDs.
+
+    Note that creating the dictionaries does require some RAM, so if you were creating a huge number of records you might run out of memory.
     """)
     return
 
@@ -788,6 +790,14 @@ def _(
 
     svg_content = graph.create_svg()
     display(SVG(svg_content))
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now let's actually get the molecules from ChEMBL and save them to our SQLite database.
+    """)
     return
 
 
