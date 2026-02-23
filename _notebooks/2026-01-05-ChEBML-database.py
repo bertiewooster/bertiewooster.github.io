@@ -327,7 +327,7 @@ def _(defaultdict, logger, logging, new_client):
                 "target_chembl_id",
             ]
         )
-        logger.info(f"Activities: {len(activities)}")
+        logger.info(f"Fetched {len(activities)} activities from ChEMBL.")
 
         mol_to_target_ids = defaultdict(set)
 
@@ -356,7 +356,7 @@ def _(defaultdict, logger, logging, new_client):
                 ]
             ):
                 targets[t["target_chembl_id"]] = t
-        logger.info(f"Fetched metadata for {len(targets)} targets.")
+        logger.info(f"Fetched metadata for {len(targets)} targets from ChEMBL.")
 
         # ---------------------------------
         # 4) Attach targets to molecules
@@ -821,7 +821,7 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     )
 
     end = time.time()
-    logger.info(f"Fetched {len(mols)} molecules in {end - start:.2f} seconds.")
+    logger.info(f"Fetched {len(mols)} molecules and associated activities in {end - start:.2f} seconds from ChEMBL.")
 
     start = time.time()
 
@@ -831,7 +831,7 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     logger.info(
         f"Saved {n_mols_saved} compounds, "
         f"{n_targets_saved} targets, "
-        f"{n_compounds_targets_saved} compound-target associations to the database, "
+        f"and {n_compounds_targets_saved} compound-target associations to the database, "
         f"in {time.time() - start:.2f} seconds."
     )
     return
