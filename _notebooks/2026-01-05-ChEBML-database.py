@@ -7,6 +7,15 @@ app = marimo.App()
 @app.cell
 def _(mo):
     mo.md(r"""
+    #ToDo
+    - Format with ruff
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
     # ChEMBL Compounds, Targets, and Rule of 5
     """)
     return
@@ -33,7 +42,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ## Database schemas--conceptual
+    ## Database schemas—conceptual
     """)
     return
 
@@ -41,7 +50,15 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ChEMBL has the connections as compounds ↔ activities ↔ targets. Let's plot that as an [entity-relationship diagram](https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model) (ERD) using [graphviz](https://graphviz.org/).
+    I find database [entity-relationship diagrams](https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model) to be useful for planning and documenting.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ChEMBL has the connections as compounds ↔ activities ↔ targets. Let's plot that as an ERD using [graphviz](https://graphviz.org/).
     """)
     return
 
@@ -72,7 +89,6 @@ def _():
     from IPython.display import SVG, display
     from sqlalchemy_schemadisplay import create_schema_graph
     from rdkit import Chem
-    # from rdkit.Chem.Draw import MolsToGridImage
     from rdkit.Chem import MolFromSmiles
     from rdkit.Chem.Draw import MolsMatrixToGridImage
 
@@ -198,31 +214,7 @@ def _(Digraph, SVG, arrow_scale, crow_fontsize, display):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ## Marimo pros and cons
-    """)
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md(r"""
-    This is my first post using Marimo as the notebook: I had previously used just Jupyter. Initially Marimo wasn't great because
-
-    - I discovered that publishing to a Markdown file directly from Marimo didn't lead to good formatting on my Jekyll, so I converted from Marimo to Jupyter and then to Markdown
-    - I didn't have a reliable Internet connection when working on this and Marimo seemed to need a connection in VS Code
-    - I sometimes am not allowed to rename a variable in VS Code (and automatically change the variable name wherever it's used)
-    - The ruff VS Code extension doesn't work that well with Marimo notebooks for me
-    - Marimo is very serious about not allowing you to re-use a variable name, even an iterator variable which is usually a throw-away. So for example if you're trying out two versions of a code block, you have to rename every variable, even the iterators. While I understand the need for this, perhaps there's a way to make it easier by specifying a suffix to append to each variable name when you clone a code block--seems like something an LLM could handle.
-
-    However, it seemed worth it when, before committing via git, the diff was so much more readable than in Jupyter (which is a ton of TypeScript, metadata, etc.). With Marimo, the diff is just the actual code changes and a small amount of formatting in Python. With Jupyter Notebooks, in theory source control works, but in practice the diff is so large it's so difficult to tell what changes were made that I didn't find it useful for identifying or rolling back changes.
-    """)
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md(r"""
-    ### Code setup
+    ## Code setup
     """)
     return
 
@@ -240,18 +232,9 @@ def _(logging):
 
 
 @app.cell
-def _(create_engine, declarative_base, sessionmaker):
-    Base = declarative_base()
-
-    engine = create_engine("sqlite:///compounds.db", echo=False)
-    Session = sessionmaker(bind=engine)
-    return Base, Session, engine
-
-
-@app.cell
 def _(mo):
     mo.md(r"""
-    ## ChEMBL data fetching
+    ## Fetching data from ChEMBL
     """)
     return
 
@@ -383,9 +366,412 @@ def _(defaultdict, logger, logging, new_client):
 @app.cell
 def _(mo):
     mo.md(r"""
-    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. The key is the returning part, `.returning(Target.target_chembl_id, Target.id)`. That lets us create a dictionary mapping our input data (ChEMBL ID which we already had) to our database id (which was just created), which is an [O(1) (constant time)](https://en.wikipedia.org/wiki/Time_complexity#Constant_time) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound. We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary. Now we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory add again bulk adding them to the database without querying the database for the compound or target IDs.
+    ## SQLite database
+    """)
+    return
 
-    Note that creating the dictionaries does require some RAM, so if you were creating a huge number of records you might run out of memory.
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    While we use a SQLite database, we interact with it using SQLAlchemy. SQLAlchemy has the advantage that the code is the same regardless of which database type you use (except for some database-specific idioms), so if you decide to change database type later, you don't have to rewrite the code that interacts with the database.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ### Setting up the database
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Here we set up the `Base` and the SQLite database name (`compounds.db`), then define a `Session`.
+    """)
+    return
+
+
+@app.cell
+def _(create_engine, declarative_base, sessionmaker):
+    Base = declarative_base()
+
+    engine = create_engine("sqlite:///compounds.db", echo=False)
+    Session = sessionmaker(bind=engine)
+    return Base, Session, engine
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now we create a class for each table. In addition to having a database-assigned primary key `id`, we enforce uniqueness on the ChEMBL ID to make sure we don't add the same compound or target multiple times to its table.
+    """)
+    return
+
+
+@app.cell
+def _(Base, Column, Float, Integer, String):
+    class Compound(Base):
+        __tablename__ = "compound"
+
+        id = Column(Integer, primary_key=True)
+        chembl_id = Column(Integer, unique=True)
+        sml = Column(String)
+        pref_name = Column(String)
+        molwt = Column(Float)  # MolWt
+        tpsa = Column(Float)  # TPSA
+        num_h_acceptors = Column(Integer)  # NumHAcceptors
+        num_h_donors = Column(Integer)  # NumHDonors
+        num_ro5 = Column(Integer)  # NumRo5
+        mol_logp = Column(Float)  # MolLogP
+
+    return (Compound,)
+
+
+@app.cell
+def _(Base, Column, Integer, String):
+    class Target(Base):
+        __tablename__ = "target"
+
+        id = Column(Integer, primary_key=True)
+        target_chembl_id = Column(String, unique=True)
+        organism = Column(String)
+        pref_name = Column(String)
+        target_type = Column(String)
+
+    return (Target,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    The final table is a join table between the `compound` and `target` tables. We set a uniqueness constraint to ensure that each compound-target pair can be added only once.
+    """)
+    return
+
+
+@app.cell
+def _(Base, Column, Integer, UniqueConstraint, sqlalchemy):
+    class CompoundTarget(Base):
+        __tablename__ = "compound_target"
+
+        id = Column(Integer, primary_key=True)
+        compound_id = Column(Integer, sqlalchemy.ForeignKey("compound.id"))
+        target_id = Column(Integer, sqlalchemy.ForeignKey("target.id"))
+
+        __table_args__ = (
+            UniqueConstraint("compound_id", "target_id", name="uq_compound_target"),
+        )
+
+    return (CompoundTarget,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now we define simple functions to reset and initialize the database. These are one-liners so they're set up as functions, and named, to remind us of what they do.
+    """)
+    return
+
+
+@app.cell
+def _(Base, engine):
+    def reset_db():
+        """Drop all database tables (use with caution)."""
+        Base.metadata.drop_all(engine)
+
+    return (reset_db,)
+
+
+@app.cell
+def _(Base, engine):
+    def init_db():
+        """Create database tables (call once at app startup or from scripts/tests)."""
+        Base.metadata.create_all(engine)
+
+    return (init_db,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ### Visualizing the database schema
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now that we've created the database in code, let's visualize it to make sure it's as we planned.
+    """)
+    return
+
+
+@app.cell
+def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
+    # Create the ERD graph
+    graph_full = create_schema_graph(
+        engine=engine,
+        metadata=Base.metadata,
+        show_datatypes=True,
+        show_indexes=False,
+        rankdir="LR",
+        concentrate=False,
+    )
+
+    # Force strict left-to-right ordering with invisible edges;
+    # add them programmatically by inspecting the SQLAlchemy model
+    add_ordering_edges(graph_full, Base)
+
+    graph_full.set("splines", "ortho")
+
+    # Move FK labels horizontally away from edges
+    for edge_full in graph_full.get_edges():
+
+        head_full = edge_full.get_headlabel()
+        tail_full = edge_full.get_taillabel()
+
+        if head_full:
+            clean_head_full = head_full.replace("+ ", "").replace("+", "")
+            edge_full.set_headlabel(clean_head_full)
+
+        if tail_full:
+            clean_tail_full = tail_full.replace("+ ", "").replace("+", "")
+            edge_full.set_taillabel(clean_tail_full)
+
+            edge_full.set_label("")  # critical fix
+            edge_full.set_labeldistance("2.5")
+
+    # Increase horizontal spacing between tables
+    graph_full.set("ranksep", "1.0")
+    svg_content_full = graph_full.create_svg()
+    display(SVG(svg_content_full))
+    return (graph_full,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Let's simplify the ERD by showing the relationship between the compound and target tables as a many-to-many relationship. We can do that programmatically by detecting the join table, removing it, and replacing it with a (conceptual) many-to-many relationship between the two remaining tables.
+    """)
+    return
+
+
+@app.cell
+def _(pydot):
+    # ERD utilities
+    def detect_join_tables(Base):
+        """
+        Detect join tables (tables with only an id and two foreign keys).
+
+        Returns:
+            dict: Mapping of join_table_name -> (parent_table1, parent_table2)
+        """
+        join_tables = {}
+
+        for table_name, table in Base.metadata.tables.items():
+            # Get foreign key constraints
+            fk_constraints = list(table.foreign_key_constraints)
+
+            # A join table typically has:
+            # - Only id as primary key (or composite PK of the two FKs)
+            # - Exactly 2 foreign key columns
+            # - Minimal or no other columns
+
+            foreign_key_columns = []
+            for fk in fk_constraints:
+                foreign_key_columns.extend(fk.column_keys)
+
+            # Check if this looks like a join table:
+            # Has exactly 2 FK constraints pointing to different tables
+            if len(fk_constraints) == 2:
+                referred_tables = [fk.referred_table.name for fk in fk_constraints]
+
+                # Make sure they point to different tables
+                if referred_tables[0] != referred_tables[1]:
+                    join_tables[table_name] = tuple(referred_tables)
+
+        return join_tables
+
+    def get_primary_key_name(Base, table_name):
+        """
+        Get the primary key column name for a table.
+
+        Args:
+            Base: SQLAlchemy declarative base
+            table_name: Name of the table
+
+        Returns:
+            str: Primary key column name (or comma-separated list if composite)
+        """
+        table = Base.metadata.tables[table_name]
+        pk_columns = [col.name for col in table.columns if col.primary_key]
+
+        if pk_columns:
+            return ", ".join(pk_columns)
+        else:
+            # Fallback
+            return "id"
+
+    def remove_join_tables_from_graph(graph, Base):
+        """
+        Remove join tables from graph and replace with direct many-to-many edges.
+
+        Args:
+            graph: pydot.Dot graph object
+            Base: SQLAlchemy declarative base
+
+        Returns:
+            set: Names of removed join tables
+        """
+        join_tables = detect_join_tables(Base)
+
+        for join_table, (table1, table2) in join_tables.items():
+            # Remove the join table node
+            graph.del_node(join_table)
+
+            # Remove all edges connected to the join table
+            for edge in list(graph.get_edges()):
+                if (
+                    edge.get_source() == join_table
+                    or edge.get_destination() == join_table
+                ):
+                    graph.del_edge(edge.get_source(), edge.get_destination())
+
+            # Get primary key names for both tables
+            table1_pk = get_primary_key_name(Base, table1)
+            table2_pk = get_primary_key_name(Base, table2)
+
+            # Add a direct many-to-many edge between the two tables
+            graph.add_edge(
+                pydot.Edge(
+                    table1,
+                    table2,
+                    taillabel=table1_pk,
+                    headlabel=table2_pk,
+                    arrowhead="crow",
+                    arrowtail="crow",
+                    dir="both",
+                )
+            )
+
+        return set(join_tables.keys())
+
+    def add_ordering_edges(graph, Base, exclude_tables=None):
+        """
+        Add invisible edges based on foreign key relationships to enforce left-to-right ordering
+
+        Args:
+            graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
+            Base: SQLAlchemy declarative base containing table metadata.
+            exclude_tables: Set of table names to exclude from processing
+
+        Returns:
+            The modified graph object with invisible ordering edges added.
+        """
+        if exclude_tables is None:
+            exclude_tables = set()
+
+        # Get all table names
+        tables = Base.metadata.tables.keys()
+
+        # For each table, check for foreign keys
+        for table_name in tables:
+            if table_name in exclude_tables:
+                continue
+
+            table = Base.metadata.tables[table_name]
+
+            for fk in table.foreign_key_constraints:
+                parent_table = fk.referred_table.name
+
+                if parent_table not in exclude_tables:
+                    # Add invisible edge: parent -> child
+                    graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
+
+        return graph
+
+    return add_ordering_edges, remove_join_tables_from_graph
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now we can actually simplify the ERD.
+    """)
+    return
+
+
+@app.cell
+def _(
+    Base,
+    SVG,
+    add_ordering_edges,
+    create_schema_graph,
+    display,
+    engine,
+    graph_full,
+    remove_join_tables_from_graph,
+):
+    # Create the simplified ERD graph
+    graph = create_schema_graph(
+        engine=engine,
+        metadata=Base.metadata,
+        show_datatypes=True,
+        show_indexes=False,
+        rankdir="LR",
+        concentrate=False,
+    )
+
+    # Automatically detect and remove join tables
+    excluded_tables = remove_join_tables_from_graph(graph, Base)
+
+    # Add ordering edges (excluding detected join tables)
+    add_ordering_edges(graph, Base, exclude_tables=excluded_tables)
+
+    graph_full.set("splines", "ortho")
+
+    # Move FK labels horizontally away from edges
+    for edge in graph.get_edges():
+        head = edge.get_headlabel()
+        tail = edge.get_taillabel()
+
+        if head:
+            edge.set_headlabel(head)
+
+        if tail:
+            edge.set_taillabel(tail)
+            edge.set_labeldistance("2.5")
+
+    graph_full.set("ranksep", "1.0")
+
+    svg_content = graph.create_svg()
+    display(SVG(svg_content))
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ### Saving data to SQLite database
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. The trick is the "returning" part, `.returning(Target.target_chembl_id, Target.id)`. That lets us create a dictionary mapping our input data (ChEMBL ID which we already had) to our database id (which was just created), which is an [O(1) (constant time)](https://en.wikipedia.org/wiki/Time_complexity#Constant_time) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound.
+
+    We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary.
+
+    After that, we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory and again bulk adding them to the database without querying the database for the compound or target IDs.
+
+    Note that creating the dictionaries does require some RAM, so if you were creating a huge number of records, memory might become a limitation.
     """)
     return
 
@@ -534,305 +920,20 @@ def _(
 
 
 @app.cell
-def _(Base, engine):
-    def init_db():
-        """Create database tables (call once at app startup or from scripts/tests)."""
-        Base.metadata.create_all(engine)
-
-    return (init_db,)
-
-
-@app.cell
-def _(Base, engine):
-    def reset_db():
-        """Drop all database tables (use with caution)."""
-        Base.metadata.drop_all(engine)
-
-    return (reset_db,)
-
-
-@app.cell
-def _(Base, Column, Float, Integer, String):
-    class Compound(Base):
-        __tablename__ = "compound"
-
-        id = Column(Integer, primary_key=True)
-        chembl_id = Column(Integer, unique=True)
-        sml = Column(String)
-        pref_name = Column(String)
-        molwt = Column(Float)  # MolWt
-        tpsa = Column(Float)  # TPSA
-        num_h_acceptors = Column(Integer)  # NumHAcceptors
-        num_h_donors = Column(Integer)  # NumHDonors
-        num_ro5 = Column(Integer)  # NumRo5
-        mol_logp = Column(Float)  # MolLogP
-
-    return (Compound,)
-
-
-@app.cell
-def _(Base, Column, Integer, String):
-    class Target(Base):
-        __tablename__ = "target"
-
-        id = Column(Integer, primary_key=True)
-        organism = Column(String)
-        pref_name = Column(String)
-        target_chembl_id = Column(String, unique=True)
-        target_type = Column(String)
-
-    return (Target,)
-
-
-@app.cell
-def _(Base, Column, Integer, UniqueConstraint, sqlalchemy):
-    class CompoundTarget(Base):
-        __tablename__ = "compound_target"
-
-        id = Column(Integer, primary_key=True)
-        compound_id = Column(Integer, sqlalchemy.ForeignKey("compound.id"))
-        target_id = Column(Integer, sqlalchemy.ForeignKey("target.id"))
-
-        __table_args__ = (
-            UniqueConstraint("compound_id", "target_id", name="uq_compound_target"),
-        )
-
-    return (CompoundTarget,)
-
-
-@app.cell
-def _(init_db, reset_db):
-    # Reset database (uncomment to start fresh)
-    reset_db()
-
-    # Ensure tables exist
-    init_db()
+def _(mo):
+    mo.md(r"""
+    Let's go ahead and set up the database.
+    """)
     return
 
 
 @app.cell
-def _(pydot):
-    def add_ordering_edges(graph, Base, exclude_tables=None):
-        """
-        Add invisible edges based on foreign key relationships to enforce left-to-right ordering
+def _(init_db, reset_db):
+    # Reset database
+    reset_db()
 
-        Args:
-            graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
-            Base: SQLAlchemy declarative base containing table metadata.
-            exclude_tables: Set of table names to exclude from processing
-
-        Returns:
-            The modified graph object with invisible ordering edges added.
-        """
-        if exclude_tables is None:
-            exclude_tables = set()
-
-        # Get all table names
-        tables = Base.metadata.tables.keys()
-
-        # For each table, check for foreign keys
-        for table_name in tables:
-            if table_name in exclude_tables:
-                continue
-
-            table = Base.metadata.tables[table_name]
-
-            for fk in table.foreign_key_constraints:
-                parent_table = fk.referred_table.name
-
-                if parent_table not in exclude_tables:
-                    # Add invisible edge: parent -> child
-                    graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
-
-        return graph
-
-    return (add_ordering_edges,)
-
-
-@app.cell
-def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
-    # Create the ERD graph
-    graph_full = create_schema_graph(
-        engine=engine,
-        metadata=Base.metadata,
-        show_datatypes=True,
-        show_indexes=False,
-        rankdir="LR",
-        concentrate=False,
-    )
-
-    # Force strict left-to-right ordering with invisible edges;
-    # add them programmatically by inspecting the SQLAlchemy model
-    add_ordering_edges(graph_full, Base)
-
-    graph_full.set("splines", "ortho")
-
-    # Move FK labels horizontally away from edges
-    for edge_full in graph_full.get_edges():
-
-        head_full = edge_full.get_headlabel()
-        tail_full = edge_full.get_taillabel()
-
-        if head_full:
-            clean_head_full = head_full.replace("+ ", "").replace("+", "")
-            edge_full.set_headlabel(clean_head_full)
-
-        if tail_full:
-            clean_tail_full = tail_full.replace("+ ", "").replace("+", "")
-            edge_full.set_taillabel(clean_tail_full)
-
-            edge_full.set_label("")  # critical fix
-            edge_full.set_labeldistance("2.5")
-
-    # Increase horizontal spacing between tables
-    graph_full.set("ranksep", "1.0")
-    svg_content_full = graph_full.create_svg()
-    display(SVG(svg_content_full))
-    return (graph_full,)
-
-
-@app.cell
-def _(
-    Base,
-    SVG,
-    add_ordering_edges,
-    create_schema_graph,
-    display,
-    engine,
-    graph_full,
-    pydot,
-):
-    def detect_join_tables(Base):
-        """
-        Detect join tables (tables with only an id and two foreign keys).
-
-        Returns:
-            dict: Mapping of join_table_name -> (parent_table1, parent_table2)
-        """
-        join_tables = {}
-
-        for table_name, table in Base.metadata.tables.items():
-            # Get foreign key constraints
-            fk_constraints = list(table.foreign_key_constraints)
-
-            # A join table typically has:
-            # - Only id as primary key (or composite PK of the two FKs)
-            # - Exactly 2 foreign key columns
-            # - Minimal or no other columns
-
-            foreign_key_columns = []
-            for fk in fk_constraints:
-                foreign_key_columns.extend(fk.column_keys)
-
-            # Check if this looks like a join table:
-            # Has exactly 2 FK constraints pointing to different tables
-            if len(fk_constraints) == 2:
-                referred_tables = [fk.referred_table.name for fk in fk_constraints]
-
-                # Make sure they point to different tables
-                if referred_tables[0] != referred_tables[1]:
-                    join_tables[table_name] = tuple(referred_tables)
-
-        return join_tables
-
-    def get_primary_key_name(Base, table_name):
-        """
-        Get the primary key column name for a table.
-
-        Args:
-            Base: SQLAlchemy declarative base
-            table_name: Name of the table
-
-        Returns:
-            str: Primary key column name (or comma-separated list if composite)
-        """
-        table = Base.metadata.tables[table_name]
-        pk_columns = [col.name for col in table.columns if col.primary_key]
-
-        if pk_columns:
-            return ", ".join(pk_columns)
-        else:
-            # Fallback
-            return "id"
-
-    def remove_join_tables_from_graph(graph, Base):
-        """
-        Remove join tables from graph and replace with direct many-to-many edges.
-
-        Args:
-            graph: pydot.Dot graph object
-            Base: SQLAlchemy declarative base
-
-        Returns:
-            set: Names of removed join tables
-        """
-        join_tables = detect_join_tables(Base)
-
-        for join_table, (table1, table2) in join_tables.items():
-            # Remove the join table node
-            graph.del_node(join_table)
-
-            # Remove all edges connected to the join table
-            for edge in list(graph.get_edges()):
-                if (
-                    edge.get_source() == join_table
-                    or edge.get_destination() == join_table
-                ):
-                    graph.del_edge(edge.get_source(), edge.get_destination())
-
-            # Get primary key names for both tables
-            table1_pk = get_primary_key_name(Base, table1)
-            table2_pk = get_primary_key_name(Base, table2)
-
-            # Add a direct many-to-many edge between the two tables
-            graph.add_edge(
-                pydot.Edge(
-                    table1,
-                    table2,
-                    taillabel=table1_pk,
-                    headlabel=table2_pk,
-                    arrowhead="crow",
-                    arrowtail="crow",
-                    dir="both",
-                )
-            )
-
-        return set(join_tables.keys())
-
-    # Create the ERD graph
-    graph = create_schema_graph(
-        engine=engine,
-        metadata=Base.metadata,
-        show_datatypes=True,
-        show_indexes=False,
-        rankdir="LR",
-        concentrate=False,
-    )
-
-    # Automatically detect and remove join tables
-    excluded_tables = remove_join_tables_from_graph(graph, Base)
-
-    # Add ordering edges (excluding detected join tables)
-    add_ordering_edges(graph, Base, exclude_tables=excluded_tables)
-
-    graph_full.set("splines", "ortho")
-
-    # Move FK labels horizontally away from edges
-    for edge in graph.get_edges():
-        head = edge.get_headlabel()
-        tail = edge.get_taillabel()
-
-        if head:
-            edge.set_headlabel(head)
-
-        if tail:
-            edge.set_taillabel(tail)
-            edge.set_labeldistance("2.5")
-
-    graph_full.set("ranksep", "1.0")
-
-    svg_content = graph.create_svg()
-    display(SVG(svg_content))
+    # Ensure tables exist
+    init_db()
     return
 
 
@@ -873,7 +974,31 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
 @app.cell
 def _(mo):
     mo.md(r"""
-    Now we can get the results we're interested in. Let's start by grouping compounds by sets of targets.
+    ## Getting compound-target results
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now we can get the results we're interested in.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ### Grouping compounds by sets of targets
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    First we'll simply group the compounds by target combinations. We list the compounds for each set of targets, ordering them by ChEMBL ID.
     """)
     return
 
@@ -882,7 +1007,7 @@ def _(mo):
 def _(Compound, CompoundTarget, Session, Target, func, logger, select):
     with Session() as db_session1:
         # For each compound, concatenate its targets with a slash.
-        # Then, count how many distinct such tuples exist in the database.
+        # Then, count how many distinct such tuples exist in the database and list them in order of ChEMBL ID.
 
         # Build per-compound target combo subquery:
         # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
@@ -956,7 +1081,7 @@ def _(mo):
 
     `Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter`
 
-    I used the backslash `\` as the delimiter between a target because targets can contain other commonly-used delimiters such as as forward slashes `/`, commas `,`, and semicolons `;`.
+    I used the backslash `\` as the delimiter between a target because a target name can contain other commonly-used delimiters such as as forward slashes `/`, commas `,`, and semicolons `;`.
 
     By the way, these three targets are closely-related [monoamine transporters](https://en.wikipedia.org/wiki/Monoamine_transporter) which regulate concentrations of extracellular monoamine neurotransmitters and are associated with mental health conditions such as Parkinson's, ADHD, and depression.
     """)
@@ -966,17 +1091,25 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    Now let's do an initial ranking of compounds within each target set by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. We'll hide the compounds that don't have any associated targets.
+    ### Ranking compounds by rule of 5 violations
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    Now let's do an initial ranking of compounds within each target set by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have—the fewer the better. We'll hide the compounds that don't have any associated targets.
     """)
     return
 
 
 @app.cell
 def _(Compound, Session, logger, target_combinations):
-    with Session() as db_session:
+    with Session() as db_session2:
         # Query compounds grouped by type and ordered by ascending number of Rule of 5 violations
         compounds_by_ro5 = (
-            db_session.query(
+            db_session2.query(
                 target_combinations.c.target_combo,
                 Compound.chembl_id,
                 Compound.pref_name,
@@ -1016,7 +1149,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ## Visualizing the small-molecule compounds
+    ### Visualizing the results for small-molecule compounds
     """)
     return
 
@@ -1027,7 +1160,7 @@ def _(mo):
     If you've read my blog you can guess I can't resist showing these small-molecule compounds. Let's use my RDKit contribution [MolsMatrixToGridImage](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) to show the compounds where
 
     - each row is a target combination
-    - each column is a compound for that target combination
+    - each column is a compound for that target combination--MolsMatrixToGridImage is useful because there can be a variable number of compounds per target combination.
     """)
     return
 
@@ -1061,7 +1194,7 @@ def _(
         for pref_name_b, num_ro5_b, sml_b in compounds:
             mol = MolFromSmiles(sml_b) if sml_b else None
             mol_row.append(mol)
-            legend = f'{pref_name_b or ""} ({num_ro5_b} violations)'
+            legend = f'{pref_name_b or "unnamed"} ({num_ro5_b} violations)'
             legend_row.append(legend.lower())
 
         mols_matrix.append(mol_row)
@@ -1073,6 +1206,11 @@ def _(
         legendsMatrix=legends_matrix,
         subImgSize=(300, 300),
     )
+    return
+
+
+@app.cell
+def _():
     return
 
 
