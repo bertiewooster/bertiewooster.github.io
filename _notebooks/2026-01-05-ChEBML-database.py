@@ -269,6 +269,7 @@ def _(defaultdict, logger, logging, new_client):
         n_compounds: int = 2,
         start_id: int = 1,
     ):
+        # Create list of ChEMBL ids (e.g. CHEMBL12)
         chembl_ids = [f"CHEMBL{id}" for id in range(start_id, start_id + n_compounds)]
 
         molecule = new_client.molecule
@@ -373,9 +374,17 @@ def _(defaultdict, logger, logging, new_client):
 @app.cell
 def _(mo):
     mo.md(r"""
-    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. The key is the returning part, `.returning(Target.target_chembl_id, Target.id)`. That lets us create a dictionary mapping our input data (ChEMBL ID which we already had) to our database id (which was just created), which is an O(1) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound. We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary. Now we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory add again bulk adding them to the database without querying the database for the compound or target IDs.
+    Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. The key is the returning part, `.returning(Target.target_chembl_id, Target.id)`. That lets us create a dictionary mapping our input data (ChEMBL ID which we already had) to our database id (which was just created), which is an [O(1) (constant time)](https://en.wikipedia.org/wiki/Time_complexity#Constant_time) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound. We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary. Now we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory add again bulk adding them to the database without querying the database for the compound or target IDs.
 
     Note that creating the dictionaries does require some RAM, so if you were creating a huge number of records you might run out of memory.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    #TODO [INFO] IntegrityError while saving: (sqlite3.IntegrityError) UNIQUE constraint failed: target.target_chembl_id
     """)
     return
 
@@ -806,8 +815,13 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
     mols, all_target_ids = get_chembl_molecules(
-        n_compounds=50,
-        start_id=1000,  # Has targets
+        start_id=795,
+        n_compounds=15,
+        # n_compounds=870,
+        # start_id=1000,  # Has targets
+        # start_id=1088,  # Has targets
+        # start_id=1008,  # Has targets
+        # start_id=1115,  # Has targets
         # start_id=3430873, # Not a molecule
     )
 
@@ -831,112 +845,142 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
 @app.cell
 def _(mo):
     mo.md(r"""
-    #TODO describe queries
+    Now we can get the results we're interested in. Let's start by grouping compounds by sets of targets.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    #ToDo Put (Compounds: ) in order of ChEMBL ID
     """)
     return
 
 
 @app.cell
 def _(Compound, CompoundTarget, Session, Target, func, logger, select):
-    def run_queries():
-        """Run the required queries against the ChEMBL database and print the results."""
-        with Session() as db_session:
-            print("run_queries")
-            # 1. Find the count of all distinct counts of compound targets (ex: Voltage-gated inwardly rectifying potassium channel KCNH2:14, Neuronal acetylcholine receptor subunit alpha-3/Neuronal acetylcholine receptor subunit alpha-7: 5).
-            # For each compound, concatenate its targets with a slash.
-            # Then, count how many distinct such tuples exist in the database.
+    with Session() as db_session1:
+        # For each compound, concatenate its targets with a slash.
+        # Then, count how many distinct such tuples exist in the database.
 
-            # Build per-compound target combo subquery:
-            # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
+        # Build per-compound target combo subquery:
+        # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
 
-            # correlated inner select returning pref_name for the current Compound, ordered
-            inner = (
-                select(Target.pref_name)
-                .select_from(
-                    Target.__table__.join(
-                        CompoundTarget.__table__, CompoundTarget.target_id == Target.id
-                    )
+        # correlated inner select returning pref_name for the current Compound, ordered
+        inner = (
+            select(Target.pref_name)
+            .select_from(
+                Target.__table__.join(
+                    CompoundTarget.__table__, CompoundTarget.target_id == Target.id
                 )
-                .where(CompoundTarget.compound_id == Compound.id)
-                .order_by(func.lower(Target.pref_name))
-                .correlate(Compound)
             )
+            .where(CompoundTarget.compound_id == Compound.id)
+            .order_by(func.lower(Target.pref_name))
+            .correlate(Compound)
+        )
 
-            # name the derived table so the outer group_concat can select from it
-            ordered_targets = inner.subquery("ordered_targets")
+        # name the derived table so the outer group_concat can select from it
+        ordered_targets = inner.subquery("ordered_targets")
 
-            # aggregate the ordered names with a '\' separator
-            target_combo_subq = select(
-                func.group_concat(ordered_targets.c.pref_name, "\\")
-            ).scalar_subquery()
+        # aggregate the ordered names with a '\' separator
+        target_combo_subq = select(
+            func.group_concat(ordered_targets.c.pref_name, "\\")
+        ).scalar_subquery()
 
-            # Create a subquery that selects each compound's id and its target combination.
-            target_combinations = db_session.query(
-                Compound.id.label("compound_id"),
-                target_combo_subq.label("target_combo"),
-            ).subquery()
+        # Create a subquery that selects each compound's id and its target combination.
+        target_combinations = db_session1.query(
+            Compound.id.label("compound_id"),
+            target_combo_subq.label("target_combo"),
+        ).subquery()
 
-            # Create a list of distinct type combinations and their counts
-            # where each is a tuple like (target_combo, num_compounds)
-            compound_targets = (
-                db_session.query(
-                    target_combinations.c.target_combo,
-                    func.count().label("num_compounds"),
-                    func.group_concat(Compound.chembl_id, ", ").label("chembl_ids"),
-                )
-                .join(Compound, Compound.id == target_combinations.c.compound_id)
-                .group_by(target_combinations.c.target_combo)
-                .order_by(target_combinations.c.target_combo)
-                .all()
+        # Create a list of distinct type combinations and their counts
+        # where each is a tuple like (target_combo, num_compounds)
+        compound_targets = (
+            db_session1.query(
+                target_combinations.c.target_combo,
+                func.count().label("num_compounds"),
+                func.group_concat(Compound.chembl_id, ", ").label("chembl_ids"),
             )
+            .join(Compound, Compound.id == target_combinations.c.compound_id)
+            .group_by(target_combinations.c.target_combo)
+            .order_by(target_combinations.c.target_combo)
+            .all()
+        )
 
-            n_compound_by_target = 0
-            logger.info("1. Distinct compound target combinations and their counts:")
-            for target_combo, count, chembl_ids in compound_targets:
-                logger.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
-                n_compound_by_target += count
-            logger.info(
-                f"    Total compounds counted by target combinations: {n_compound_by_target}"
-            )
+        n_compound_by_target = 0
+        logger.info("1. Distinct compound target combinations and their counts:")
+        for target_combo, count, chembl_ids in compound_targets:
+            logger.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
+            n_compound_by_target += count
+        logger.info(
+            f"    Total compounds counted by target combinations: {n_compound_by_target}"
+        )
 
-            # Query compounds grouped by type and ordered by ascending number of Rule of 5 violations
-            compounds_by_ro5 = (
-                db_session.query(
-                    target_combinations.c.target_combo,
-                    Compound.chembl_id,
-                    Compound.pref_name,
-                    Compound.num_ro5,
-                )
-                .join(Compound, Compound.id == target_combinations.c.compound_id)
-                .order_by(
-                    target_combinations.c.target_combo,
-                    Compound.num_ro5,
-                )
-                .all()
-            )
-            logger.info(
-                "2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:"
-            )
-            current_target_combo = ""
-            for target_combo, chembl_id, pref_name, num_ro5 in compounds_by_ro5:
-                if target_combo != current_target_combo:
-                    current_target_combo = target_combo
-                    logger.info(f"    Target combination: {current_target_combo}")
-                    logger.info("        Rule of 5 violation count")
-
-                logger.info(f"        {num_ro5} for {pref_name} ({chembl_id})")
-
-    return (run_queries,)
+    return (target_combinations,)
 
 
 @app.cell
-def _(run_queries):
-    run_queries()
+def _(mo):
+    mo.md(r"""
+    For example, a set with multiple targets is listed as
+
+    `Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter`
+
+    I used the backslash `\` as the delimiter between a target because targets can contain other commonly-used delimiters such as as forward slashes `/`, commas `,`, and semicolons `;`.
+
+    By the way, these three targets are closely-related [monoamine transporters](https://en.wikipedia.org/wiki/Monoamine_transporter) which regulate concentrations of extracellular monoamine neurotransmitters and are associated with mental health conditions such as Parkinson's, ADHD, and depression.
+    """)
     return
 
 
 @app.cell
-def _():
+def _(mo):
+    mo.md(r"""
+    Now let's do an initial ranking of compounds within each target set by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. We'll hide the compounds that don't have any associated targets.
+    """)
+    return
+
+
+@app.cell
+def _(Compound, Session, logger, target_combinations):
+    with Session() as db_session:
+        # Query compounds grouped by type and ordered by ascending number of Rule of 5 violations
+        compounds_by_ro5 = (
+            db_session.query(
+                target_combinations.c.target_combo,
+                Compound.chembl_id,
+                Compound.pref_name,
+                Compound.num_ro5,
+            )
+            .join(Compound, Compound.id == target_combinations.c.compound_id)
+            .order_by(
+                target_combinations.c.target_combo,
+                Compound.num_ro5,
+            )
+            .all()
+        )
+        logger.info(
+            "2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:"
+        )
+        logger.info("        Rule of 5 violation count")
+        current_target_combo_ro5 = ""
+        for target_combo_ro5, chembl_id_ro5, pref_name_ro5, num_ro5 in compounds_by_ro5:
+            if target_combo_ro5 is None:
+                continue
+            if target_combo_ro5 != current_target_combo_ro5:
+                current_target_combo_ro5 = target_combo_ro5
+                logger.info(f"    Target combination: {current_target_combo_ro5}")
+
+            logger.info(f"        {num_ro5} for {pref_name_ro5} ({chembl_id_ro5})")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    So for example if we're interested in the target set `Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter`, we'd probably consider methylphenidate because it has zero Rule of 5 violations before sertraline that has one violation.
+    """)
     return
 
 
