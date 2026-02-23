@@ -51,7 +51,6 @@ def _():
     import logging
     import time
     from collections import defaultdict
-    import io
 
     import pydot
     import sqlalchemy
@@ -76,9 +75,6 @@ def _():
     # from rdkit.Chem.Draw import MolsToGridImage
     from rdkit.Chem import MolFromSmiles
     from rdkit.Chem.Draw import MolsMatrixToGridImage
-    from rdkit.Chem import Draw
-    import marimo as mo
-    from rdkit.Chem import RWMol
 
     return (
         Chem,
@@ -100,9 +96,7 @@ def _():
         display,
         func,
         insert,
-        io,
         logging,
-        mo,
         new_client,
         pydot,
         select,
@@ -392,14 +386,6 @@ def _(mo):
     Now let's define a function to save our compounds and targets to our SQLite database. To avoid duplication, we start by preloading all the targets into that table and returning the ChEMBL and database ids. The key is the returning part, `.returning(Target.target_chembl_id, Target.id)`. That lets us create a dictionary mapping our input data (ChEMBL ID which we already had) to our database id (which was just created), which is an [O(1) (constant time)](https://en.wikipedia.org/wiki/Time_complexity#Constant_time) lookup so we can quickly link the compound to the target. That saves us from having to query the database each time we want to associate a target with a compound. We do the same for compounds, adding them in bulk, returning their ChEMBL and database ids, and creating a dictionary. Now we have the database IDs for both compounds and targets, allowing us to create compound-target records quickly in memory add again bulk adding them to the database without querying the database for the compound or target IDs.
 
     Note that creating the dictionaries does require some RAM, so if you were creating a huge number of records you might run out of memory.
-    """)
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md(r"""
-    #TODO [INFO] IntegrityError while saving: (sqlite3.IntegrityError) UNIQUE constraint failed: target.target_chembl_id
     """)
     return
 
@@ -863,8 +849,8 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     # Measure how long it takes to fetch ChEMBL molecules
     start = time.time()
     mols, all_target_ids = get_chembl_molecules(
-        start_id=795,
-        n_compounds=15,
+        start_id=796,
+        n_compounds=14,
     )
 
     end = time.time()
@@ -1015,8 +1001,7 @@ def _(Compound, Session, logger, target_combinations):
             if target_combo_ro5 != current_target_combo_ro5:
                 current_target_combo_ro5 = target_combo_ro5
                 logger.info(f"    Target combination: {current_target_combo_ro5}")
-
-            logger.info(f"        {num_ro5} for {pref_name_ro5} ({chembl_id_ro5} {sml_ro5})")
+            logger.info(f"        {num_ro5} for {pref_name_ro5.lower() if pref_name_ro5 else ""} ({chembl_id_ro5})")
     return (compounds_by_ro5,)
 
 
@@ -1039,7 +1024,10 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    If you've read my blog you can guess I can't resist showing these small-molecule compounds:
+    If you've read my blog you can guess I can't resist showing these small-molecule compounds. Let's use my RDKit contribution [MolsMatrixToGridImage](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) to show the compounds where
+
+    - each row is a target combination
+    - each column is a compound for that target combination
     """)
     return
 
@@ -1049,54 +1037,42 @@ def _(
     Chem,
     MolFromSmiles,
     MolsMatrixToGridImage,
-    Session,
     compounds_by_ro5,
     defaultdict,
-    io,
-    mo,
 ):
-    with Session() as db_session2:
-        # Group compounds by target_combo
-        grouped = defaultdict(list)
-        for target_combo_b, chembl_id, pref_name, _, sml in compounds_by_ro5:
-            if target_combo_b is None:
-                continue
-            grouped[target_combo_b].append((pref_name, sml))
+    # Group compounds by target_combo
+    grouped = defaultdict(list)
+    for target_combo_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
+        if target_combo_b is None:
+            continue
+        grouped[target_combo_b].append((pref_name_b, num_ro5_b, sml_b))
 
-        # Build matrix of mols and legends
-        mols_matrix = []
-        legends_matrix = []
-        blank_mol = Chem.MolFromSmiles("*")
-    
-        for target_combo_b, compounds in grouped.items():
-            mol_row = [blank_mol]  # Blank cell for target_combo_b label
-            legend_row = [target_combo_b.replace("\\", "\n")]  # Target combo as legend for blank cell
+    # Build matrix of mols and legends
+    mols_matrix = []
+    legends_matrix = []
+    blank_mol = Chem.MolFromSmiles("*")
 
-            for pref_name, sml in compounds:
-                mol = MolFromSmiles(sml) if sml else None
-                mol_row.append(mol)
-                legend = pref_name or ""
-                legend_row.append(legend.lower())
+    for target_combo_b, compounds in grouped.items():
+        # Blank cell for target combination: Blank molecule
+        mol_row = [blank_mol]
+        # Blank cell legend: Target combination where each target is on its own line
+        legend_row = [target_combo_b.replace("\\", "\n")]
 
-            mols_matrix.append(mol_row)
-            legends_matrix.append(legend_row)
+        for pref_name_b, num_ro5_b, sml_b in compounds:
+            mol = MolFromSmiles(sml_b) if sml_b else None
+            mol_row.append(mol)
+            legend = f'{pref_name_b or ""} ({num_ro5_b} violations)'
+            legend_row.append(legend.lower())
+
+        mols_matrix.append(mol_row)
+        legends_matrix.append(legend_row)
 
     # Generate grid image
-    img = MolsMatrixToGridImage(
+    MolsMatrixToGridImage(
         molsMatrix=mols_matrix,
         legendsMatrix=legends_matrix,
         subImgSize=(300, 300),
     )
-        # Convert PIL image to bytes for mo.image
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    buf.seek(0)
-    mo.image(buf)
-    return
-
-
-@app.cell
-def _():
     return
 
 
