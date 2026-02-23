@@ -1134,7 +1134,7 @@ def _(Compound, Session, logger, target_combinations):
             if target_combo_ro5 != current_target_combo_ro5:
                 current_target_combo_ro5 = target_combo_ro5
                 logger.info(f"    Target combination: {current_target_combo_ro5}")
-            logger.info(f"        {num_ro5} for {pref_name_ro5.lower() if pref_name_ro5 else ""} ({chembl_id_ro5})")
+            logger.info(f"        {num_ro5} for {pref_name_ro5.casefold() if pref_name_ro5 else ""} ({chembl_id_ro5})")
     return (compounds_by_ro5,)
 
 
@@ -1195,7 +1195,7 @@ def _(
             mol = MolFromSmiles(sml_b) if sml_b else None
             mol_row.append(mol)
             legend = f'{pref_name_b or "unnamed"} ({num_ro5_b} violations)'
-            legend_row.append(legend.lower())
+            legend_row.append(legend.casefold())
 
         mols_matrix.append(mol_row)
         legends_matrix.append(legend_row)
@@ -1206,11 +1206,6 @@ def _(
         legendsMatrix=legends_matrix,
         subImgSize=(300, 300),
     )
-    return
-
-
-@app.cell
-def _():
     return
 
 
