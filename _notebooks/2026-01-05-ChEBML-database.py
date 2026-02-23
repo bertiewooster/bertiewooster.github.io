@@ -71,13 +71,17 @@ def _():
     from graphviz import Digraph
     from IPython.display import SVG, display
     from sqlalchemy_schemadisplay import create_schema_graph
+    from rdkit import Chem
+    from rdkit.Chem.Draw import MolsToGridImage
 
     return (
+        Chem,
         Column,
         Digraph,
         Float,
         Integer,
         IntegrityError,
+        MolsToGridImage,
         SQLAlchemyError,
         SVG,
         String,
@@ -1011,6 +1015,27 @@ def _(mo):
     mo.md(r"""
     So for example if we're interested in the target set `Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter`, we'd probably consider methylphenidate because it has zero Rule of 5 violations before sertraline that has one violation.
     """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    If you've read my blog you can guess I can't resist showing these small-molecule compounds:
+    """)
+    return
+
+
+@app.cell
+def _(Chem):
+    smls_compounds = {"methylphenidate": "COC(=O)C(c1ccccc1)C1CCCCN1", "sertraline": "ClC1=CC=C([C@H]2C3=C([C@H](CC2)NC)C=CC=C3)C=C1Cl"}
+    mols_compounds = {name: Chem.MolFromSmiles(sml) for name, sml in smls_compounds.items()}
+    return (mols_compounds,)
+
+
+@app.cell
+def _(MolsToGridImage, mols_compounds):
+    MolsToGridImage(mols=mols_compounds.values(), legends = mols_compounds.keys())
     return
 
 
