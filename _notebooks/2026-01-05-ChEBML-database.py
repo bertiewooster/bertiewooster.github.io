@@ -51,6 +51,7 @@ def _():
     import logging
     import time
     from collections import defaultdict
+    import io
 
     import pydot
     import sqlalchemy
@@ -72,7 +73,12 @@ def _():
     from IPython.display import SVG, display
     from sqlalchemy_schemadisplay import create_schema_graph
     from rdkit import Chem
-    from rdkit.Chem.Draw import MolsToGridImage
+    # from rdkit.Chem.Draw import MolsToGridImage
+    from rdkit.Chem import MolFromSmiles
+    from rdkit.Chem.Draw import MolsMatrixToGridImage
+    from rdkit.Chem import Draw
+    import marimo as mo
+    from rdkit.Chem import RWMol
 
     return (
         Chem,
@@ -81,7 +87,8 @@ def _():
         Float,
         Integer,
         IntegrityError,
-        MolsToGridImage,
+        MolFromSmiles,
+        MolsMatrixToGridImage,
         SQLAlchemyError,
         SVG,
         String,
@@ -93,7 +100,9 @@ def _():
         display,
         func,
         insert,
+        io,
         logging,
+        mo,
         new_client,
         pydot,
         select,
@@ -986,6 +995,7 @@ def _(Compound, Session, logger, target_combinations):
                 Compound.chembl_id,
                 Compound.pref_name,
                 Compound.num_ro5,
+                Compound.sml,
             )
             .join(Compound, Compound.id == target_combinations.c.compound_id)
             .order_by(
@@ -999,15 +1009,15 @@ def _(Compound, Session, logger, target_combinations):
         )
         logger.info("        Rule of 5 violation count")
         current_target_combo_ro5 = ""
-        for target_combo_ro5, chembl_id_ro5, pref_name_ro5, num_ro5 in compounds_by_ro5:
+        for target_combo_ro5, chembl_id_ro5, pref_name_ro5, num_ro5, sml_ro5 in compounds_by_ro5:
             if target_combo_ro5 is None:
                 continue
             if target_combo_ro5 != current_target_combo_ro5:
                 current_target_combo_ro5 = target_combo_ro5
                 logger.info(f"    Target combination: {current_target_combo_ro5}")
 
-            logger.info(f"        {num_ro5} for {pref_name_ro5} ({chembl_id_ro5})")
-    return
+            logger.info(f"        {num_ro5} for {pref_name_ro5} ({chembl_id_ro5} {sml_ro5})")
+    return (compounds_by_ro5,)
 
 
 @app.cell
@@ -1021,21 +1031,72 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
+    ## Visualizing the small-molecule compounds
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
     If you've read my blog you can guess I can't resist showing these small-molecule compounds:
     """)
     return
 
 
 @app.cell
-def _(Chem):
-    smls_compounds = {"methylphenidate": "COC(=O)C(c1ccccc1)C1CCCCN1", "sertraline": "ClC1=CC=C([C@H]2C3=C([C@H](CC2)NC)C=CC=C3)C=C1Cl"}
-    mols_compounds = {name: Chem.MolFromSmiles(sml) for name, sml in smls_compounds.items()}
-    return (mols_compounds,)
+def _(
+    Chem,
+    MolFromSmiles,
+    MolsMatrixToGridImage,
+    Session,
+    compounds_by_ro5,
+    defaultdict,
+    io,
+    mo,
+):
+    with Session() as db_session2:
+        # Group compounds by target_combo
+        grouped = defaultdict(list)
+        for target_combo_b, chembl_id, pref_name, _, sml in compounds_by_ro5:
+            if target_combo_b is None:
+                continue
+            grouped[target_combo_b].append((pref_name, sml))
+
+        # Build matrix of mols and legends
+        mols_matrix = []
+        legends_matrix = []
+        blank_mol = Chem.MolFromSmiles("*")
+    
+        for target_combo_b, compounds in grouped.items():
+            mol_row = [blank_mol]  # Blank cell for target_combo_b label
+            legend_row = [target_combo_b.replace("\\", "\n")]  # Target combo as legend for blank cell
+
+            for pref_name, sml in compounds:
+                mol = MolFromSmiles(sml) if sml else None
+                mol_row.append(mol)
+                legend = pref_name or ""
+                legend_row.append(legend.lower())
+
+            mols_matrix.append(mol_row)
+            legends_matrix.append(legend_row)
+
+    # Generate grid image
+    img = MolsMatrixToGridImage(
+        molsMatrix=mols_matrix,
+        legendsMatrix=legends_matrix,
+        subImgSize=(300, 300),
+    )
+        # Convert PIL image to bytes for mo.image
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    mo.image(buf)
+    return
 
 
 @app.cell
-def _(MolsToGridImage, mols_compounds):
-    MolsToGridImage(mols=mols_compounds.values(), legends = mols_compounds.keys())
+def _():
     return
 
 
