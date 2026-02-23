@@ -62,8 +62,9 @@ def _():
         create_engine,
         func,
         select,
-        insert
+        UniqueConstraint
     )
+    from sqlalchemy.dialects.sqlite import insert
     from sqlalchemy.exc import IntegrityError, SQLAlchemyError
     from sqlalchemy.orm import declarative_base, sessionmaker
     from chembl_webresource_client.new_client import new_client
@@ -80,6 +81,7 @@ def _():
         SQLAlchemyError,
         SVG,
         String,
+        UniqueConstraint,
         create_engine,
         create_schema_graph,
         declarative_base,
@@ -399,6 +401,7 @@ def _(
     Target,
     insert,
     logger,
+    select,
 ):
     def save_compounds_to_db(molecules: list[dict], all_target_ids) -> tuple[int, int, int]:
         """Save multiple compounds and their targets to the database efficiently using bulk inserts."""
@@ -448,22 +451,45 @@ def _(
                 existing_targets: dict[str, int] = {}
                 if all_targets:
                     result = db_session.execute(
-                        insert(Target).returning(Target.target_chembl_id, Target.id),
+                        insert(Target)
+                        .on_conflict_do_nothing(index_elements=["target_chembl_id"])
+                        .returning(Target.target_chembl_id, Target.id),
                         all_targets,
                     )
                     existing_targets = {row.target_chembl_id: row.id for row in result}
+
+                    # Fetch any pre-existing targets that were skipped by on_conflict_do_nothing
+                    all_target_chembl_ids = [t["target_chembl_id"] for t in all_targets]
+                    missing_target_ids = [tid for tid in all_target_chembl_ids if tid not in existing_targets]
+                    if missing_target_ids:
+                        rows = db_session.execute(
+                            select(Target.target_chembl_id, Target.id).where(Target.target_chembl_id.in_(missing_target_ids))
+                        )
+                        existing_targets.update({row.target_chembl_id: row.id for row in rows})
                     n_targets_saved = len(existing_targets)
 
                 # Bulk insert compounds, get back chembl_id -> db id mapping
                 result = db_session.execute(
-                    insert(Compound).returning(Compound.chembl_id, Compound.id),
+                    insert(Compound)
+                    .on_conflict_do_nothing(index_elements=["chembl_id"])
+                    .returning(Compound.chembl_id, Compound.id),
                     compound_records,
                 )
-                compound_map: dict[str, int] = {row.chembl_id: row.id for row in result}
+                compound_map = {row.chembl_id: row.id for row in result}
+
+                # Fetch any pre-existing compounds that were skipped by on_conflict_do_nothing
+                all_chembl_ids = [c["chembl_id"] for c in compound_records]
+                missing_compound_ids = [cid for cid in all_chembl_ids if cid not in compound_map]
+                if missing_compound_ids:
+                    rows = db_session.execute(
+                        select(Compound.chembl_id, Compound.id).where(Compound.chembl_id.in_(missing_compound_ids))
+                    )
+                    compound_map.update({row.chembl_id: row.id for row in rows})
                 n_mols_saved = len(compound_map)
 
                 # Build all CompoundTarget join rows in memory
                 compound_target_records = []
+                seen_pairs = set()
                 for mol in molecules:
                     chembl_id = mol.get("molecule_chembl_id")
                     compound_id = compound_map.get(chembl_id)
@@ -477,14 +503,20 @@ def _(
                         if not target_id:
                             logger.warning(f"No DB id found for target {target_chembl_id}, skipping")
                             continue
-                        compound_target_records.append({
-                            "compound_id": compound_id,
-                            "target_id": target_id,
-                        })
+                        pair = (compound_id, target_id)
+                        if pair in seen_pairs:
+                            continue
+                        seen_pairs.add(pair)
+                        compound_target_records.append({"compound_id": compound_id, "target_id": target_id})
 
                 # Bulk insert all CompoundTarget join rows
                 if compound_target_records:
-                    db_session.execute(insert(CompoundTarget), compound_target_records)
+                    db_session.execute(
+                        insert(CompoundTarget).on_conflict_do_nothing(
+                            index_elements=["compound_id", "target_id"]
+                        ),
+                        compound_target_records,
+                    )
                     n_compounds_targets_saved = len(compound_target_records)
 
                 db_session.commit()
@@ -554,14 +586,17 @@ def _(Base, Column, Integer, String):
 
 
 @app.cell
-def _(Base, Column, Integer, sqlalchemy):
-    # Join table
+def _(Base, Column, Integer, UniqueConstraint, sqlalchemy):
     class CompoundTarget(Base):
         __tablename__ = "compound_target"
 
         id = Column(Integer, primary_key=True)
         compound_id = Column(Integer, sqlalchemy.ForeignKey("compound.id"))
         target_id = Column(Integer, sqlalchemy.ForeignKey("target.id"))
+
+        __table_args__ = (
+            UniqueConstraint("compound_id", "target_id", name="uq_compound_target"),
+        )
 
     return (CompoundTarget,)
 
@@ -816,8 +851,7 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     start = time.time()
     mols, all_target_ids = get_chembl_molecules(
         start_id=795,
-        # n_compounds=15,
-        n_compounds=150,
+        n_compounds=15,
     )
 
     end = time.time()
@@ -913,7 +947,6 @@ def _(Compound, CompoundTarget, Session, Target, func, logger, select):
         logger.info(
             f"    Total compounds counted by target combinations: {n_compound_by_target}"
         )
-
     return (target_combinations,)
 
 
