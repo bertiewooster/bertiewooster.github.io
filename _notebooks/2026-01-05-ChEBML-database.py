@@ -83,7 +83,7 @@ def _():
     )
     from sqlalchemy.dialects.sqlite import insert
     from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-    from sqlalchemy.orm import declarative_base, sessionmaker
+    from sqlalchemy.orm import DeclarativeBase, sessionmaker
     from chembl_webresource_client.new_client import new_client
     from graphviz import Digraph
     from IPython.display import SVG, display
@@ -95,6 +95,7 @@ def _():
     return (
         Chem,
         Column,
+        DeclarativeBase,
         Digraph,
         Float,
         Integer,
@@ -107,7 +108,6 @@ def _():
         UniqueConstraint,
         create_engine,
         create_schema_graph,
-        declarative_base,
         defaultdict,
         display,
         func,
@@ -396,24 +396,32 @@ def _(mo):
 
 
 @app.cell
-def _(create_engine, declarative_base, sessionmaker):
-    Base = declarative_base()
-
+def _(create_engine, sessionmaker):
     engine = create_engine("sqlite:///compounds.db", echo=False)
     Session = sessionmaker(bind=engine)
-    return Base, Session, engine
+    return Session, engine
+
+
+@app.cell
+def _(DeclarativeBase):
+    class Base(DeclarativeBase):
+        pass
+
+    return (Base,)
 
 
 @app.cell
 def _(mo):
     mo.md(r"""
     Now we create a class for each table. In addition to having a database-assigned primary key `id`, we enforce uniqueness on the ChEMBL ID to make sure we don't add the same compound or target multiple times to its table.
+
+    The final table is a join table between the `compound` and `target` tables. We set a uniqueness constraint to ensure that each compound-target pair can be added only once.
     """)
     return
 
 
 @app.cell
-def _(Base, Column, Float, Integer, String):
+def _(Base, Column, Float, Integer, String, UniqueConstraint, sqlalchemy):
     class Compound(Base):
         __tablename__ = "compound"
 
@@ -428,11 +436,6 @@ def _(Base, Column, Float, Integer, String):
         num_ro5 = Column(Integer)  # NumRo5
         mol_logp = Column(Float)  # MolLogP
 
-    return (Compound,)
-
-
-@app.cell
-def _(Base, Column, Integer, String):
     class Target(Base):
         __tablename__ = "target"
 
@@ -442,19 +445,6 @@ def _(Base, Column, Integer, String):
         pref_name = Column(String)
         target_type = Column(String)
 
-    return (Target,)
-
-
-@app.cell
-def _(mo):
-    mo.md(r"""
-    The final table is a join table between the `compound` and `target` tables. We set a uniqueness constraint to ensure that each compound-target pair can be added only once.
-    """)
-    return
-
-
-@app.cell
-def _(Base, Column, Integer, UniqueConstraint, sqlalchemy):
     class CompoundTarget(Base):
         __tablename__ = "compound_target"
 
@@ -466,7 +456,7 @@ def _(Base, Column, Integer, UniqueConstraint, sqlalchemy):
             UniqueConstraint("compound_id", "target_id", name="uq_compound_target"),
         )
 
-    return (CompoundTarget,)
+    return Compound, CompoundTarget, Target
 
 
 @app.cell
