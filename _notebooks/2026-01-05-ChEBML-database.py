@@ -7,15 +7,6 @@ app = marimo.App()
 @app.cell
 def _(mo):
     mo.md(r"""
-    #ToDo
-    - Format with ruff
-    """)
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md(r"""
     # ChEMBL Compounds, Targets, and Rule of 5
     """)
     return
@@ -79,7 +70,7 @@ def _():
         create_engine,
         func,
         select,
-        UniqueConstraint
+        UniqueConstraint,
     )
     from sqlalchemy.dialects.sqlite import insert
     from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -120,6 +111,14 @@ def _():
         sqlalchemy,
         time,
     )
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    We'll set some parameters for ERDs in graphviz.
+    """)
+    return
 
 
 @app.cell
@@ -325,7 +324,9 @@ def _(defaultdict, logger, logging, new_client):
 
         for act in activities:
             try:
-                mol_to_target_ids[act["molecule_chembl_id"]].add(act["target_chembl_id"])
+                mol_to_target_ids[act["molecule_chembl_id"]].add(
+                    act["target_chembl_id"]
+                )
             except Exception as e:
                 logger.warning(e)
 
@@ -521,7 +522,6 @@ def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
 
     # Move FK labels horizontally away from edges
     for edge_full in graph_full.get_edges():
-
         head_full = edge_full.get_headlabel()
         tail_full = edge_full.get_taillabel()
 
@@ -778,7 +778,9 @@ def _(
     logger,
     select,
 ):
-    def save_compounds_to_db(molecules: list[dict], all_target_ids) -> tuple[int, int, int]:
+    def save_compounds_to_db(
+        molecules: list[dict], all_target_ids
+    ) -> tuple[int, int, int]:
         """Save multiple compounds and their targets to the database efficiently using bulk inserts."""
 
         # Deduplicate targets across all molecules
@@ -835,12 +837,20 @@ def _(
 
                     # Fetch any pre-existing targets that were skipped by on_conflict_do_nothing
                     all_target_chembl_ids = [t["target_chembl_id"] for t in all_targets]
-                    missing_target_ids = [tid for tid in all_target_chembl_ids if tid not in existing_targets]
+                    missing_target_ids = [
+                        tid
+                        for tid in all_target_chembl_ids
+                        if tid not in existing_targets
+                    ]
                     if missing_target_ids:
                         rows = db_session.execute(
-                            select(Target.target_chembl_id, Target.id).where(Target.target_chembl_id.in_(missing_target_ids))
+                            select(Target.target_chembl_id, Target.id).where(
+                                Target.target_chembl_id.in_(missing_target_ids)
+                            )
                         )
-                        existing_targets.update({row.target_chembl_id: row.id for row in rows})
+                        existing_targets.update(
+                            {row.target_chembl_id: row.id for row in rows}
+                        )
                     n_targets_saved = len(existing_targets)
 
                 # Bulk insert compounds, get back chembl_id -> db id mapping
@@ -854,10 +864,14 @@ def _(
 
                 # Fetch any pre-existing compounds that were skipped by on_conflict_do_nothing
                 all_chembl_ids = [c["chembl_id"] for c in compound_records]
-                missing_compound_ids = [cid for cid in all_chembl_ids if cid not in compound_map]
+                missing_compound_ids = [
+                    cid for cid in all_chembl_ids if cid not in compound_map
+                ]
                 if missing_compound_ids:
                     rows = db_session.execute(
-                        select(Compound.chembl_id, Compound.id).where(Compound.chembl_id.in_(missing_compound_ids))
+                        select(Compound.chembl_id, Compound.id).where(
+                            Compound.chembl_id.in_(missing_compound_ids)
+                        )
                     )
                     compound_map.update({row.chembl_id: row.id for row in rows})
                 n_mols_saved = len(compound_map)
@@ -869,20 +883,26 @@ def _(
                     chembl_id = mol.get("molecule_chembl_id")
                     compound_id = compound_map.get(chembl_id)
                     if not compound_id:
-                        logger.warning(f"No DB id found for compound {chembl_id}, skipping its targets")
+                        logger.warning(
+                            f"No DB id found for compound {chembl_id}, skipping its targets"
+                        )
                         continue
 
                     for target_data in mol.get("targets", []):
                         target_chembl_id = target_data.get("target_chembl_id")
                         target_id = existing_targets.get(target_chembl_id)
                         if not target_id:
-                            logger.warning(f"No DB id found for target {target_chembl_id}, skipping")
+                            logger.warning(
+                                f"No DB id found for target {target_chembl_id}, skipping"
+                            )
                             continue
                         pair = (compound_id, target_id)
                         if pair in seen_pairs:
                             continue
                         seen_pairs.add(pair)
-                        compound_target_records.append({"compound_id": compound_id, "target_id": target_id})
+                        compound_target_records.append(
+                            {"compound_id": compound_id, "target_id": target_id}
+                        )
 
                 # Bulk insert all CompoundTarget join rows
                 if compound_target_records:
@@ -945,7 +965,9 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     )
 
     end = time.time()
-    logger.info(f"Fetched {len(mols)} molecules and associated activities in {end - start:.2f} seconds from ChEMBL.")
+    logger.info(
+        f"Fetched {len(mols)} molecules and associated activities in {end - start:.2f} seconds from ChEMBL."
+    )
 
     start = time.time()
 
@@ -1118,13 +1140,21 @@ def _(Compound, Session, logger, target_combinations):
         )
         logger.info("        Rule of 5 violation count")
         current_target_combo_ro5 = ""
-        for target_combo_ro5, chembl_id_ro5, pref_name_ro5, num_ro5, sml_ro5 in compounds_by_ro5:
+        for (
+            target_combo_ro5,
+            chembl_id_ro5,
+            pref_name_ro5,
+            num_ro5,
+            sml_ro5,
+        ) in compounds_by_ro5:
             if target_combo_ro5 is None:
                 continue
             if target_combo_ro5 != current_target_combo_ro5:
                 current_target_combo_ro5 = target_combo_ro5
                 logger.info(f"    Target combination: {current_target_combo_ro5}")
-            logger.info(f"        {num_ro5} for {pref_name_ro5.casefold() if pref_name_ro5 else ""} ({chembl_id_ro5})")
+            logger.info(
+                f"        {num_ro5} for {pref_name_ro5.casefold() if pref_name_ro5 else ''} ({chembl_id_ro5})"
+            )
     return (compounds_by_ro5,)
 
 
@@ -1184,7 +1214,7 @@ def _(
         for pref_name_b, num_ro5_b, sml_b in compounds:
             mol = MolFromSmiles(sml_b) if sml_b else None
             mol_row.append(mol)
-            legend = f'{pref_name_b or "unnamed"} ({num_ro5_b} violations)'
+            legend = f"{pref_name_b or 'unnamed'} ({num_ro5_b} violations)"
             legend_row.append(legend.casefold())
 
         mols_matrix.append(mol_row)
