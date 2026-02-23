@@ -816,13 +816,8 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
     start = time.time()
     mols, all_target_ids = get_chembl_molecules(
         start_id=795,
-        n_compounds=15,
-        # n_compounds=870,
-        # start_id=1000,  # Has targets
-        # start_id=1088,  # Has targets
-        # start_id=1008,  # Has targets
-        # start_id=1115,  # Has targets
-        # start_id=3430873, # Not a molecule
+        # n_compounds=15,
+        n_compounds=150,
     )
 
     end = time.time()
@@ -846,14 +841,6 @@ def _(get_chembl_molecules, logger, save_compounds_to_db, time):
 def _(mo):
     mo.md(r"""
     Now we can get the results we're interested in. Let's start by grouping compounds by sets of targets.
-    """)
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md(r"""
-    #ToDo Put (Compounds: ) in order of ChEMBL ID
     """)
     return
 
@@ -894,20 +881,30 @@ def _(Compound, CompoundTarget, Session, Target, func, logger, select):
             target_combo_subq.label("target_combo"),
         ).subquery()
 
-        # Create a list of distinct type combinations and their counts
-        # where each is a tuple like (target_combo, num_compounds)
-        compound_targets = (
+        # Ensure compounds will be ordered by their ChEMBL ID
+        subq = (
             db_session1.query(
                 target_combinations.c.target_combo,
-                func.count().label("num_compounds"),
-                func.group_concat(Compound.chembl_id, ", ").label("chembl_ids"),
+                Compound.chembl_id,
             )
             .join(Compound, Compound.id == target_combinations.c.compound_id)
-            .group_by(target_combinations.c.target_combo)
-            .order_by(target_combinations.c.target_combo)
+            .order_by(Compound.chembl_id)
+        ).subquery()
+
+        # Create a list of distinct type combinations and their counts
+        # where each is a tuple like (target combination, # compounds, compound ChEMBL IDs)
+        compound_targets = (
+            db_session1.query(
+                subq.c.target_combo,
+                func.count().label("num_compounds"),
+                func.group_concat(subq.c.chembl_id, ", ").label("chembl_ids"),
+            )
+            .group_by(subq.c.target_combo)
+            .order_by(subq.c.target_combo)
             .all()
         )
 
+        # Print out the results
         n_compound_by_target = 0
         logger.info("1. Distinct compound target combinations and their counts:")
         for target_combo, count, chembl_ids in compound_targets:
