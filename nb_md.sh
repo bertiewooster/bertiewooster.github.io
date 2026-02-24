@@ -21,14 +21,13 @@
 
 FILENAME="2026-01-05-ChEBML-database"
 
-marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
-jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --output ../_posts/$FILENAME.md
+# marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
+uv run jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --ExecutePreprocessor.kernel_name=python3 --output ../_posts/$FILENAME.md
 
 # Note: After running this script, to post a blog post:
-#  1) Move the markdown file into the _posts folder
-#  2) Move the _files folder (containing the images) into the images folder
+#  1) Move the _files folder (containing the images) into the images folder
 #  ----- The rest of these instructions are for the markdown file -----
-#  3) Fix the image links in the markdown file by converting e.g.
+#  2) Fix the image links in the markdown file by converting e.g.
 #          ![png](2022-11-11-RDKit-Recap-decomposition-tree_files/2022-11-11-RDKit-Recap-decomposition-tree_10_0.png)
 #      to
 #         ![png](/images/2022-11-11-RDKit-Recap-decomposition-tree_files/2022-10-09-RDKit-find-and-highlight-the-maximum-common-substructure-between-molecules_24_0.png)
@@ -40,12 +39,12 @@ jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --output ..
 #             ![svg](
 #         with 
 #            ![svg](/images/
-#  4) If you have a link to an image in the top-level /images folder, in the markdown file, replace
+#  3) If you have a link to an image in the top-level /images folder, in the markdown file, replace
 #            ../images
 #         with 
 #            /images
-#  5) Add alt tags to Jupyter images by replacing ![png] or ![svg] with a description, e.g. ![Annotated tree]
-#  6) If notebook had molframe graphs, delete from
+#  4) Add alt tags to Jupyter images by replacing ![png] or ![svg] with a description, e.g. ![Annotated tree]
+#  5) If notebook had molframe graphs, delete from
 #            <style>*[data-root-id]
 #         to the </div> after
 #            float: left'></img>
@@ -56,8 +55,8 @@ jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --output ..
 #            })(window);</script>
 #         (You can triple-click on the enormous block of text to select it)
 #  ---If you downloaded the notebook from Google Colab; if not, create the Google Colab version and do the opposite to it---
-#  7) Delete the first paragraph:
+#  6) Delete the first paragraph:
 #            *Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
-#  8) Add, to the end of the first section:
+#  7) Add, to the end of the first section:
 #            *[Open this notebook in Google Colab](link) so you can run it without installing anything on your computer*
 

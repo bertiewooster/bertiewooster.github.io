@@ -8,6 +8,7 @@ dependencies = [
     "aiohttp>=3.13.2",
     "chembl-webresource-client>=0.10.9",
     "graphviz>=0.21",
+    "ipykernel>=6.29.0",
     "ipython>=9.10.0",
     "marimo>=0.19.10",
     "matplotlib>=3.10.8",
