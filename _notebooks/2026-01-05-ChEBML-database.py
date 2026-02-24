@@ -33,6 +33,20 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
+    ## Virtual environment setup with uv
+
+    To recreate the environment for this notebook, install it with uv:
+
+    ```bash
+    uv sync
+    ```
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
     ## Database schemas—conceptual
     """)
     return
