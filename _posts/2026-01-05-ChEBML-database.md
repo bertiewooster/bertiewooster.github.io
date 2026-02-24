@@ -882,32 +882,14 @@ with Session() as db_session1:
 ```
 
     [INFO] 1. Distinct compound target combinations and their counts:
-
-
     [INFO]     None: 4 (Compounds: CHEMBL797, CHEMBL801, CHEMBL802, CHEMBL804)
-
-
     [INFO]     Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase: 1 (Compounds: CHEMBL806)
-
-
     [INFO]     Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1: 1 (Compounds: CHEMBL807)
-
-
     [INFO]     Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic: 1 (Compounds: CHEMBL808)
-
-
     [INFO]     Phosphodiesterase 1\Phosphodiesterase 3: 1 (Compounds: CHEMBL799)
-
-
     [INFO]     Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2: 1 (Compounds: CHEMBL800)
-
-
     [INFO]     Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic: 1 (Compounds: CHEMBL803)
-
-
     [INFO]     Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter: 2 (Compounds: CHEMBL796, CHEMBL809)
-
-
     [INFO]     Total compounds counted by target combinations: 12
 
 
@@ -965,53 +947,21 @@ with Session() as db_session2:
 ```
 
     [INFO] 2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:
-
-
     [INFO]         Rule of 5 violation count
-
-
     [INFO]     Target combination: Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase
-
-
     [INFO]         0 for flutamide (CHEMBL806)
-
-
     [INFO]     Target combination: Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1
-
-
     [INFO]         0 for memantine (CHEMBL807)
-
-
     [INFO]     Target combination: Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic
-
-
     [INFO]         1 for econazole (CHEMBL808)
-
-
     [INFO]     Target combination: Phosphodiesterase 1\Phosphodiesterase 3
-
-
     [INFO]         0 for cilostazol (CHEMBL799)
-
-
     [INFO]     Target combination: Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2
-
-
     [INFO]         0 for  (CHEMBL800)
-
-
     [INFO]     Target combination: Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic
-
-
     [INFO]         0 for cytarabine (CHEMBL803)
-
-
     [INFO]     Target combination: Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter
-
-
     [INFO]         0 for methylphenidate (CHEMBL796)
-
-
     [INFO]         1 for sertraline (CHEMBL809)
 
 
