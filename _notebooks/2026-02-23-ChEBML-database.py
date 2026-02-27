@@ -30,7 +30,7 @@ def _():
 @app.cell
 def _(mo):
     mo.md(r"""
-    # ChEMBL Compounds, Targets, and Rule of 5
+    # Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
     """)
     return
 
@@ -38,7 +38,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    When reviewing data to find pharma compounds for virtual screening, we might want to check what they target and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. This post uses the ChEMBL API and a SQLite database to do that.
+    When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. Here, a target profile refers to the set of targets a compound is known to be active against. This post uses the ChEMBL API and a SQLite database to do that.
     """)
     return
 
@@ -46,9 +46,9 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    This post pulls data from ChEMBL using its chembl_webresource_client for Python. It's a helpful package which handles the API calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.)
+    This post pulls data from ChEMBL using its `chembl_webresource_client` for Python. It's a helpful package which handles the API calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.)
 
-    We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100%. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
+    We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100% as long as your code is running on the same system. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
     """)
     return
 
@@ -286,7 +286,7 @@ def _(mo):
 
     Then we get target data including its ChEMBL ID, name, type, and organism.
 
-    Lastly we associate targets with compounds by creating a list of targets for each molecule. This will make it easier to populate our database tables.
+    Lastly we associate targets with compounds by creating a list of targets (the compound's target profile) for each molecule. This will make it easier to populate our database tables.
     """)
     return
 
@@ -540,6 +540,45 @@ def _(mo):
 
 
 @app.cell
+def _(pydot):
+    def add_ordering_edges(graph, Base, exclude_tables=None):
+        """
+        Add invisible edges based on foreign key relationships to enforce left-to-right ordering
+
+        Args:
+            graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
+            Base: SQLAlchemy declarative base containing table metadata.
+            exclude_tables: Set of table names to exclude from processing
+
+        Returns:
+            The modified graph object with invisible ordering edges added.
+        """
+        if exclude_tables is None:
+            exclude_tables = set()
+
+        # Get all table names
+        tables = Base.metadata.tables.keys()
+
+        # For each table, check for foreign keys
+        for table_name in tables:
+            if table_name in exclude_tables:
+                continue
+
+            table = Base.metadata.tables[table_name]
+
+            for fk in table.foreign_key_constraints:
+                parent_table = fk.referred_table.name
+
+                if parent_table not in exclude_tables:
+                    # Add invisible edge: parent -> child
+                    graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
+
+        return graph
+
+    return (add_ordering_edges,)
+
+
+@app.cell
 def _(Base, SVG, add_ordering_edges, create_schema_graph, display, engine):
     # Create the ERD graph
     graph_full = create_schema_graph(
@@ -688,41 +727,7 @@ def _(pydot):
 
         return set(join_tables.keys())
 
-    def add_ordering_edges(graph, Base, exclude_tables=None):
-        """
-        Add invisible edges based on foreign key relationships to enforce left-to-right ordering
-
-        Args:
-            graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
-            Base: SQLAlchemy declarative base containing table metadata.
-            exclude_tables: Set of table names to exclude from processing
-
-        Returns:
-            The modified graph object with invisible ordering edges added.
-        """
-        if exclude_tables is None:
-            exclude_tables = set()
-
-        # Get all table names
-        tables = Base.metadata.tables.keys()
-
-        # For each table, check for foreign keys
-        for table_name in tables:
-            if table_name in exclude_tables:
-                continue
-
-            table = Base.metadata.tables[table_name]
-
-            for fk in table.foreign_key_constraints:
-                parent_table = fk.referred_table.name
-
-                if parent_table not in exclude_tables:
-                    # Add invisible edge: parent -> child
-                    graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
-
-        return graph
-
-    return add_ordering_edges, remove_join_tables_from_graph
+    return (remove_join_tables_from_graph,)
 
 
 @app.cell
@@ -1039,7 +1044,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    ### Grouping compounds by sets of targets
+    ### Grouping compounds by target profiles
     """)
     return
 
@@ -1047,7 +1052,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    First we'll simply group the compounds by target combinations. We list the compounds for each set of targets, ordering them by ChEMBL ID.
+    First we'll simply group the compounds by target profiles. We list the compounds for each set of targets, ordering the compounds within a target profile by ChEMBL ID.
     """)
     return
 
@@ -1058,7 +1063,7 @@ def _(Compound, CompoundTarget, Session, Target, func, logger, select):
         # For each compound, concatenate its targets with a slash.
         # Then, count how many distinct such tuples exist in the database and list them in order of ChEMBL ID.
 
-        # Build per-compound target combo subquery:
+        # Build per-compound target profile subquery:
         # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
 
         # correlated inner select returning pref_name for the current Compound, ordered
@@ -1078,49 +1083,49 @@ def _(Compound, CompoundTarget, Session, Target, func, logger, select):
         ordered_targets = inner.subquery("ordered_targets")
 
         # aggregate the ordered names with a '\' separator
-        target_combo_subq = select(
+        target_profile_subq = select(
             func.group_concat(ordered_targets.c.pref_name, "\\")
         ).scalar_subquery()
 
-        # Create a subquery that selects each compound's id and its target combination.
-        target_combinations = db_session1.query(
+        # Create a subquery that selects each compound's id and its target profile.
+        target_profiles = db_session1.query(
             Compound.id.label("compound_id"),
-            target_combo_subq.label("target_combo"),
+            target_profile_subq.label("target_profile"),
         ).subquery()
 
         # Ensure compounds will be ordered by their ChEMBL ID
         subq = (
             db_session1.query(
-                target_combinations.c.target_combo,
+                target_profiles.c.target_profile,
                 Compound.chembl_id,
             )
-            .join(Compound, Compound.id == target_combinations.c.compound_id)
+            .join(Compound, Compound.id == target_profiles.c.compound_id)
             .order_by(Compound.chembl_id)
         ).subquery()
 
         # Create a list of distinct type combinations and their counts
-        # where each is a tuple like (target combination, # compounds, compound ChEMBL IDs)
+        # where each is a tuple like (target profile, # compounds, compound ChEMBL IDs)
         compound_targets = (
             db_session1.query(
-                subq.c.target_combo,
+                subq.c.target_profile,
                 func.count().label("num_compounds"),
                 func.group_concat(subq.c.chembl_id, ", ").label("chembl_ids"),
             )
-            .group_by(subq.c.target_combo)
-            .order_by(subq.c.target_combo)
+            .group_by(subq.c.target_profile)
+            .order_by(subq.c.target_profile)
             .all()
         )
 
         # Print out the results
         n_compound_by_target = 0
-        logger.info("1. Distinct compound target combinations and their counts:")
-        for target_combo, count, chembl_ids in compound_targets:
-            logger.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
+        logger.info("1. Distinct compound target profiles and their counts:")
+        for target_profile, count, chembl_ids in compound_targets:
+            logger.info(f"    {target_profile}: {count} (Compounds: {chembl_ids})")
             n_compound_by_target += count
         logger.info(
-            f"    Total compounds counted by target combinations: {n_compound_by_target}"
+            f"    Total compounds counted by target profiles: {n_compound_by_target}"
         )
-    return (target_combinations,)
+    return (target_profiles,)
 
 
 @app.cell
@@ -1154,41 +1159,41 @@ def _(mo):
 
 
 @app.cell
-def _(Compound, Session, logger, target_combinations):
+def _(Compound, Session, logger, target_profiles):
     with Session() as db_session2:
         # Query compounds grouped by type and ordered by ascending number of Rule of 5 violations
         compounds_by_ro5 = (
             db_session2.query(
-                target_combinations.c.target_combo,
+                target_profiles.c.target_profile,
                 Compound.chembl_id,
                 Compound.pref_name,
                 Compound.num_ro5,
                 Compound.sml,
             )
-            .join(Compound, Compound.id == target_combinations.c.compound_id)
+            .join(Compound, Compound.id == target_profiles.c.compound_id)
             .order_by(
-                target_combinations.c.target_combo,
+                target_profiles.c.target_profile,
                 Compound.num_ro5,
             )
             .all()
         )
         logger.info(
-            "2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:"
+            "2. Compounds grouped by target profile and ordered by descending number of Rule of 5 violations:"
         )
         logger.info("        Rule of 5 violation count")
-        current_target_combo_ro5 = ""
+        current_target_profile_ro5 = ""
         for (
-            target_combo_ro5,
+            target_profile_ro5,
             chembl_id_ro5,
             pref_name_ro5,
             num_ro5,
             sml_ro5,
         ) in compounds_by_ro5:
-            if target_combo_ro5 is None:
+            if target_profile_ro5 is None:
                 continue
-            if target_combo_ro5 != current_target_combo_ro5:
-                current_target_combo_ro5 = target_combo_ro5
-                logger.info(f"    Target combination: {current_target_combo_ro5}")
+            if target_profile_ro5 != current_target_profile_ro5:
+                current_target_profile_ro5 = target_profile_ro5
+                logger.info(f"    target profile: {current_target_profile_ro5}")
             logger.info(
                 f"        {num_ro5} for {pref_name_ro5.casefold() if pref_name_ro5 else ''} ({chembl_id_ro5})"
             )
@@ -1216,8 +1221,8 @@ def _(mo):
     mo.md(r"""
     If you've read my blog you can guess I can't resist showing these small-molecule compounds. Let's use my RDKit contribution [MolsMatrixToGridImage](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) to show the compounds where
 
-    - each row is a target combination
-    - each column is a compound for that target combination--MolsMatrixToGridImage is useful because there can be a variable number of compounds per target combination.
+    - each row is a target profile
+    - each column is a compound for that target profile--MolsMatrixToGridImage is useful because there can be a variable number of compounds per target profile.
     """)
     return
 
@@ -1230,23 +1235,23 @@ def _(
     compounds_by_ro5,
     defaultdict,
 ):
-    # Group compounds by target_combo
+    # Group compounds by target_profile
     grouped = defaultdict(list)
-    for target_combo_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
-        if target_combo_b is None:
+    for target_profile_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
+        if target_profile_b is None:
             continue
-        grouped[target_combo_b].append((pref_name_b, num_ro5_b, sml_b))
+        grouped[target_profile_b].append((pref_name_b, num_ro5_b, sml_b))
 
     # Build matrix of mols and legends
     mols_matrix = []
     legends_matrix = []
     blank_mol = Chem.MolFromSmiles("*")
 
-    for target_combo_b, compounds in grouped.items():
-        # Blank cell for target combination: Blank molecule
+    for target_profile_b, compounds in grouped.items():
+        # Blank cell for target profile: Blank molecule
         mol_row = [blank_mol]
-        # Blank cell legend: Target combination where each target is on its own line
-        legend_row = [target_combo_b.replace("\\", "\n")]
+        # Blank cell legend: Target profile where each target is on its own line
+        legend_row = [target_profile_b.replace("\\", "\n")]
 
         for pref_name_b, num_ro5_b, sml_b in compounds:
             mol = MolFromSmiles(sml_b) if sml_b else None
