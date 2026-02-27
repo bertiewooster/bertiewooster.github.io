@@ -1,26 +1,5 @@
 # Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
 
-```python
-# /// script
-# dependencies = [
-#     "aiohttp>=3.13.2",
-#     "chembl-webresource-client>=0.10.9",
-#     "graphviz>=0.21",
-#     "ipykernel>=6.29.0",
-#     "ipython>=9.10.0",
-#     "marimo>=0.19.10",
-#     "matplotlib>=3.10.8",
-#     "nbconvert>=7.16.6",
-#     "nbformat>=5.10.4",
-#     "pydot>=4.0.1",
-#     "rdkit>=2025.9.5",
-#     "ruff>=0.15.1",
-#     "sqlalchemy>=2.0.45",
-#     "sqlalchemy-schemadisplay>=2.0",
-# ]
-# ///
-```
-
 When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. Here, a target profile refers to the set of targets a compound is known to be active against. This post uses the ChEMBL API and a SQLite database to do that.
 
 This post pulls data from ChEMBL using its [`chembl_webresource_client`](https://github.com/chembl/chembl_webresource_client) for Python. It's a helpful package which handles the API calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.)
@@ -1090,3 +1069,24 @@ MolsMatrixToGridImage(
 
     
 ![Molecular grid diagram where each row represents a target set and each column represents a compound](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_57_0.png)
+
+```python
+# /// script
+# dependencies = [
+#     "aiohttp>=3.13.2",
+#     "chembl-webresource-client>=0.10.9",
+#     "graphviz>=0.21",
+#     "ipykernel>=6.29.0",
+#     "ipython>=9.10.0",
+#     "marimo>=0.19.10",
+#     "matplotlib>=3.10.8",
+#     "nbconvert>=7.16.6",
+#     "nbformat>=5.10.4",
+#     "pydot>=4.0.1",
+#     "rdkit>=2025.9.5",
+#     "ruff>=0.15.1",
+#     "sqlalchemy>=2.0.45",
+#     "sqlalchemy-schemadisplay>=2.0",
+# ]
+# ///
+```

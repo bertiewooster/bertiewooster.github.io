@@ -5,29 +5,6 @@ app = marimo.App()
 
 
 @app.cell
-def _():
-    # /// script
-    # dependencies = [
-    #     "aiohttp>=3.13.2",
-    #     "chembl-webresource-client>=0.10.9",
-    #     "graphviz>=0.21",
-    #     "ipykernel>=6.29.0",
-    #     "ipython>=9.10.0",
-    #     "marimo>=0.19.10",
-    #     "matplotlib>=3.10.8",
-    #     "nbconvert>=7.16.6",
-    #     "nbformat>=5.10.4",
-    #     "pydot>=4.0.1",
-    #     "rdkit>=2025.9.5",
-    #     "ruff>=0.15.1",
-    #     "sqlalchemy>=2.0.45",
-    #     "sqlalchemy-schemadisplay>=2.0",
-    # ]
-    # ///
-    return
-
-
-@app.cell
 def _(mo):
     mo.md(r"""
     # Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
@@ -50,6 +27,29 @@ def _(mo):
 
     We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100% as long as your code is running on the same system. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
     """)
+    return
+
+
+@app.cell
+def _():
+    # /// script
+    # dependencies = [
+    #     "aiohttp>=3.13.2",
+    #     "chembl-webresource-client>=0.10.9",
+    #     "graphviz>=0.21",
+    #     "ipykernel>=6.29.0",
+    #     "ipython>=9.10.0",
+    #     "marimo>=0.19.10",
+    #     "matplotlib>=3.10.8",
+    #     "nbconvert>=7.16.6",
+    #     "nbformat>=5.10.4",
+    #     "pydot>=4.0.1",
+    #     "rdkit>=2025.9.5",
+    #     "ruff>=0.15.1",
+    #     "sqlalchemy>=2.0.45",
+    #     "sqlalchemy-schemadisplay>=2.0",
+    # ]
+    # ///
     return
 
 
@@ -1268,11 +1268,6 @@ def _(
         legendsMatrix=legends_matrix,
         subImgSize=(300, 300),
     )
-    return
-
-
-@app.cell
-def _():
     return
 
 
