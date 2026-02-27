@@ -1,10 +1,31 @@
-# ChEMBL Compounds, Targets, and Rule of 5
+```python
+# /// script
+# dependencies = [
+#     "aiohttp>=3.13.2",
+#     "chembl-webresource-client>=0.10.9",
+#     "graphviz>=0.21",
+#     "ipykernel>=6.29.0",
+#     "ipython>=9.10.0",
+#     "marimo>=0.19.10",
+#     "matplotlib>=3.10.8",
+#     "nbconvert>=7.16.6",
+#     "nbformat>=5.10.4",
+#     "pydot>=4.0.1",
+#     "rdkit>=2025.9.5",
+#     "ruff>=0.15.1",
+#     "sqlalchemy>=2.0.45",
+#     "sqlalchemy-schemadisplay>=2.0",
+# ]
+# ///
+```
 
-When reviewing data to find pharma compounds for virtual screening, we might want to check what they target and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. This post uses the ChEMBL API and a SQLite database to do that.
+# Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
 
-This post pulls data from ChEMBL using its chembl_webresource_client for Python. It's a helpful package which handles the API calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.)
+When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. Here, a target profile refers to the set of targets a compound is known to be active against. This post uses the ChEMBL API and a SQLite database to do that.
 
-We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100%. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
+This post pulls data from ChEMBL using its `chembl_webresource_client` for Python. It's a helpful package which handles the API calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.)
+
+We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100% as long as your code is running on the same system. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
 
 ## Virtual environment setup with uv
 
@@ -102,7 +123,7 @@ display(SVG(svg_chembl))
 
 
     
-![Entity-relationship diagram connecting compound to activity, and activity to target; each relationship is many-to-many](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_10_0.svg)
+![Entity-relationship diagram connecting compound to activity, and activity to target; each relationship is many-to-many](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_11_0.svg)
     
 
 
@@ -140,7 +161,7 @@ display(SVG(svg_simple))
 
 
     
-![Entity-relationship diagram connecting compound target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_12_0.svg)
+![Entity-relationship diagram connecting compound target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_13_0.svg)
     
 
 
@@ -167,7 +188,7 @@ Then we'll fetch associated activities (interactions between compounds and targe
 
 Then we get target data including its ChEMBL ID, name, type, and organism.
 
-Lastly we associate targets with compounds by creating a list of targets for each molecule. This will make it easier to populate our database tables.
+Lastly we associate targets with compounds by creating a list of targets (the compound's target profile) for each molecule. This will make it easier to populate our database tables.
 
 
 ```python
@@ -358,6 +379,89 @@ def init_db():
 
 Now that we've created the database in code, let's visualize it to make sure it's as we planned.
 
+
+```python
+def add_ordering_edges(graph, Base, exclude_tables=None):
+    """
+    Add invisible edges based on foreign key relationships to enforce left-to-right ordering
+
+    Args:
+        graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
+        Base: SQLAlchemy declarative base containing table metadata.
+        exclude_tables: Set of table names to exclude from processing
+
+    Returns:
+        The modified graph object with invisible ordering edges added.
+    """
+    if exclude_tables is None:
+        exclude_tables = set()
+
+    # Get all table names
+    tables = Base.metadata.tables.keys()
+
+    # For each table, check for foreign keys
+    for table_name in tables:
+        if table_name in exclude_tables:
+            continue
+
+        table = Base.metadata.tables[table_name]
+
+        for fk in table.foreign_key_constraints:
+            parent_table = fk.referred_table.name
+
+            if parent_table not in exclude_tables:
+                # Add invisible edge: parent -> child
+                graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
+
+    return graph
+```
+
+
+```python
+# Create the ERD graph
+graph_full = create_schema_graph(
+    engine=engine,
+    metadata=Base.metadata,
+    show_datatypes=True,
+    show_indexes=False,
+    rankdir="LR",
+    concentrate=False,
+)
+
+# Force strict left-to-right ordering with invisible edges;
+# add them programmatically by inspecting the SQLAlchemy model
+add_ordering_edges(graph_full, Base)
+
+graph_full.set("splines", "ortho")
+
+# Move FK labels horizontally away from edges
+for edge_full in graph_full.get_edges():
+    head_full = edge_full.get_headlabel()
+    tail_full = edge_full.get_taillabel()
+
+    if head_full:
+        clean_head_full = head_full.replace("+ ", "").replace("+", "")
+        edge_full.set_headlabel(clean_head_full)
+
+    if tail_full:
+        clean_tail_full = tail_full.replace("+ ", "").replace("+", "")
+        edge_full.set_taillabel(clean_tail_full)
+
+        edge_full.set_label("")  # critical fix
+        edge_full.set_labeldistance("2.5")
+
+# Increase horizontal spacing between tables
+graph_full.set("ranksep", "1.0")
+svg_content_full = graph_full.create_svg()
+display(SVG(svg_content_full))
+```
+
+
+    
+![Entity-relationship diagram connecting compound to compound_target, and compound_target to target; each relationship is one-to-many with the many side pointing to compound_target](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_33_0.svg)
+    
+
+
 Let's simplify the ERD by showing the relationship between the compound and target tables as a many-to-many relationship. We can do that programmatically by detecting the join table, removing it, and replacing it with a (conceptual) many-to-many relationship between the two remaining tables.
 
 
@@ -459,87 +563,7 @@ def remove_join_tables_from_graph(graph, Base):
         )
 
     return set(join_tables.keys())
-
-def add_ordering_edges(graph, Base, exclude_tables=None):
-    """
-    Add invisible edges based on foreign key relationships to enforce left-to-right ordering
-
-    Args:
-        graph: A pydot.Dot graph object (e.g. ERD) to add edges to.
-        Base: SQLAlchemy declarative base containing table metadata.
-        exclude_tables: Set of table names to exclude from processing
-
-    Returns:
-        The modified graph object with invisible ordering edges added.
-    """
-    if exclude_tables is None:
-        exclude_tables = set()
-
-    # Get all table names
-    tables = Base.metadata.tables.keys()
-
-    # For each table, check for foreign keys
-    for table_name in tables:
-        if table_name in exclude_tables:
-            continue
-
-        table = Base.metadata.tables[table_name]
-
-        for fk in table.foreign_key_constraints:
-            parent_table = fk.referred_table.name
-
-            if parent_table not in exclude_tables:
-                # Add invisible edge: parent -> child
-                graph.add_edge(pydot.Edge(parent_table, table_name, style="invis"))
-
-    return graph
 ```
-
-
-```python
-# Create the ERD graph
-graph_full = create_schema_graph(
-    engine=engine,
-    metadata=Base.metadata,
-    show_datatypes=True,
-    show_indexes=False,
-    rankdir="LR",
-    concentrate=False,
-)
-
-# Force strict left-to-right ordering with invisible edges;
-# add them programmatically by inspecting the SQLAlchemy model
-add_ordering_edges(graph_full, Base)
-
-graph_full.set("splines", "ortho")
-
-# Move FK labels horizontally away from edges
-for edge_full in graph_full.get_edges():
-    head_full = edge_full.get_headlabel()
-    tail_full = edge_full.get_taillabel()
-
-    if head_full:
-        clean_head_full = head_full.replace("+ ", "").replace("+", "")
-        edge_full.set_headlabel(clean_head_full)
-
-    if tail_full:
-        clean_tail_full = tail_full.replace("+ ", "").replace("+", "")
-        edge_full.set_taillabel(clean_tail_full)
-
-        edge_full.set_label("")  # critical fix
-        edge_full.set_labeldistance("2.5")
-
-# Increase horizontal spacing between tables
-graph_full.set("ranksep", "1.0")
-svg_content_full = graph_full.create_svg()
-display(SVG(svg_content_full))
-```
-
-
-    
-![Entity-relationship diagram connecting compound to compound_target, and compound_target to target; each relationship is one-to-many with the many side pointing to compound_target](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_33_0.svg)
-    
-
 
 Now we can actually simplify the ERD.
 
@@ -583,7 +607,7 @@ display(SVG(svg_content))
 
 
     
-![Entity-relationship diagram connecting compound to target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_35_0.svg)
+![Entity-relationship diagram connecting compound to target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_37_0.svg)
     
 
 
@@ -797,7 +821,7 @@ logger.info(
     [INFO] Fetched metadata for 16 targets from ChEMBL.
 
 
-    [INFO] Fetched 12 molecules and associated activities in 0.02 seconds from ChEMBL.
+    [INFO] Fetched 12 molecules and associated activities in 0.01 seconds from ChEMBL.
 
 
     [INFO] Saved 12 compounds, 16 targets, and 19 compound-target associations to the database, in 0.00 seconds.
@@ -807,9 +831,9 @@ logger.info(
 
 Now we can get the results we're interested in.
 
-### Grouping compounds by sets of targets
+### Grouping compounds by target profiles
 
-First we'll simply group the compounds by target combinations. We list the compounds for each set of targets, ordering them by ChEMBL ID.
+First we'll simply group the compounds by target profiles. We list the compounds for each set of targets, ordering the compounds within a target profile by ChEMBL ID.
 
 
 ```python
@@ -817,7 +841,7 @@ with Session() as db_session1:
     # For each compound, concatenate its targets with a slash.
     # Then, count how many distinct such tuples exist in the database and list them in order of ChEMBL ID.
 
-    # Build per-compound target combo subquery:
+    # Build per-compound target profile subquery:
     # as correlated scalar subquery: group_concat over an ordered selection of types to ensure consistent ordering.
 
     # correlated inner select returning pref_name for the current Compound, ordered
@@ -837,60 +861,78 @@ with Session() as db_session1:
     ordered_targets = inner.subquery("ordered_targets")
 
     # aggregate the ordered names with a '\' separator
-    target_combo_subq = select(
+    target_profile_subq = select(
         func.group_concat(ordered_targets.c.pref_name, "\\")
     ).scalar_subquery()
 
-    # Create a subquery that selects each compound's id and its target combination.
-    target_combinations = db_session1.query(
+    # Create a subquery that selects each compound's id and its target profile.
+    target_profiles = db_session1.query(
         Compound.id.label("compound_id"),
-        target_combo_subq.label("target_combo"),
+        target_profile_subq.label("target_profile"),
     ).subquery()
 
     # Ensure compounds will be ordered by their ChEMBL ID
     subq = (
         db_session1.query(
-            target_combinations.c.target_combo,
+            target_profiles.c.target_profile,
             Compound.chembl_id,
         )
-        .join(Compound, Compound.id == target_combinations.c.compound_id)
+        .join(Compound, Compound.id == target_profiles.c.compound_id)
         .order_by(Compound.chembl_id)
     ).subquery()
 
     # Create a list of distinct type combinations and their counts
-    # where each is a tuple like (target combination, # compounds, compound ChEMBL IDs)
+    # where each is a tuple like (target profile, # compounds, compound ChEMBL IDs)
     compound_targets = (
         db_session1.query(
-            subq.c.target_combo,
+            subq.c.target_profile,
             func.count().label("num_compounds"),
             func.group_concat(subq.c.chembl_id, ", ").label("chembl_ids"),
         )
-        .group_by(subq.c.target_combo)
-        .order_by(subq.c.target_combo)
+        .group_by(subq.c.target_profile)
+        .order_by(subq.c.target_profile)
         .all()
     )
 
     # Print out the results
     n_compound_by_target = 0
-    logger.info("1. Distinct compound target combinations and their counts:")
-    for target_combo, count, chembl_ids in compound_targets:
-        logger.info(f"    {target_combo}: {count} (Compounds: {chembl_ids})")
+    logger.info("1. Distinct compound target profiles and their counts:")
+    for target_profile, count, chembl_ids in compound_targets:
+        logger.info(f"    {target_profile}: {count} (Compounds: {chembl_ids})")
         n_compound_by_target += count
     logger.info(
-        f"    Total compounds counted by target combinations: {n_compound_by_target}"
+        f"    Total compounds counted by target profiles: {n_compound_by_target}"
     )
 ```
 
-    [INFO] 1. Distinct compound target combinations and their counts:
+    [INFO] 1. Distinct compound target profiles and their counts:
+
+
     [INFO]     None: 4 (Compounds: CHEMBL797, CHEMBL801, CHEMBL802, CHEMBL804)
+
+
     [INFO]     Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase: 1 (Compounds: CHEMBL806)
+
+
     [INFO]     Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1: 1 (Compounds: CHEMBL807)
+
+
     [INFO]     Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic: 1 (Compounds: CHEMBL808)
+
+
     [INFO]     Phosphodiesterase 1\Phosphodiesterase 3: 1 (Compounds: CHEMBL799)
+
+
     [INFO]     Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2: 1 (Compounds: CHEMBL800)
+
+
     [INFO]     Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic: 1 (Compounds: CHEMBL803)
+
+
     [INFO]     Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter: 2 (Compounds: CHEMBL796, CHEMBL809)
-    [INFO]     Total compounds counted by target combinations: 12
+
+
+    [INFO]     Total compounds counted by target profiles: 12
 
 
 For example, a set with multiple targets is listed as
@@ -911,57 +953,89 @@ with Session() as db_session2:
     # Query compounds grouped by type and ordered by ascending number of Rule of 5 violations
     compounds_by_ro5 = (
         db_session2.query(
-            target_combinations.c.target_combo,
+            target_profiles.c.target_profile,
             Compound.chembl_id,
             Compound.pref_name,
             Compound.num_ro5,
             Compound.sml,
         )
-        .join(Compound, Compound.id == target_combinations.c.compound_id)
+        .join(Compound, Compound.id == target_profiles.c.compound_id)
         .order_by(
-            target_combinations.c.target_combo,
+            target_profiles.c.target_profile,
             Compound.num_ro5,
         )
         .all()
     )
     logger.info(
-        "2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:"
+        "2. Compounds grouped by target profile and ordered by descending number of Rule of 5 violations:"
     )
     logger.info("        Rule of 5 violation count")
-    current_target_combo_ro5 = ""
+    current_target_profile_ro5 = ""
     for (
-        target_combo_ro5,
+        target_profile_ro5,
         chembl_id_ro5,
         pref_name_ro5,
         num_ro5,
         sml_ro5,
     ) in compounds_by_ro5:
-        if target_combo_ro5 is None:
+        if target_profile_ro5 is None:
             continue
-        if target_combo_ro5 != current_target_combo_ro5:
-            current_target_combo_ro5 = target_combo_ro5
-            logger.info(f"    Target combination: {current_target_combo_ro5}")
+        if target_profile_ro5 != current_target_profile_ro5:
+            current_target_profile_ro5 = target_profile_ro5
+            logger.info(f"    target profile: {current_target_profile_ro5}")
         logger.info(
             f"        {num_ro5} for {pref_name_ro5.casefold() if pref_name_ro5 else ''} ({chembl_id_ro5})"
         )
 ```
 
-    [INFO] 2. Compounds grouped by target combination and ordered by descending number of Rule of 5 violations:
+    [INFO] 2. Compounds grouped by target profile and ordered by descending number of Rule of 5 violations:
+
+
     [INFO]         Rule of 5 violation count
-    [INFO]     Target combination: Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase
+
+
+    [INFO]     target profile: Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase
+
+
     [INFO]         0 for flutamide (CHEMBL806)
-    [INFO]     Target combination: Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1
+
+
+    [INFO]     target profile: Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1
+
+
     [INFO]         0 for memantine (CHEMBL807)
-    [INFO]     Target combination: Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic
+
+
+    [INFO]     target profile: Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic
+
+
     [INFO]         1 for econazole (CHEMBL808)
-    [INFO]     Target combination: Phosphodiesterase 1\Phosphodiesterase 3
+
+
+    [INFO]     target profile: Phosphodiesterase 1\Phosphodiesterase 3
+
+
     [INFO]         0 for cilostazol (CHEMBL799)
-    [INFO]     Target combination: Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2
+
+
+    [INFO]     target profile: Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2
+
+
     [INFO]         0 for  (CHEMBL800)
-    [INFO]     Target combination: Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic
+
+
+    [INFO]     target profile: Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic
+
+
     [INFO]         0 for cytarabine (CHEMBL803)
-    [INFO]     Target combination: Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter
+
+
+    [INFO]     target profile: Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter
+
+
     [INFO]         0 for methylphenidate (CHEMBL796)
+
+
     [INFO]         1 for sertraline (CHEMBL809)
 
 
@@ -971,28 +1045,28 @@ So for example if we're interested in the target set `Sodium-dependent dopamine 
 
 If you've read my blog you can guess I can't resist showing these small-molecule compounds. Let's use my RDKit contribution [MolsMatrixToGridImage](https://greglandrum.github.io/rdkit-blog/posts/2023-10-25-molsmatrixtogridimage.html) to show the compounds where
 
-- each row is a target combination
-- each column is a compound for that target combination--MolsMatrixToGridImage is useful because there can be a variable number of compounds per target combination.
+- each row is a target profile
+- each column is a compound for that target profile--MolsMatrixToGridImage is useful because there can be a variable number of compounds per target profile.
 
 
 ```python
-# Group compounds by target_combo
+# Group compounds by target_profile
 grouped = defaultdict(list)
-for target_combo_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
-    if target_combo_b is None:
+for target_profile_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
+    if target_profile_b is None:
         continue
-    grouped[target_combo_b].append((pref_name_b, num_ro5_b, sml_b))
+    grouped[target_profile_b].append((pref_name_b, num_ro5_b, sml_b))
 
 # Build matrix of mols and legends
 mols_matrix = []
 legends_matrix = []
 blank_mol = Chem.MolFromSmiles("*")
 
-for target_combo_b, compounds in grouped.items():
-    # Blank cell for target combination: Blank molecule
+for target_profile_b, compounds in grouped.items():
+    # Blank cell for target profile: Blank molecule
     mol_row = [blank_mol]
-    # Blank cell legend: Target combination where each target is on its own line
-    legend_row = [target_combo_b.replace("\\", "\n")]
+    # Blank cell legend: Target profile where each target is on its own line
+    legend_row = [target_profile_b.replace("\\", "\n")]
 
     for pref_name_b, num_ro5_b, sml_b in compounds:
         mol = MolFromSmiles(sml_b) if sml_b else None
@@ -1015,7 +1089,12 @@ MolsMatrixToGridImage(
 
 
     
-![Molecular grid diagram where each row represents a target set and each column represents a compound](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_55_0.png)
+![pMolecular grid diagram where each row represents a target set and each column represents a compoundg](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_57_0.png)
     
 
 
+
+
+```python
+
+```

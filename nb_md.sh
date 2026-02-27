@@ -21,8 +21,8 @@
 
 FILENAME="2026-01-05-ChEBML-database"
 
-# marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
-uv run jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --ExecutePreprocessor.kernel_name=python3 --output ../_posts/$FILENAME.md
+marimo export ipynb _notebooks/$FILENAME.py -o _notebooks/$FILENAME.ipynb
+uv run jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --ExecutePreprocessor.kernel_name=python3 --output $FILENAME.md
 
 # Note: After running this script, to post a blog post:
 #  1) Move the _files folder (containing the images) into the images folder
