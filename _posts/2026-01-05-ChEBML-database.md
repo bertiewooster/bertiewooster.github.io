@@ -1,3 +1,5 @@
+# Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
+
 ```python
 # /// script
 # dependencies = [
@@ -18,8 +20,6 @@
 # ]
 # ///
 ```
-
-# Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
 
 When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. Here, a target profile refers to the set of targets a compound is known to be active against. This post uses the ChEMBL API and a SQLite database to do that.
 
@@ -1089,12 +1089,4 @@ MolsMatrixToGridImage(
 
 
     
-![pMolecular grid diagram where each row represents a target set and each column represents a compoundg](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_57_0.png)
-    
-
-
-
-
-```python
-
-```
+![Molecular grid diagram where each row represents a target set and each column represents a compound](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_57_0.png)
