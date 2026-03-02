@@ -2,7 +2,7 @@
 
 When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. Here, a target profile refers to the set of targets a compound is known to be active against. This post uses the ChEMBL API and a SQLite database to do that.
 
-This post pulls data from ChEMBL using its [`chembl_webresource_client`](https://github.com/chembl/chembl_webresource_client) for Python. It's a helpful package which handles the API calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.)
+This post pulls data from ChEMBL using its [`chembl_webresource_client`](https://github.com/chembl/chembl_webresource_client) for Python. It's a helpful package which handles the [ChEMBL API](https://www.ebi.ac.uk/chembl/api/data/docs) calls. It also provides caching so you won't accidentally run the same queries more than once. APIs often ask users to cache the results; I like that ChEMBL goes ahead and does that for you. (If it didn't, I would have used [DiskCache](https://pypi.org/project/diskcache/), which as the name implies caches results to disk so they persist across code runs, and which I've found works well for storing results from other API calls.) I also like that the package handles obeying the API rate limit rather than setting a limit in units which may be difficult to measure and then penalizing you for exceeding it.
 
 We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100% as long as your code is running on the same system. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
 
@@ -885,32 +885,14 @@ with Session() as db_session1:
 ```
 
     [INFO] 1. Distinct compound target profiles and their counts:
-
-
     [INFO]     None: 4 (Compounds: CHEMBL797, CHEMBL801, CHEMBL802, CHEMBL804)
-
-
     [INFO]     Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase: 1 (Compounds: CHEMBL806)
-
-
     [INFO]     Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1: 1 (Compounds: CHEMBL807)
-
-
     [INFO]     Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic: 1 (Compounds: CHEMBL808)
-
-
     [INFO]     Phosphodiesterase 1\Phosphodiesterase 3: 1 (Compounds: CHEMBL799)
-
-
     [INFO]     Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2: 1 (Compounds: CHEMBL800)
-
-
     [INFO]     Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic: 1 (Compounds: CHEMBL803)
-
-
     [INFO]     Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter: 2 (Compounds: CHEMBL796, CHEMBL809)
-
-
     [INFO]     Total compounds counted by target profiles: 12
 
 
@@ -968,53 +950,21 @@ with Session() as db_session2:
 ```
 
     [INFO] 2. Compounds grouped by target profile and ordered by descending number of Rule of 5 violations:
-
-
     [INFO]         Rule of 5 violation count
-
-
     [INFO]     target profile: Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase
-
-
     [INFO]         0 for flutamide (CHEMBL806)
-
-
     [INFO]     target profile: Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1
-
-
     [INFO]         0 for memantine (CHEMBL807)
-
-
     [INFO]     target profile: Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic
-
-
     [INFO]         1 for econazole (CHEMBL808)
-
-
     [INFO]     target profile: Phosphodiesterase 1\Phosphodiesterase 3
-
-
     [INFO]         0 for cilostazol (CHEMBL799)
-
-
     [INFO]     target profile: Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2
-
-
     [INFO]         0 for  (CHEMBL800)
-
-
     [INFO]     target profile: Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic
-
-
     [INFO]         0 for cytarabine (CHEMBL803)
-
-
     [INFO]     target profile: Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter
-
-
     [INFO]         0 for methylphenidate (CHEMBL796)
-
-
     [INFO]         1 for sertraline (CHEMBL809)
 
 
