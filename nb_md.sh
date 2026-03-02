@@ -58,5 +58,5 @@ uv run jupyter nbconvert _notebooks/$FILENAME.ipynb --to markdown --execute --Ex
 #  6) Delete the first paragraph:
 #            *Blog post by [Jeremy Monat](https://bertiewooster.github.io/)*
 #  7) Add, to the end of the first section:
-#            *[Open this notebook in Google Colab](link) so you can run it without installing anything on your computer*
+#            *[Open this notebook in Google Colab](link) so you can run it without installing anything on your computer.*
 
