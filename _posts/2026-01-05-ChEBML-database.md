@@ -794,17 +794,9 @@ logger.info(
 ```
 
     [INFO] Of the 14 ChEMBL IDs (796-809), 12 are compounds: ChEMBL IDs 796, 797, 799, 800, 801, 802, 803, 804, 806, 807, 808, 809
-
-
     [INFO] Fetched 26 activities from ChEMBL.
-
-
     [INFO] Fetched metadata for 16 targets from ChEMBL.
-
-
     [INFO] Fetched 12 molecules and associated activities in 0.01 seconds from ChEMBL.
-
-
     [INFO] Saved 12 compounds, 16 targets, and 19 compound-target associations to the database, in 0.00 seconds.
 
 

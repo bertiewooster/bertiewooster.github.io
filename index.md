@@ -9,6 +9,12 @@ Scientific software developer in the Washington, D.C. area.
 
 ## Cheminformatics blog posts
 
+### [Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles]({% post_url 2026-01-05-ChEBML-database %})
+
+[<img alt="Entity-relationship diagram connecting compound to target with a many-to-many relationship" style="width:400px; height:300px" src="/images/ChEBML-my-database-schema-simple.svg">]({% post_url 2026-01-05-ChEBML-database %})
+
+When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many Lipinski's rule of five violations they have--the fewer the better. This post uses the ChEMBL API and a SQLite database to do that.
+
 ### [Murcko Scaffolds Post on the RDKit Blog: An LLM Circle]({% post_url 2025-07-16-Murcko-Scaffolds-on-RDKit-blog %})
 
 [<img alt="Molecular grid displaying each of three Murcko scaffolds as a row, with 1-3 molecules to the right of that scaffold" style="width:400px; height:300px" src="/images/murcko_scaffold_matrix.png">]({% post_url 2025-07-16-Murcko-Scaffolds-on-RDKit-blog %})
