@@ -11,7 +11,7 @@ Scientific software developer in the Washington, D.C. area.
 
 ### [Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles]({% post_url 2026-01-05-ChEBML-database %})
 
-[<img alt="Entity-relationship diagram connecting compound to target with a many-to-many relationship" style="width:400px; height:300px" src="/images/ChEBML-my-database-schema-simple.svg">]({% post_url 2026-01-05-ChEBML-database %})
+[<img alt="Entity-relationship diagram connecting compound to target with a many-to-many relationship" style="width:285px; height:155px" src="/images/ChEBML-my-database-schema-simple.svg">]({% post_url 2026-01-05-ChEBML-database %})
 
 When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many Lipinski's rule of five violations they have--the fewer the better. This post uses the ChEMBL API and a SQLite database to do that.
 
