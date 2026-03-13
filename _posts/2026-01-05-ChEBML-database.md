@@ -6,7 +6,7 @@ This post pulls data from ChEMBL using its [`chembl_webresource_client`](https:/
 
 We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100% as long as your code is running on the same system. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
 
-*[Open this notebook in Google Colab](https://colab.research.google.com/drive/1bz49J4IL6mj7Sf3TERv9COGZgkr8x8bh) so you can run it without installing anything on your computer.*
+*Open this notebook in [marimo molab](https://molab.marimo.io/notebooks/nb_Lg8f956rWmvrEfbbef1iSe) or [Google Colab](https://colab.research.google.com/drive/1bz49J4IL6mj7Sf3TERv9COGZgkr8x8bh) so you can run it without installing anything on your computer.*
 
 ## Virtual environment setup with uv
 

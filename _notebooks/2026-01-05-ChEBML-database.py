@@ -40,7 +40,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
-    *[Open this notebook in Google Colab](https://colab.research.google.com/drive/1bz49J4IL6mj7Sf3TERv9COGZgkr8x8bh) so you can run it without installing anything on your computer.*
+    *Open this notebook in [marimo molab](https://molab.marimo.io/notebooks/nb_Lg8f956rWmvrEfbbef1iSe) or [Google Colab](https://colab.research.google.com/drive/1bz49J4IL6mj7Sf3TERv9COGZgkr8x8bh) so you can run it without installing anything on your computer.*
     """)
     return
 
