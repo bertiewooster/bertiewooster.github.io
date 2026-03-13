@@ -5,6 +5,13 @@ app = marimo.App()
 
 
 @app.cell
+def _():
+    import marimo as mo
+
+    return (mo,)
+
+
+@app.cell
 def _(mo):
     mo.md(r"""
     # Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
