@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.22.4"
+__generated_with = "0.23.6"
 app = marimo.App()
 
 
@@ -134,6 +134,7 @@ def _():
     from rdkit import Chem
     from rdkit.Chem import MolFromSmiles
     from rdkit.Chem.Draw import MolsMatrixToGridImage
+    from PIL import Image, ImageDraw, ImageFont
 
     return (
         Chem,
@@ -141,6 +142,9 @@ def _():
         DeclarativeBase,
         Digraph,
         Float,
+        Image,
+        ImageDraw,
+        ImageFont,
         Integer,
         IntegrityError,
         MolFromSmiles,
@@ -1242,17 +1246,25 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    MolsMatrixToGridImage (and [MolsToGridImage](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage)) lets you specify a legend for each cell, which appears below the molecular drawing as small text. In the following graphic, the first column doesn't have any molecules, just the names of the biological targets, so we want to maximize the size of that text and put it where the molecular drawing would be. So we create a helper function `make_text_cell` to make that large text, then use the `paste` method of the PNG image to add that text to each cell in the first column.
+    """)
+    return
+
+
 @app.cell
 def _(
     Chem,
+    Image,
+    ImageDraw,
+    ImageFont,
     MolFromSmiles,
     MolsMatrixToGridImage,
     compounds_by_ro5,
     defaultdict,
 ):
-    from PIL import Image, ImageDraw, ImageFont
-    import io
-
     # Group compounds by target_profile
     grouped = defaultdict(list)
     for target_profile_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
@@ -1322,7 +1334,12 @@ def _(
 
 
 @app.cell
-def _():
+def _(mo):
+    mo.md(r"""
+    ## Revisions
+
+    This post was updated on May 19, 2026 to increase the size of the target names in the small-molecule compounds visualization.
+    """)
     return
 
 

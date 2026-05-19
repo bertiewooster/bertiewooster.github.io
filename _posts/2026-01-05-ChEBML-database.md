@@ -76,6 +76,7 @@ from sqlalchemy_schemadisplay import create_schema_graph
 from rdkit import Chem
 from rdkit.Chem import MolFromSmiles
 from rdkit.Chem.Draw import MolsMatrixToGridImage
+from PIL import Image, ImageDraw, ImageFont
 ```
 
 We'll set some parameters for ERDs in graphviz.
@@ -1055,6 +1056,7 @@ If you've read my blog you can guess I can't resist showing these small-molecule
 - each row is a target profile
 - each column is a compound for that target profile--MolsMatrixToGridImage is useful because there can be a variable number of compounds per target profile.
 
+MolsMatrixToGridImage (and [MolsToGridImage](https://www.rdkit.org/docs/source/rdkit.Chem.Draw.html#rdkit.Chem.Draw.MolsToGridImage)) lets you specify a legend for each cell, which appears below the molecular drawing as small text. In the following graphic, the first column doesn't have any molecules, just the names of the biological targets, so we want to maximize the size of that text and put it where the molecular drawing would be. So we create a helper function `make_text_cell` to make that large text, then use the `paste` method of the PNG image to add that text to each cell in the first column.
 
 ```python
 from PIL import Image, ImageDraw, ImageFont
@@ -1134,9 +1136,6 @@ grid_img
 ![Molecular grid diagram where each row represents a target set and each column represents a compound](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_59_0.png)
     
 
+## Revisions
 
-
-
-```python
-
-```
+This post was updated on May 19, 2026 to increase the size of the target names in the small-molecule compounds visualization.
