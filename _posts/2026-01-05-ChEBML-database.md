@@ -1,3 +1,7 @@
+```python
+import marimo as mo
+```
+
 # Prioritizing Drug-Like ChEMBL Compounds Within Target Profiles
 
 When reviewing data to find pharma compounds for virtual screening, we might want to check what their target profiles and rank candidates by how many [Lipinski's rule of five](https://en.wikipedia.org/wiki/Lipinski's_rule_of_five) violations they have--the fewer the better. Here, a target profile refers to the set of targets a compound is known to be active against. This post uses the ChEMBL API and a SQLite database to do that.
@@ -7,6 +11,28 @@ This post pulls data from ChEMBL using its [`chembl_webresource_client`](https:/
 We write the results directly to a SQLite database. SQLite is file-based so its uptime is nearly 100% as long as your code is running on the same system. That means we don't need to worry about its availability. Of course it being file-based is not ideal if users are distributed across the Internet, but that's not what we're doing here.
 
 *Open this notebook in [marimo molab](https://molab.marimo.io/notebooks/nb_Lg8f956rWmvrEfbbef1iSe) or [Google Colab](https://colab.research.google.com/drive/1bz49J4IL6mj7Sf3TERv9COGZgkr8x8bh) so you can run it without installing anything on your computer.*
+
+
+```python
+# /// script
+# dependencies = [
+#     "aiohttp>=3.13.2",
+#     "chembl-webresource-client>=0.10.9",
+#     "graphviz>=0.21",
+#     "ipykernel>=6.29.0",
+#     "ipython>=9.10.0",
+#     "marimo>=0.19.10",
+#     "matplotlib>=3.10.8",
+#     "nbconvert>=7.16.6",
+#     "nbformat>=5.10.4",
+#     "pydot>=4.0.1",
+#     "rdkit>=2025.9.5",
+#     "ruff>=0.15.1",
+#     "sqlalchemy>=2.0.45",
+#     "sqlalchemy-schemadisplay>=2.0",
+# ]
+# ///
+```
 
 ## Virtual environment setup with uv
 
@@ -104,7 +130,7 @@ display(SVG(svg_chembl))
 
 
     
-![Entity-relationship diagram connecting compound to activity, and activity to target; each relationship is many-to-many](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_11_0.svg)
+![Entity-relationship diagram connecting compound to activity, and activity to target; each relationship is many-to-many](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_13_0.svg)
     
 
 
@@ -142,7 +168,7 @@ display(SVG(svg_simple))
 
 
     
-![Entity-relationship diagram connecting compound target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_13_0.svg)
+![Entity-relationship diagram connecting compound target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_15_0.svg)
     
 
 
@@ -439,7 +465,7 @@ display(SVG(svg_content_full))
 
 
     
-![Entity-relationship diagram connecting compound to compound_target, and compound_target to target; each relationship is one-to-many with the many side pointing to compound_target](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_33_0.svg)
+![Entity-relationship diagram connecting compound to compound_target, and compound_target to target; each relationship is one-to-many with the many side pointing to compound_target](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_35_0.svg)
     
 
 
@@ -588,7 +614,7 @@ display(SVG(svg_content))
 
 
     
-![Entity-relationship diagram connecting compound to target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_37_0.svg)
+![Entity-relationship diagram connecting compound to target with a many-to-many relationship](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_39_0.svg)
     
 
 
@@ -794,9 +820,17 @@ logger.info(
 ```
 
     [INFO] Of the 14 ChEMBL IDs (796-809), 12 are compounds: ChEMBL IDs 796, 797, 799, 800, 801, 802, 803, 804, 806, 807, 808, 809
+
+
     [INFO] Fetched 26 activities from ChEMBL.
+
+
     [INFO] Fetched metadata for 16 targets from ChEMBL.
+
+
     [INFO] Fetched 12 molecules and associated activities in 0.01 seconds from ChEMBL.
+
+
     [INFO] Saved 12 compounds, 16 targets, and 19 compound-target associations to the database, in 0.00 seconds.
 
 
@@ -879,14 +913,32 @@ with Session() as db_session1:
 ```
 
     [INFO] 1. Distinct compound target profiles and their counts:
+
+
     [INFO]     None: 4 (Compounds: CHEMBL797, CHEMBL801, CHEMBL802, CHEMBL804)
+
+
     [INFO]     Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase: 1 (Compounds: CHEMBL806)
+
+
     [INFO]     Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1: 1 (Compounds: CHEMBL807)
+
+
     [INFO]     Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic: 1 (Compounds: CHEMBL808)
+
+
     [INFO]     Phosphodiesterase 1\Phosphodiesterase 3: 1 (Compounds: CHEMBL799)
+
+
     [INFO]     Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2: 1 (Compounds: CHEMBL800)
+
+
     [INFO]     Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic: 1 (Compounds: CHEMBL803)
+
+
     [INFO]     Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter: 2 (Compounds: CHEMBL796, CHEMBL809)
+
+
     [INFO]     Total compounds counted by target profiles: 12
 
 
@@ -944,21 +996,53 @@ with Session() as db_session2:
 ```
 
     [INFO] 2. Compounds grouped by target profile and ordered by descending number of Rule of 5 violations:
+
+
     [INFO]         Rule of 5 violation count
+
+
     [INFO]     target profile: Androgen receptor\Steroid 17-alpha-hydroxylase/17,20 lyase
+
+
     [INFO]         0 for flutamide (CHEMBL806)
+
+
     [INFO]     target profile: Glutamate NMDA receptor; GRIN1/GRIN2B\Solute carrier family 22 member 1
+
+
     [INFO]         0 for memantine (CHEMBL807)
+
+
     [INFO]     target profile: Lanosterol 14-alpha demethylase\Malate dehydrogenase, cytoplasmic
+
+
     [INFO]         1 for econazole (CHEMBL808)
+
+
     [INFO]     target profile: Phosphodiesterase 1\Phosphodiesterase 3
+
+
     [INFO]         0 for cilostazol (CHEMBL799)
+
+
     [INFO]     target profile: Prostaglandin G/H synthase 1\Prostaglandin G/H synthase 2
+
+
     [INFO]         0 for  (CHEMBL800)
+
+
     [INFO]     target profile: Proto-oncogene tyrosine-protein kinase Src\Thymidine kinase 2, mitochondrial\Thymidine kinase, cytosolic
+
+
     [INFO]         0 for cytarabine (CHEMBL803)
+
+
     [INFO]     target profile: Sodium-dependent dopamine transporter\Sodium-dependent noradrenaline transporter\Sodium-dependent serotonin transporter
+
+
     [INFO]         0 for methylphenidate (CHEMBL796)
+
+
     [INFO]         1 for sertraline (CHEMBL809)
 
 
@@ -973,6 +1057,9 @@ If you've read my blog you can guess I can't resist showing these small-molecule
 
 
 ```python
+from PIL import Image, ImageDraw, ImageFont
+import io
+
 # Group compounds by target_profile
 grouped = defaultdict(list)
 for target_profile_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
@@ -985,52 +1072,71 @@ mols_matrix = []
 legends_matrix = []
 blank_mol = Chem.MolFromSmiles("*")
 
-for target_profile_b, compounds in grouped.items():
-    # Blank cell for target profile: Blank molecule
-    mol_row = [blank_mol]
-    # Blank cell legend: Target profile where each target is on its own line
-    legend_row = [target_profile_b.replace("\\", "\n")]
+def make_text_cell(text, size=(300, 300)):
+    """Create a PIL image with centered text for the target profile cell."""
+    img = Image.new("RGB", size, "white")
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.load_default(size=14)
+    # Word-wrap by splitting on newlines first
+    lines = text.replace("\\", "\n").split("\n")
+    # Compute total text block height
+    line_height = draw.textbbox((0, 0), "A", font=font)[3] + 4
+    total_height = line_height * len(lines)
+    y = (size[1] - total_height) / 2
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font)
+        x = (size[0] - (bbox[2] - bbox[0])) / 2
+        draw.text((x, y), line, fill="black", font=font)
+        y += line_height
+    return img
 
+target_profile_images = {}
+
+for target_profile_b, compounds in grouped.items():
+    # Create a PIL image with the target profile text drawn on it
+    cell_img = make_text_cell(target_profile_b)
+    target_profile_images[target_profile_b] = cell_img
+
+    mol_row = [blank_mol]
+    legend_row = [""]  # Empty legend for the first cell
     for pref_name_b, num_ro5_b, sml_b in compounds:
         mol = MolFromSmiles(sml_b) if sml_b else None
         mol_row.append(mol)
         legend = f"{pref_name_b or 'unnamed'} ({num_ro5_b} violations)"
         legend_row.append(legend.casefold())
-
     mols_matrix.append(mol_row)
     legends_matrix.append(legend_row)
 
 # Generate grid image
-MolsMatrixToGridImage(
+grid_img = MolsMatrixToGridImage(
     molsMatrix=mols_matrix,
     legendsMatrix=legends_matrix,
     subImgSize=(300, 300),
 )
+
+# Paste target profile text images over the first column's blank cells
+SUB_W, SUB_H = 300, 300
+# MolsMatrixToGridImage stacks rows top-to-bottom; each row is SUB_H pixels tall
+# (legends add height, but the molecule area starts at row_index * SUB_H)
+for row_idx, (target_profile_b, _) in enumerate(grouped.items()):
+    cell_img = target_profile_images[target_profile_b]
+    x = 0
+    y = row_idx * SUB_H
+    grid_img.paste(cell_img, (x, y))
+
+grid_img
 ```
 
 
 
 
     
-![Molecular grid diagram where each row represents a target set and each column represents a compound](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_57_0.png)
+![Molecular grid diagram where each row represents a target set and each column represents a compound](/images/2026-01-05-ChEBML-database_files/2026-01-05-ChEBML-database_59_0.png)
+    
+
+
+
 
 ```python
-# /// script
-# dependencies = [
-#     "aiohttp>=3.13.2",
-#     "chembl-webresource-client>=0.10.9",
-#     "graphviz>=0.21",
-#     "ipykernel>=6.29.0",
-#     "ipython>=9.10.0",
-#     "marimo>=0.19.10",
-#     "matplotlib>=3.10.8",
-#     "nbconvert>=7.16.6",
-#     "nbformat>=5.10.4",
-#     "pydot>=4.0.1",
-#     "rdkit>=2025.9.5",
-#     "ruff>=0.15.1",
-#     "sqlalchemy>=2.0.45",
-#     "sqlalchemy-schemadisplay>=2.0",
-# ]
-# ///
+
 ```
