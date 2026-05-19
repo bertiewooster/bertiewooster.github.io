@@ -122,6 +122,39 @@ def _(dot_chembl, dot_simple, mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Selecting Multiple Items From a Menu
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    _curated_ids = [
+        "CHEMBL25",       # Aspirin
+        "CHEMBL112",      # Acetaminophen
+        "CHEMBL941",      # Imatinib (Gleevec)
+        "CHEMBL1737",     # Sildenafil (Viagra)
+        "CHEMBL185",      # Fluorouracil
+        "CHEMBL41",       # Fluoxetine (Prozac)
+        "CHEMBL113",      # Caffeine
+        "CHEMBL5416410",  # Dasatinib
+        "CHEMBL1079742",  # Erlotinib (Tarceva)
+        "CHEMBL939",      # Gefitinib (Iressa)
+        "CHEMBL796",      # Methylphenidate
+        "CHEMBL809",      # Setraline
+    ]
+    compound_ids_ui = mo.ui.multiselect(
+        options=_curated_ids,
+        value=["CHEMBL25", "CHEMBL796", "CHEMBL809"],
+        label="Select compounds to fetch",
+    )
+    compound_ids_ui
+    return
+
+
 @app.cell
 def _():
     return
