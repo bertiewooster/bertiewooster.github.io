@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.11"
+__generated_with = "0.22.4"
 app = marimo.App()
 
 
@@ -1250,6 +1250,9 @@ def _(
     compounds_by_ro5,
     defaultdict,
 ):
+    from PIL import Image, ImageDraw, ImageFont
+    import io
+
     # Group compounds by target_profile
     grouped = defaultdict(list)
     for target_profile_b, _, pref_name_b, num_ro5_b, sml_b in compounds_by_ro5:
@@ -1262,27 +1265,64 @@ def _(
     legends_matrix = []
     blank_mol = Chem.MolFromSmiles("*")
 
-    for target_profile_b, compounds in grouped.items():
-        # Blank cell for target profile: Blank molecule
-        mol_row = [blank_mol]
-        # Blank cell legend: Target profile where each target is on its own line
-        legend_row = [target_profile_b.replace("\\", "\n")]
+    def make_text_cell(text, size=(300, 300)):
+        """Create a PIL image with centered text for the target profile cell."""
+        img = Image.new("RGB", size, "white")
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.load_default(size=14)
+        # Word-wrap by splitting on newlines first
+        lines = text.replace("\\", "\n").split("\n")
+        # Compute total text block height
+        line_height = draw.textbbox((0, 0), "A", font=font)[3] + 4
+        total_height = line_height * len(lines)
+        y = (size[1] - total_height) / 2
+        for line in lines:
+            bbox = draw.textbbox((0, 0), line, font=font)
+            x = (size[0] - (bbox[2] - bbox[0])) / 2
+            draw.text((x, y), line, fill="black", font=font)
+            y += line_height
+        return img
 
+    target_profile_images = {}
+
+    for target_profile_b, compounds in grouped.items():
+        # Create a PIL image with the target profile text drawn on it
+        cell_img = make_text_cell(target_profile_b)
+        target_profile_images[target_profile_b] = cell_img
+
+        mol_row = [blank_mol]
+        legend_row = [""]  # Empty legend for the first cell
         for pref_name_b, num_ro5_b, sml_b in compounds:
             mol = MolFromSmiles(sml_b) if sml_b else None
             mol_row.append(mol)
             legend = f"{pref_name_b or 'unnamed'} ({num_ro5_b} violations)"
             legend_row.append(legend.casefold())
-
         mols_matrix.append(mol_row)
         legends_matrix.append(legend_row)
 
     # Generate grid image
-    MolsMatrixToGridImage(
+    grid_img = MolsMatrixToGridImage(
         molsMatrix=mols_matrix,
         legendsMatrix=legends_matrix,
         subImgSize=(300, 300),
     )
+
+    # Paste target profile text images over the first column's blank cells
+    SUB_W, SUB_H = 300, 300
+    # MolsMatrixToGridImage stacks rows top-to-bottom; each row is SUB_H pixels tall
+    # (legends add height, but the molecule area starts at row_index * SUB_H)
+    for row_idx, (target_profile_b, _) in enumerate(grouped.items()):
+        cell_img = target_profile_images[target_profile_b]
+        x = 0
+        y = row_idx * SUB_H
+        grid_img.paste(cell_img, (x, y))
+
+    grid_img
+    return
+
+
+@app.cell
+def _():
     return
 
 
