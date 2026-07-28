@@ -10,7 +10,7 @@ Scientific software developer in the Washington, D.C. area.
 
 ## Presentations
 
-<img alt="Jeremy presenting MolsMatrixToGridImage in Finding Tautomers talk at North American RDKit User Group Meeting" style="width:1130px; height:510px" src="/images/Jeremy-in-front-of-Finding-Tautomers-MolsMatrixToGridImage-cropped.png">
+<img alt="Jeremy presenting MolsMatrixToGridImage in Finding Tautomers talk at North American RDKit User Group Meeting" style="width:565px; height:255px" src="/images/Jeremy-in-front-of-Finding-Tautomers-MolsMatrixToGridImage-cropped.png">
 
 ### Finding Tautomers
 
