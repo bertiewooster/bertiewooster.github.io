@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.23.6"
+__generated_with = "0.23.9"
 app = marimo.App()
 
 
@@ -55,7 +55,7 @@ def _(mo):
 def _():
     from graphviz import Digraph
 
-    return (Digraph,)
+    return
 
 
 @app.cell(hide_code=True)
@@ -77,48 +77,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    This is a simple one, but helpful if you want to let the user tab between different outputs. Here we use graphviz Digraph to create two diagrams:
+    This is a simple one, but helpful if you want to let the user tab between different outputs, in this case two entity-relationship diagrams created by graphviz Digraph:
     """)
     return
-
-
-@app.cell
-def _(Digraph):
-    _kw = dict(fontsize="8", arrowhead="crow", arrowtail="crow",
-               dir="both", color="black", arrowsize="0.4")
-
-    dot_chembl = Digraph(format="svg")
-    dot_chembl.attr(rankdir="LR", splines="ortho")
-    dot_chembl.attr("node", shape="record", fontsize="10", style="filled")
-    dot_chembl.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
-    dot_chembl.node("Activity", "{Activity|activity_id (PK)}", fillcolor="#A3C1DA")
-    dot_chembl.node("Target",   "{Target|target_id (PK)}",    fillcolor="#A3C1DA")
-    dot_chembl.edge("Compound", "Activity", **_kw)
-    dot_chembl.edge("Activity", "Target",   **_kw)
-
-    dot_simple = Digraph(format="svg")
-    dot_simple.attr(rankdir="LR", splines="ortho")
-    dot_simple.attr("node", shape="record", fontsize="10", style="filled")
-    dot_simple.node("Compound", "{Compound|compound_id (PK)}", fillcolor="#A3C1DA")
-    dot_simple.node("Target",   "{Target|target_id (PK)}",    fillcolor="#A3C1DA")
-    dot_simple.edge("Compound", "Target", **_kw)
-    return dot_chembl, dot_simple
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    then set up Marimo tabs to let the user click a tab title to go to that diagram:
+    ![Entity-relationship diagrams in Marimo tabs](../images/ChEMBL-Marimo-post/ChEMBL-Marimo-tabs.png)
     """)
-    return
-
-
-@app.cell
-def _(dot_chembl, dot_simple, mo):
-    mo.ui.tabs({
-        "ChEMBL: Compound ↔ Activity ↔ Target": mo.Html(dot_chembl.pipe(format="svg").decode()),
-        "Our schema: Compound ↔ Target (direct)": mo.Html(dot_simple.pipe(format="svg").decode()),
-    })
     return
 
 
@@ -130,28 +98,11 @@ def _(mo):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(mo):
-    _curated_ids = [
-        "CHEMBL25",       # Aspirin
-        "CHEMBL112",      # Acetaminophen
-        "CHEMBL941",      # Imatinib (Gleevec)
-        "CHEMBL1737",     # Sildenafil (Viagra)
-        "CHEMBL185",      # Fluorouracil
-        "CHEMBL41",       # Fluoxetine (Prozac)
-        "CHEMBL113",      # Caffeine
-        "CHEMBL5416410",  # Dasatinib
-        "CHEMBL1079742",  # Erlotinib (Tarceva)
-        "CHEMBL939",      # Gefitinib (Iressa)
-        "CHEMBL796",      # Methylphenidate
-        "CHEMBL809",      # Setraline
-    ]
-    compound_ids_ui = mo.ui.multiselect(
-        options=_curated_ids,
-        value=["CHEMBL25", "CHEMBL796", "CHEMBL809"],
-        label="Select compounds to fetch",
-    )
-    compound_ids_ui
+    mo.md(r"""
+    ![Drop-down multiselect menu for ChEMBL compounds](../images/ChEMBL-Marimo-post/ChEMBL-Marimo-dropdown-multiselect.png)
+    """)
     return
 
 
