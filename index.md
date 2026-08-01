@@ -7,6 +7,7 @@ Scientific software developer in the Washington, D.C. area.
 - [Cheminformatics blog posts](#cheminformatics-blog-posts)
 - [Open-source contributions](#open-source-contributions)
 - [Web apps](#web-apps)
+- [Hackathons](#Hackathons)
 
 ## Presentations
 
@@ -213,3 +214,13 @@ Understand how the elements are related to each other. Emphasizes electronic con
 [<img alt="Tic-tac-toe game" style="width:289px; height:158px;" src="images/react_tic_tac_toe.png">](https://bertiewooster.github.io/react_tic_tac_toe/)
 
 A simple [React app tic-tac-toe game](https://bertiewooster.github.io/react_tic_tac_toe/).
+
+## Hackathons
+
+### ChemGraph-IR
+
+**LLM Hackathon for Applications in Materials Science & Chemistry** · September 2025 · *Team project*
+
+Co-planned the final demo and helped develop ChemGraph-IR, a user-friendly interface for generating molecular infrared spectra using quantum-chemistry and machine-learning backends.
+
+[Watch the team demo](https://youtu.be/LLz4MXTztWA) · [Project post](https://www.linkedin.com/posts/jemonat_excited-to-share-our-project-from-llm-hackathon-activity-7372385572092276736-TWA5)
