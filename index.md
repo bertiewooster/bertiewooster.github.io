@@ -7,7 +7,7 @@ Scientific software developer in the Washington, D.C. area.
 - [Cheminformatics blog posts](#cheminformatics-blog-posts)
 - [Open-source contributions](#open-source-contributions)
 - [Web apps](#web-apps)
-- [Hackathons](#Hackathons)
+- [Hackathons](#hackathons)
 
 ## Presentations
 
