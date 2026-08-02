@@ -101,13 +101,48 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    The lets you select multiple chemical compounds for lookup in ChEMBL.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ![Drop-down multiselect menu for ChEMBL compounds](../images/ChEMBL-Marimo-post/ChEMBL-Marimo-dropdown-multiselect.png)
     """)
     return
 
 
-@app.cell
-def _():
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Action Button
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Clicking this button make the call to ChEBML API via its chembl_webresource_client to fetch data for the selected compounds.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ![Button Fetch from ChEMBL](../images/ChEMBL-Marimo-post/ChEMBL-Marimo-fetch-from-ChEMBL.png)
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+ 
+    """)
     return
 
 
