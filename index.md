@@ -7,7 +7,7 @@ Scientific software developer in the Washington, D.C. area.
 - [Cheminformatics blog posts](#cheminformatics-blog-posts)
 - [Open-source contributions](#open-source-contributions)
 - [Web apps](#web-apps)
-- [Hackathons](#hackathons)
+- [Events & Engagements](#events--engagements)
 
 ## Presentations
 
@@ -215,12 +215,18 @@ Understand how the elements are related to each other. Emphasizes electronic con
 
 A simple [React app tic-tac-toe game](https://bertiewooster.github.io/react_tic_tac_toe/).
 
-## Hackathons
+## Events & Engagements
 
-### ChemGraph-IR
+### NSF Workshop: Envisioning the Future of AI and Chemistry
 
-**LLM Hackathon for Applications in Materials Science & Chemistry** · September 2025 · *Team project*
+2026 · *Invited participant*
 
-Co-planned the final demo and helped develop ChemGraph-IR, a user-friendly interface for generating molecular infrared spectra using quantum-chemistry and machine-learning backends.
+[Workshop website](https://ai-chem-26.umd.edu/)
 
-[Watch the team demo](https://youtu.be/LLz4MXTztWA) · [Project post](https://www.linkedin.com/posts/jemonat_excited-to-share-our-project-from-llm-hackathon-activity-7372385572092276736-TWA5)
+### LLM Hackathon for Applications in Materials Science & Chemistry
+
+September 2025 · *Team project*
+
+Helped develop and co-planned the final demo for ChemGraph-IR, a user-friendly interface for generating molecular infrared spectra using quantum-chemistry and machine-learning backends.
+
+[Watch the ChemGraph-IR team demo](https://youtu.be/LLz4MXTztWA) · [Project post](https://www.linkedin.com/posts/jemonat_excited-to-share-our-project-from-llm-hackathon-activity-7372385572092276736-TWA5)
